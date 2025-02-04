@@ -1,0 +1,29 @@
+## Ignore temporary files, build results, and folders.
+
+# not indexed
+bin
+obj
+packages
+node_modules
+results
+coverage
+TestResults
+StyleCop.Cache
+_ReSharper.Caches
+_TeamCity.*
+*.nupkg
+*.user
+*.suo
+*.~*
+.*
+
+# indexed
+!.dockerignore
+!.editorconfig
+!.gitignore
+!.mr-develop-to-master.bat
+!.tag.sh
+!.template.config
+!.test.bat
+!.test.sh
+!.version
