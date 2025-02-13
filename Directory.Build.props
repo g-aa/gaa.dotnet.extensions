@@ -12,13 +12,6 @@
     <FileVersion>$(Build_Number)</FileVersion>
     <AssemblyVersion>$(Build_Number)</AssemblyVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.6.1" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.6.0.109712">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
