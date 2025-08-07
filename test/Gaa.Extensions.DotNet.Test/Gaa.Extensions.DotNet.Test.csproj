@@ -31,7 +31,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/Gaa.Extensions.AspNetCore.Authorization/Gaa.Extensions.AspNetCore.Authorization.csproj" />
+    <ProjectReference Include="../../src/Gaa.Extensions.DotNet/Gaa.Extensions.DotNet.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="FluentAssertions" />

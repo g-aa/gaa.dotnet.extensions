@@ -21,9 +21,7 @@ _TeamCity.*
 !.dockerignore
 !.editorconfig
 !.gitignore
-!.mr-develop-to-master.bat
 !.tag.sh
 !.template.config
-!.test.bat
 !.test.sh
 !.version

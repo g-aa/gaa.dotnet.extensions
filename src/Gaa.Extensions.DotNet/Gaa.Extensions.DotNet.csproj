@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Description>Personal extensions for dotnet.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-    <Title>GAA Extensions AspNetCore Authorization</Title>
-    <PackageId>Gaa.Extensions.AspNetCore.Authorization</PackageId>
-    <PackageTags>GAA;Net;Extensions;AspNetCore;</PackageTags>
+    <Title>GAA Extensions NetCore</Title>
+    <PackageId>Gaa.Extensions.DotNet</PackageId>
+    <PackageTags>GAA;Net;Extensions;</PackageTags>
     <PackageProjectUrl>https://github.com/g-aa/gaa-dotnet-extensions</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -22,9 +22,6 @@
     <None Include="../../icon.png" Pack="true" PackagePath="/" />
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
     <None Include="README.md" Pack="true" PackagePath="/" />
-  </ItemGroup>
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.8.1">
