@@ -6,10 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-## [1.1.0] - 2025-08-07
+## [1.1.0] - 2025-08-17
 
 ### Добавлено
 
+- Добавление `.drone.yml`.
 - Добавление проекта `Gaa.Extensions.DotNet` в решение.
 - Реализация анонимного освобождения ресурсов `AnonymousDisposable` и `AnonymousAsyncDisposable`.
 - Реализация распределенной блокировки для приложения запускаемого в единичном экземпляре.

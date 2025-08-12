@@ -13,9 +13,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageVersion>$(Build_Version)</PackageVersion>
     <PackageReleaseNotes>Updating the project</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   <ItemGroup>

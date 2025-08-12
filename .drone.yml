@@ -1,0 +1,57 @@
+---
+kind: pipeline
+type: docker
+name: module
+
+environment:
+  V_CONFIGURATION: Release
+
+clone:
+  depth: 5
+  skip_verify: true
+
+steps:
+- name: build
+  image: local/dotnet/sdk:8.0.0
+  commands:
+  - dotnet restore
+  - dotnet build --configuration $V_CONFIGURATION
+
+- name: test
+  image: local/dotnet/sdk:8.0.0
+  commands:
+  - |
+    dotnet test --configuration $V_CONFIGURATION \
+      --settings coverlet.runsettings \
+      --test-adapter-path:. \
+      --logger:"junit;LogFilePath=../../results/{assembly}.TestResult.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
+      --results-directory results/coverage \
+      --filter "Category != Integration"
+    reportgenerator -reports:results/coverage/*/coverage.opencover.xml -targetdir:results/report -reportTypes:"TextSummary;Html"
+    cat results/report/Summary.txt
+
+- name: pack
+  image: local/dotnet/sdk:8.0.0
+  commands:
+  - dotnet pack --configuration $V_CONFIGURATION --no-build --output ./packages -p:IncludeSymbols=true -p:SymbolPackageFormat=symbols.nupkg
+  depends_on:
+  - build
+  - test
+  when:
+    branch: [ master, tag ]
+    event: [ tag ]
+
+- name: publish
+  image: local/dotnet/sdk:8.0.0
+  commands:
+  - |
+    for package in ./packages/*.symbols.nupkg
+    do
+      echo Pushing $package to $NUGET_LOCAL_URI_INTERNAL
+      dotnet nuget push $package --source $NUGET_LOCAL_URI_INTERNAL
+    done
+  depends_on:
+  - pack
+  when:
+    branch: [ master, tag ]
+    event: [ tag ]

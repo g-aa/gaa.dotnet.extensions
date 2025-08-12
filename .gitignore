@@ -19,7 +19,9 @@ _TeamCity.*
 
 # indexed
 !.dockerignore
+!.drone.yml
 !.editorconfig
+!.gitattributes
 !.gitignore
 !.tag.sh
 !.template.config
