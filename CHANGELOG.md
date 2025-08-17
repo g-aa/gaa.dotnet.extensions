@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Изменено
+
+## [1.1.4] - 2025-08-17
+
+- Корректировка `.drone.yml`.
+
 ## [1.1.0] - 2025-08-17
 
 ### Добавлено
@@ -27,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Реализация политик авторизации `AllClaimsAuthorizationRequirement` и `AnyClaimsAuthorizationRequirement`.
 - Реализация базового функционала проекта.
 
-[Unreleased]: https://github.com/g-aa/gaa-dotnet-extensions/compare/v1.1.0...master
+[Unreleased]: https://github.com/g-aa/gaa-dotnet-extensions/compare/v1.1.4...master
+[1.1.4]: https://github.com/g-aa/gaa-dotnet-extensions/compare/v1.1.0...v1.1.4
 [1.1.0]: https://github.com/g-aa/gaa-dotnet-extensions/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/g-aa/gaa-dotnet-extensions/releases/tag/v1.0.0
