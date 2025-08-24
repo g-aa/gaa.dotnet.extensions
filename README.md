@@ -1,8 +1,6 @@
-# <p><img src="icon.png" width="64px" height="64px" align="middle"/> GAA dotnet extensions</p>
+# GAA dotnet extensions
 
-Набор расширений .Net для личного использования.
-
-## [История изменения](CHANGELOG.md)
+Набор расширений DotNet для личного использования.
 
 ## Основной функционал проекта
 

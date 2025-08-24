@@ -8,7 +8,6 @@ environment:
 
 clone:
   depth: 5
-  skip_verify: true
 
 steps:
 - name: build
