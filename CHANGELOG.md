@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Добавлено
+
+- Добавление проекта `Gaa.Extensions.Mediator`.
+
 ### Изменено
 
 ## [1.1.4] - 2025-08-17
