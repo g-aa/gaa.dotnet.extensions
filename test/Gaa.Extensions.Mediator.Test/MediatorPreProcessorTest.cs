@@ -21,17 +21,15 @@ public class MediatorPreProcessorTest
     public void OneTimeSetUp()
     {
         _mockLog = new Mock<IMessageLogger>();
-        var services = new ServiceCollection();
-
-        services
+        _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandle<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddHandler<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
             .AddPreProcessor<RequestPreProcessor>()
-            .AddAsyncHandle<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
-            .AddAsyncPreProcessor<AsyncRequestPreProcessor>();
-
-        _provider = services.BuildServiceProvider();
+            .AddAsyncHandler<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
+            .Services
+            .BuildServiceProvider();
     }
 
     /// <summary>

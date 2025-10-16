@@ -13,13 +13,13 @@ public class AsyncRequestHandlerConfigurationContext<TRequest>
     /// <summary>
     /// Регистрирует предварительный обработчик вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
     /// </summary>
-    /// <typeparam name="TPreHandler">Тин предварительного обработчика запросов.</typeparam>
+    /// <typeparam name="TPreProcessor">Тип предварительного обработчика запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncPreProcessor<TPreHandler>()
-        where TPreHandler : class, IAsyncRequestPreProcessor<TRequest>
+    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreHandler>();
+        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 }

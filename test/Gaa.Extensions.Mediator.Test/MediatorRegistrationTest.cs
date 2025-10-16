@@ -17,22 +17,17 @@ public class MediatorRegistrationTest
     public void UnsuccessfulSingleUseRegistration()
     {
         // arrange
-        var func = () =>
-        {
-            var services = new ServiceCollection();
-
-            services
-                .AddScoped(p => new Mock<IMessageLogger>().Object)
-                .AddScopedMediator()
-                .AddHandle<RequestHandlerWithoutResponse, ExampleRequest>()
-                .AddHandle<RequestHandlerWithoutResponse, ExampleRequest>();
-
-            return services.BuildServiceProvider();
-        };
+        var func = () => new ServiceCollection()
+            .AddScoped(p => new Mock<IMessageLogger>().Object)
+            .AddScopedMediator()
+            .AddHandler<RequestHandlerWithoutResponse, ExampleRequest>()
+            .AddHandler<RequestHandlerWithoutResponse, ExampleRequest>()
+            .Services
+            .BuildServiceProvider();
 
         // act & assert
         func.Should()
             .Throw<InvalidOperationException>()
-            .WithMessage($"Для запроса {typeof(ExampleRequest).Name} можно добавить только один обработчик!");
+            .WithMessage($"Для запроса {typeof(ExampleRequest).FullName} можно добавить только один обработчик!");
     }
 }

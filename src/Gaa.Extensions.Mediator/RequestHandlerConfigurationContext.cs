@@ -13,13 +13,13 @@ public sealed class RequestHandlerConfigurationContext<TRequest>
     /// <summary>
     /// Регистрирует предварительный обработчик вида <see cref="IRequestPreProcessor{TRequest}"/>.
     /// </summary>
-    /// <typeparam name="TPreHandler">Тин предварительного обработчика запросов.</typeparam>
+    /// <typeparam name="TPreProcessor">Тип предварительного обработчика запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddPreProcessor<TPreHandler>()
-        where TPreHandler : class, IRequestPreProcessor<TRequest>
+    public RequestHandlerConfigurationContext<TRequest> AddPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreHandler>();
+        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 }

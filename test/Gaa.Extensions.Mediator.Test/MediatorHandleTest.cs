@@ -21,17 +21,15 @@ public class MediatorHandleTest
     public void OneTimeSetUp()
     {
         _mockLog = new Mock<IMessageLogger>();
-        var services = new ServiceCollection();
-
-        services
+        _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandle<RequestHandlerWithoutResponse, ExampleRequest>()
-            .AddHandle<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
-            .AddAsyncHandle<AsyncRequestHandlerWithoutResponse, ExampleRequest>()
-            .AddAsyncHandle<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>();
-
-        _provider = services.BuildServiceProvider();
+            .AddHandler<RequestHandlerWithoutResponse, ExampleRequest>()
+            .AddHandler<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddAsyncHandler<AsyncRequestHandlerWithoutResponse, ExampleRequest>()
+            .AddAsyncHandler<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .Services
+            .BuildServiceProvider();
     }
 
     /// <summary>

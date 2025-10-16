@@ -19,7 +19,7 @@ public class MediatorConfigurationContext
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddHandle<THandler, TRequest>()
+    public RequestHandlerConfigurationContext<TRequest> AddHandler<THandler, TRequest>()
         where THandler : class, IRequestHandler<TRequest>
         where TRequest : IRequest
     {
@@ -38,7 +38,7 @@ public class MediatorConfigurationContext
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddHandle<THandler, TRequest, TResponse>()
+    public RequestHandlerConfigurationContext<TRequest> AddHandler<THandler, TRequest, TResponse>()
         where THandler : class, IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
@@ -56,7 +56,7 @@ public class MediatorConfigurationContext
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandle<THandler, TRequest>()
+    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest>()
         where THandler : class, IAsyncRequestHandler<TRequest>
         where TRequest : IRequest
     {
@@ -75,7 +75,7 @@ public class MediatorConfigurationContext
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandle<THandler, TRequest, TResponse>()
+    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest, TResponse>()
         where THandler : class, IAsyncRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
@@ -92,7 +92,7 @@ public class MediatorConfigurationContext
     {
         if (Services.Any(e => e.ServiceType == typeof(THandler)))
         {
-            var requestName = typeof(TRequest).Name;
+            var requestName = typeof(TRequest).FullName;
             throw new InvalidOperationException($"Для запроса {requestName} можно добавить только один обработчик!");
         }
     }
