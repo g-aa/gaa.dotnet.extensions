@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.DotNet;
+namespace Gaa.Extensions;
 
 /// <summary>
 /// Менеджер блокировок для приложения запускаемого в единичном экземпляре.

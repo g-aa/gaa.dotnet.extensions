@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.DotNet;
+namespace Gaa.Extensions;
 
 /// <summary>
 /// Анонимное освобождение ресурсов.

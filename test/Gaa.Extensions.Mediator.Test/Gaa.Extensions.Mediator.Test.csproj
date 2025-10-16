@@ -4,7 +4,7 @@
     <RootNamespace>Gaa.Extensions.Test</RootNamespace>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
-    <Description>Test library for project</Description>
+    <Description>Test library for project.</Description>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
@@ -33,7 +33,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Gaa.Extensions.Mediator\Gaa.Extensions.Mediator.csproj" />
+    <ProjectReference Include="../../src/Gaa.Extensions.Mediator/Gaa.Extensions.Mediator.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="AwesomeAssertions" />
