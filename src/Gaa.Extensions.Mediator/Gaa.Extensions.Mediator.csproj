@@ -24,7 +24,7 @@
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.8.1">
+    <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
