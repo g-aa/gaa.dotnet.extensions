@@ -28,9 +28,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.AspNetCore.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.AspNetCore.Authorization.Test", "test\Gaa.Extensions.AspNetCore.Authorization.Test\Gaa.Extensions.AspNetCore.Authorization.Test.csproj", "{CB1C179E-58B6-4FA8-9EAA-2DC9B7585F25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.DotNet", "src\Gaa.Extensions.DotNet\Gaa.Extensions.DotNet.csproj", "{63DAD8F5-8438-471A-8BC4-AFB4C10A1BA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Core", "src\Gaa.Extensions.Core\Gaa.Extensions.Core.csproj", "{63DAD8F5-8438-471A-8BC4-AFB4C10A1BA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.DotNet.Test", "test\Gaa.Extensions.DotNet.Test\Gaa.Extensions.DotNet.Test.csproj", "{B4EAA71D-7A92-4659-8AC2-9803FB2DF56E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Core.Test", "test\Gaa.Extensions.Core.Test\Gaa.Extensions.Core.Test.csproj", "{B4EAA71D-7A92-4659-8AC2-9803FB2DF56E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Mediator", "src\Gaa.Extensions.Mediator\Gaa.Extensions.Mediator.csproj", "{94A7A801-AA56-4BB5-B5C6-601B43999546}"
 EndProject

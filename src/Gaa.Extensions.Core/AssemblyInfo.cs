@@ -5,5 +5,5 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Gaa.Extensions.DotNet.Test")]
+[assembly: InternalsVisibleTo("Gaa.Extensions.Core.Test")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

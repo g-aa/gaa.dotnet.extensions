@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <Title>GAA Extensions NetCore</Title>
-    <PackageId>Gaa.Extensions.DotNet</PackageId>
+    <PackageId>Gaa.Extensions.Core</PackageId>
     <PackageTags>GAA;Net;Extensions;</PackageTags>
     <PackageProjectUrl>https://github.com/g-aa/gaa-dotnet-extensions</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
