@@ -7,6 +7,7 @@
     <Description>Test library for project.</Description>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
+  <Import Project="../../build/Version.targets" />
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" Version="9.3.0" />
     <PackageReference Include="AwesomeAssertions.Analyzers" Version="9.0.8">

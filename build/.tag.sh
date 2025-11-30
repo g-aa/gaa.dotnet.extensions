@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+cd ..
 git checkout master --
 git pull -v --progress "origin"
 version=v$(head -n 1 .version)

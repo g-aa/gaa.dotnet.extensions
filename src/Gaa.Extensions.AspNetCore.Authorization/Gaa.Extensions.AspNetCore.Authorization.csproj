@@ -17,6 +17,7 @@
     <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
+  <Import Project="../../build/Version.targets" />
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

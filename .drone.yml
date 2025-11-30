@@ -22,7 +22,7 @@ steps:
   - |
     dotnet test \
       --configuration $V_CONFIGURATION \
-      --settings coverlet.runsettings \
+      --settings build/coverlet.runsettings \
       --test-adapter-path:. \
       --logger:"junit;LogFilePath=../../results/{assembly}.TestResult.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
       --results-directory results/coverage \

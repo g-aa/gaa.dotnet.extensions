@@ -18,6 +18,7 @@
     <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
+  <Import Project="../../build/Version.targets" />
   <ItemGroup>
     <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.10.1">
       <PrivateAssets>all</PrivateAssets>
