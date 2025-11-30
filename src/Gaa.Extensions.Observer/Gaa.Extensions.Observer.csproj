@@ -19,11 +19,6 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="../../icon.png" Pack="true" PackagePath="/" />
-    <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.10.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

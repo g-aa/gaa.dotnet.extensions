@@ -7,7 +7,7 @@
     <Title>GAA Extensions AspNetCore Authorization</Title>
     <PackageId>Gaa.Extensions.AspNetCore.Authorization</PackageId>
     <PackageTags>GAA;Net;Extensions;AspNetCore;</PackageTags>
-    <PackageProjectUrl>https://github.com/g-aa/gaa-dotnet-extensions</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/g-aa/gaa.dotnet.extensions</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -17,11 +17,6 @@
     <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include="../../icon.png" Pack="true" PackagePath="/" />
-    <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
-  </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

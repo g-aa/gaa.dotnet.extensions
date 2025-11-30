@@ -20,7 +20,8 @@ steps:
   image: local/dotnet/sdk:8.0.0
   commands:
   - |
-    dotnet test --configuration $V_CONFIGURATION \
+    dotnet test \
+      --configuration $V_CONFIGURATION \
       --settings coverlet.runsettings \
       --test-adapter-path:. \
       --logger:"junit;LogFilePath=../../results/{assembly}.TestResult.xml;MethodFormat=Class;FailureBodyFormat=Verbose" \
@@ -34,7 +35,13 @@ steps:
 - name: pack
   image: local/dotnet/sdk:8.0.0
   commands:
-  - dotnet pack --configuration $V_CONFIGURATION --no-build --output ./packages -p:IncludeSymbols=true -p:SymbolPackageFormat=symbols.nupkg
+  - |
+    dotnet pack \
+      --configuration $V_CONFIGURATION \
+      --no-build \
+      --output ./packages \
+      -p:IncludeSymbols=true \
+      -p:SymbolPackageFormat=symbols.nupkg
   depends_on:
   - test
   when:

@@ -3,15 +3,20 @@
   <PropertyGroup>
     <Authors>Andrey G.</Authors>
     <Company>None</Company>
-    <Copyright>Copyright GAA $([System.DateTimeOffset]::UtcNow.ToString(yyyy)).</Copyright>
+    <Copyright>© Copyright GAA $([System.DateTimeOffset]::UtcNow.ToString(yyyy)).</Copyright>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/g-aa/gaa-dotnet-extensions</RepositoryUrl>
+    <RepositoryUrl>https://github.com/g-aa/gaa.dotnet.extensions</RepositoryUrl>
     <Build_Version Condition=" '$(Build_Version)' == '' ">$([System.IO.File]::ReadAllText($(MSBuildThisFileDirectory).version).Trim())</Build_Version>
     <Build_Number Condition=" '$(Build_Number)' == '' ">$(Build_Version).0</Build_Number>
     <Version>$(Build_Version)</Version>
     <FileVersion>$(Build_Number)</FileVersion>
     <AssemblyVersion>$(Build_Number)</AssemblyVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="../../icon.png" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

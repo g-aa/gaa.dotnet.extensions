@@ -1,4 +1,4 @@
-# Gaa.Extensions.DotNet
+# Gaa.Extensions.Core
 
 Пакет предоставляет набор базовых расширений функционала в проектах `.NET Core`.
 
