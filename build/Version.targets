@@ -12,11 +12,6 @@
     <FileVersion>$(Build_Number)</FileVersion>
     <AssemblyVersion>$(Build_Number)</AssemblyVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <None Include="../../icon.png" Pack="true" PackagePath="/" />
-    <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
-    <None Include="README.md" Pack="true" PackagePath="/" />
-  </ItemGroup>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

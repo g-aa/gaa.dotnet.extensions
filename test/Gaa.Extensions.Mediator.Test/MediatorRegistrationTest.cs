@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Test;
 /// Набор тестов для <see cref="Mediator"/>.
 /// </summary>
 [TestFixture]
-public class MediatorRegistrationTest
+internal sealed class MediatorRegistrationTest
 {
     /// <summary>
     /// Настраивает тестовое окружение однократно.

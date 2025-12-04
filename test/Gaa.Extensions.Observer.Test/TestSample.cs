@@ -4,7 +4,7 @@ namespace Gaa.Extensions.Observer.Test;
 /// Набор тестов для <see cref="string"/>.
 /// </summary>
 [TestFixture]
-public class TestSample
+internal sealed class TestSample
 {
     private string _example;
 

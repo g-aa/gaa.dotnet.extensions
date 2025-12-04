@@ -6,7 +6,7 @@ namespace Gaa.Extensions.DotNet.Test;
 /// Набор тестов для <see cref="AnonymousDisposable"/>.
 /// </summary>
 [TestFixture]
-public class AnonymousDisposableTest
+internal sealed class AnonymousDisposableTest
 {
     /// <summary>
     /// Успешное анонимное освобождение ресурсов.

@@ -6,7 +6,7 @@ namespace Gaa.Extensions.DotNet.Test;
 /// <typeparam name="T">Тип значения.</typeparam>
 [TestFixture(typeof(int), 100)]
 [TestFixture(typeof(string), "QWERTY")]
-public class CollectionExtensionsTest<T>
+internal sealed class CollectionExtensionsTest<T>
     where T : notnull
 {
     private readonly T _value;

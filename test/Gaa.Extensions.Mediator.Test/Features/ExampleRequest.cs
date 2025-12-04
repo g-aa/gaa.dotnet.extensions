@@ -3,7 +3,7 @@ namespace Gaa.Extensions.Test.Features;
 /// <summary>
 /// Пример запроса.
 /// </summary>
-public class ExampleRequest
+internal sealed class ExampleRequest
     : IRequest
 {
     /// <summary>

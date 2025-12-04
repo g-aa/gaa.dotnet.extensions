@@ -2,7 +2,6 @@ using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.CodeAnalysis;
 
 namespace Gaa.Extensions.AspNetCore.Authorization.Test;
 
@@ -10,7 +9,7 @@ namespace Gaa.Extensions.AspNetCore.Authorization.Test;
 /// Набор тестов для <see cref="AnyClaimsAuthorizationRequirement"/>.
 /// </summary>
 [TestFixture]
-public class AnyClaimsAuthorizationRequirementTest
+internal sealed class AnyClaimsAuthorizationRequirementTest
 {
     /// <summary>
     /// Успешная авторизация с конечной точкой равной null.

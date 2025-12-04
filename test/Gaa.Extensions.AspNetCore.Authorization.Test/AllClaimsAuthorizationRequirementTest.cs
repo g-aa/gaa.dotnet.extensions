@@ -9,7 +9,7 @@ namespace Gaa.Extensions.AspNetCore.Authorization.Test;
 /// Набор тестов для <see cref="AllClaimsAuthorizationRequirement"/>.
 /// </summary>
 [TestFixture]
-public class AllClaimsAuthorizationRequirementTest
+internal sealed class AllClaimsAuthorizationRequirementTest
 {
     /// <summary>
     /// Успешная авторизация с конечной точкой равной null.

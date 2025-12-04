@@ -6,7 +6,7 @@ namespace Gaa.Extensions.AspNetCore.Authorization.Test;
 /// <summary>
 /// Набор тестов для <see cref="AuthorizationPolicyBuilderExtensions"/>.
 /// </summary>
-public class AuthorizationPolicyBuilderTest
+internal sealed class AuthorizationPolicyBuilderTest
 {
     private ServiceProvider _serviceProvider;
 

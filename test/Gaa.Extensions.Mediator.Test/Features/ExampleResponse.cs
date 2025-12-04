@@ -3,7 +3,7 @@ namespace Gaa.Extensions.Test.Features;
 /// <summary>
 /// Пример ответа.
 /// </summary>
-public class ExampleResponse
+internal sealed class ExampleResponse
 {
     /// <summary>
     /// Текст с сообщением.

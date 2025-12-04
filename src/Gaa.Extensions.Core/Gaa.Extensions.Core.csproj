@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>Gaa.Extensions</RootNamespace>
     <Description>Personal extensions for dotnet.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -19,6 +19,11 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   <Import Project="../../build/Version.targets" />
+  <ItemGroup>
+    <None Include="../../icon.png" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="/" Visible="true" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.10.1">
       <PrivateAssets>all</PrivateAssets>

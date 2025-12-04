@@ -1,9 +1,11 @@
 namespace Gaa.Extensions.Test.Features;
 
+#pragma warning disable CA1812
+
 /// <summary>
 /// Обработчик запросов.
 /// </summary>
-public class RequestHandlerWithResponse
+internal sealed class RequestHandlerWithResponse
     : IRequestHandler<ExampleRequestWithResponse, ExampleResponse>
 {
     private readonly IMessageLogger _log;
@@ -12,7 +14,8 @@ public class RequestHandlerWithResponse
     /// Инициализирует новый экземпляр класса <see cref="RequestHandlerWithResponse"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public RequestHandlerWithResponse(IMessageLogger log)
+    public RequestHandlerWithResponse(
+        IMessageLogger log)
     {
         _log = log;
     }

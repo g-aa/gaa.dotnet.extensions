@@ -6,7 +6,7 @@ namespace Gaa.Extensions.DotNet.Test;
 /// Набор тестов для <see cref="SingleNodeLockProvider"/>.
 /// </summary>
 [TestFixture]
-public class SingleNodeLockProviderTest
+internal sealed class SingleNodeLockProviderTest
 {
     private SingleNodeLockProvider _provider;
 
@@ -24,7 +24,7 @@ public class SingleNodeLockProviderTest
     /// Очищает тестовое окружение.
     /// </summary>
     [TearDown]
-    public virtual void TearDown()
+    public void TearDown()
     {
         _provider.Stop();
     }

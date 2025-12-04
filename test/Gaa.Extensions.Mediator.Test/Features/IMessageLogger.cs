@@ -1,5 +1,7 @@
 namespace Gaa.Extensions.Test.Features;
 
+#pragma warning disable CA1515 // Рассмотрите возможность сделать общедоступные типы внутренними
+
 /// <summary>
 /// Регистратор сообщений.
 /// </summary>

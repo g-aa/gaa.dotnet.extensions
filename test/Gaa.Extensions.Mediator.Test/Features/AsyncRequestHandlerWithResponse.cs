@@ -1,9 +1,11 @@
 namespace Gaa.Extensions.Test.Features;
 
+#pragma warning disable CA1812
+
 /// <summary>
 /// Обработчик запросов.
 /// </summary>
-public class AsyncRequestHandlerWithResponse
+internal sealed class AsyncRequestHandlerWithResponse
     : IAsyncRequestHandler<ExampleRequestWithResponse, ExampleResponse>
 {
     private readonly IMessageLogger _log;
@@ -15,7 +17,9 @@ public class AsyncRequestHandlerWithResponse
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
     /// <param name="mediator">Медиатор.</param>
-    public AsyncRequestHandlerWithResponse(IMessageLogger log, Mediator mediator)
+    public AsyncRequestHandlerWithResponse(
+        IMessageLogger log,
+        Mediator mediator)
     {
         _log = log;
         _mediator = mediator;

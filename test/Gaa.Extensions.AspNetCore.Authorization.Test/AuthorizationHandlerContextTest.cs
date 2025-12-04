@@ -9,7 +9,7 @@ namespace Gaa.Extensions.AspNetCore.Authorization.Test;
 /// Набор тестов для <see cref="AuthorizationHandlerContextExtensions"/>.
 /// </summary>
 [TestFixture]
-public class AuthorizationHandlerContextTest
+internal sealed class AuthorizationHandlerContextTest
 {
     /// <summary>
     /// Неуспешный тест на получение требуемых значений из <see cref="IRequiredAuthorizationMetadata"/>.

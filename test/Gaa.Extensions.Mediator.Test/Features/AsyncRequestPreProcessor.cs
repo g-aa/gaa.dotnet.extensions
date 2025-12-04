@@ -1,9 +1,11 @@
 namespace Gaa.Extensions.Test.Features;
 
+#pragma warning disable CA1812
+
 /// <summary>
 /// Предварительный обработчик запросов.
 /// </summary>
-public class AsyncRequestPreProcessor
+internal sealed class AsyncRequestPreProcessor
     : IAsyncRequestPreProcessor<ExampleRequestWithResponse>
 {
     private readonly IMessageLogger _log;
@@ -12,7 +14,8 @@ public class AsyncRequestPreProcessor
     /// Инициализирует новый экземпляр класса <see cref="AsyncRequestPreProcessor"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public AsyncRequestPreProcessor(IMessageLogger log)
+    public AsyncRequestPreProcessor(
+        IMessageLogger log)
     {
         _log = log;
     }

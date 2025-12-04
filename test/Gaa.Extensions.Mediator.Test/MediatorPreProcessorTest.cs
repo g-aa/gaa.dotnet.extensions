@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Test;
 /// Набор тестов для <see cref="Mediator"/>.
 /// </summary>
 [TestFixture]
-public class MediatorPreProcessorTest
+internal sealed class MediatorPreProcessorTest
 {
     private Mock<IMessageLogger> _mockLog;
 
