@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.2.1] - 2025-12-14
+
+### Исправлено
+
+- В `Gaa.Extensions.Observer` подкорректированы настройки.
+
 ## [1.2.0] - 2025-12-07
 
 ### Добавлено
@@ -42,7 +48,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Реализация политик авторизации `AllClaimsAuthorizationRequirement` и `AnyClaimsAuthorizationRequirement`.
 - Реализация базового функционала проекта.
 
-[Unreleased]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.0...master
+[Unreleased]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.1...master
+[1.2.1]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.1.4...v1.2.0
 [1.1.4]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.1.0...v1.1.4
 [1.1.0]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.0.0...v1.1.0
