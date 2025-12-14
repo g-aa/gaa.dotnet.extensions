@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions;
@@ -12,17 +11,21 @@ public static class BusExtensions
     /// Регистрирует компоненты <see cref="IBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="configuration">Настройки конфигурации.</param>
+    /// <param name="configureOptions">Настройки конфигурации.</param>
     /// <returns>Контекст <see cref="IBus"/> для конфигурирования.</returns>
     /// <remarks>Жизненный цикл <see cref="ServiceLifetime.Scoped"/>.</remarks>
     public static BusConfigurationContext AddScopedBus(
         this IServiceCollection services,
-        IConfiguration configuration)
+        Action<BusOptions> configureOptions)
     {
+        if (configureOptions != null)
+        {
+            services.Configure(configureOptions);
+        }
+
         services
-            .Configure<BusOptions>(BusOptions.Section, configuration.GetRequiredSection(BusOptions.Section))
             .AddScoped<IBus, Bus>()
-            .AddSingleton<IBackgroundTaskQueue, DefaultBackgroundTaskQueue>()
+            .AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>()
             .AddHostedService<BackgroundTaskExecutionService>();
 
         return new()

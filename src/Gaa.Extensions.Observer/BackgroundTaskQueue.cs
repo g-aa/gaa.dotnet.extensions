@@ -8,7 +8,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Имплементация <see cref="IBackgroundTaskQueue"/> по умолчанию.
 /// </summary>
-internal sealed partial class DefaultBackgroundTaskQueue
+internal sealed partial class BackgroundTaskQueue
     : IBackgroundTaskQueue
 {
     private readonly ILogger _log;
@@ -16,12 +16,12 @@ internal sealed partial class DefaultBackgroundTaskQueue
     private readonly Channel<IBackgroundTask> _queue;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskQueue"/>.
+    /// Инициализирует новый экземпляр класса <see cref="BackgroundTaskQueue"/>.
     /// </summary>
     /// <param name="log">Журнал протоколирования событий.</param>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultBackgroundTaskQueue(
-      ILogger<DefaultBackgroundTaskQueue> log,
+    public BackgroundTaskQueue(
+      ILogger<BackgroundTaskQueue> log,
       IOptions<BusOptions> options)
     {
         var taskQueueCapacity = options.Value.BackgroundTaskQueueCapacity;

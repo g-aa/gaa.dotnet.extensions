@@ -10,7 +10,7 @@ public sealed class BusOptions
     /// <summary>
     /// Наименование секции в <see cref="IConfiguration"/>.
     /// </summary>
-    public const string Section = "MtBus";
+    public const string Section = "Bus";
 
     /// <summary>
     /// Емкость очереди фоновых задач.

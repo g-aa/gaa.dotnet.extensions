@@ -8,7 +8,8 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Hosted сервис очереди с фоновыми задачами.
 /// </summary>
-internal sealed partial class BackgroundTaskExecutionService : BackgroundService
+internal sealed partial class BackgroundTaskExecutionService
+    : BackgroundService
 {
     private readonly ILogger _log;
 
