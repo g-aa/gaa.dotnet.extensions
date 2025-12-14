@@ -12,7 +12,7 @@ internal sealed class CollectionExtensionsTest<T>
     private readonly T _value;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="CollectionExtensionsTest"/>.
+    /// Инициализирует новый экземпляр класса <see cref="CollectionExtensionsTest{T}"/>.
     /// </summary>
     /// <param name="value">Значение.</param>
     public CollectionExtensionsTest(T value)
