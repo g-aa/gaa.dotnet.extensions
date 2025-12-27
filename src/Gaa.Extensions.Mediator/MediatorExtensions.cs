@@ -17,7 +17,7 @@ public static class MediatorExtensions
     {
         return new MediatorConfigurationContext
         {
-            Services = services.AddScoped<Mediator>(),
+            Services = services.AddScoped<IMediator, Mediator>(),
         };
     }
 }

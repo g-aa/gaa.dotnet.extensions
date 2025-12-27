@@ -2,10 +2,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions;
 
-/// <summary>
-/// Медиатор, посредник.
-/// </summary>
+/// <inheritdoc />
 public sealed class Mediator
+    : IMediator
 {
     private readonly IServiceProvider _provider;
 
@@ -18,13 +17,7 @@ public sealed class Mediator
         _provider = provider;
     }
 
-    /// <summary>
-    /// Отправить синхронный запрос.
-    /// </summary>
-    /// <typeparam name="TRequest">Тип запроса.</typeparam>
-    /// <param name="request">Запрос.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+    /// <inheritdoc />
     public void Send<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
@@ -35,15 +28,7 @@ public sealed class Mediator
         handler.Handle(request, cancellationToken);
     }
 
-    /// <summary>
-    /// Отправить синхронный запрос.
-    /// </summary>
-    /// <typeparam name="TRequest">Тип запроса.</typeparam>
-    /// <typeparam name="TResponse">Тип ответа.</typeparam>
-    /// <param name="request">Запрос.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Ответ на запрос.</returns>
-    /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+    /// <inheritdoc />
     public TResponse Send<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
@@ -54,44 +39,31 @@ public sealed class Mediator
         return handler.Handle(request, cancellationToken);
     }
 
-    /// <summary>
-    /// Отправить асинхронный запрос.
-    /// </summary>
-    /// <typeparam name="TRequest">Тип запроса.</typeparam>
-    /// <param name="request">Запрос.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Результат выполнения асинхронной задачи.</returns>
-    /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+    /// <inheritdoc />
     public async Task SendAsync<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest
+        where TRequest : notnull, IAsyncRequest
     {
         await AsyncPreProcess(request, cancellationToken);
         var handler = _provider.GetRequiredService<IAsyncRequestHandler<TRequest>>();
         await handler.HandleAsync(request, cancellationToken);
     }
 
-    /// <summary>
-    /// Отправить асинхронный запрос.
-    /// </summary>
-    /// <typeparam name="TRequest">Тип запроса.</typeparam>
-    /// <typeparam name="TResponse">Тип ответа.</typeparam>
-    /// <param name="request">Запрос.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Ответ на запрос.</returns>
-    /// <exception cref="OperationCanceledException">The token has had cancellation requested.</exception>
+    /// <inheritdoc />
     public async Task<TResponse> SendAsync<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest<TResponse>
+        where TRequest : notnull, IAsyncRequest<TResponse>
     {
         await AsyncPreProcess(request, cancellationToken);
         var handler = _provider.GetRequiredService<IAsyncRequestHandler<TRequest, TResponse>>();
         return await handler.HandleAsync(request, cancellationToken);
     }
 
-    private void PreProcess<TRequest>(TRequest request, CancellationToken cancellationToken)
+    private void PreProcess<TRequest>(
+        TRequest request,
+        CancellationToken cancellationToken)
         where TRequest : notnull
     {
         var preProcessors = _provider.GetServices<IRequestPreProcessor<TRequest>>();
@@ -102,7 +74,9 @@ public sealed class Mediator
         }
     }
 
-    private async Task AsyncPreProcess<TRequest>(TRequest request, CancellationToken cancellationToken)
+    private async Task AsyncPreProcess<TRequest>(
+        TRequest request,
+        CancellationToken cancellationToken)
         where TRequest : notnull
     {
         var preProcessors = _provider.GetServices<IAsyncRequestPreProcessor<TRequest>>();

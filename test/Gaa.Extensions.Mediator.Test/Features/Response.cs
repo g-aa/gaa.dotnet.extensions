@@ -1,10 +1,9 @@
 namespace Gaa.Extensions.Test.Features;
 
 /// <summary>
-/// Пример запроса.
+/// Пример ответа.
 /// </summary>
-internal sealed class ExampleRequestWithResponse
-    : IRequest<ExampleResponse>
+internal sealed class Response
 {
     /// <summary>
     /// Текст с сообщением.

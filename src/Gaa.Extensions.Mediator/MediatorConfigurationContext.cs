@@ -58,7 +58,7 @@ public class MediatorConfigurationContext
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
     public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest>()
         where THandler : class, IAsyncRequestHandler<TRequest>
-        where TRequest : IRequest
+        where TRequest : IAsyncRequest
     {
         IsSingleUse<IAsyncRequestHandler<TRequest>, TRequest>();
         return new AsyncRequestHandlerConfigurationContext<TRequest>
@@ -77,7 +77,7 @@ public class MediatorConfigurationContext
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
     public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest, TResponse>()
         where THandler : class, IAsyncRequestHandler<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IAsyncRequest<TResponse>
     {
         IsSingleUse<IAsyncRequestHandler<TRequest, TResponse>, TRequest>();
         return new AsyncRequestHandlerConfigurationContext<TRequest>

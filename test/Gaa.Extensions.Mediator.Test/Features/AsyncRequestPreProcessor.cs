@@ -6,7 +6,7 @@ namespace Gaa.Extensions.Test.Features;
 /// Предварительный обработчик запросов.
 /// </summary>
 internal sealed class AsyncRequestPreProcessor
-    : IAsyncRequestPreProcessor<ExampleRequestWithResponse>
+    : IAsyncRequestPreProcessor<AsyncRequestWithResponse>
 {
     private readonly IMessageLogger _log;
 
@@ -22,7 +22,7 @@ internal sealed class AsyncRequestPreProcessor
 
     /// <inheritdoc />
     public Task ProcessAsync(
-        ExampleRequestWithResponse request,
+        AsyncRequestWithResponse request,
         CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");

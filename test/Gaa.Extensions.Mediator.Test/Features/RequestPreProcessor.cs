@@ -6,7 +6,7 @@ namespace Gaa.Extensions.Test.Features;
 /// Предварительный обработчик запросов.
 /// </summary>
 internal sealed class RequestPreProcessor
-    : IRequestPreProcessor<ExampleRequestWithResponse>
+    : IRequestPreProcessor<RequestWithResponse>
 {
     private readonly IMessageLogger _log;
 
@@ -22,7 +22,7 @@ internal sealed class RequestPreProcessor
 
     /// <inheritdoc />
     public void Process(
-        ExampleRequestWithResponse request,
+        RequestWithResponse request,
         CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");

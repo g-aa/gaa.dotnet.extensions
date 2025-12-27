@@ -5,7 +5,7 @@ namespace Gaa.Extensions;
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 public interface IAsyncRequestHandler<in TRequest>
-    where TRequest : IRequest
+    where TRequest : IAsyncRequest
 {
     /// <summary>
     /// Выполняет обработку на запрос.
@@ -22,7 +22,7 @@ public interface IAsyncRequestHandler<in TRequest>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
 public interface IAsyncRequestHandler<in TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : IAsyncRequest<TResponse>
 {
     /// <summary>
     /// Выполняет обработку на запрос.

@@ -24,10 +24,10 @@ internal sealed class MediatorHandleTest
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandler<RequestHandlerWithoutResponse, ExampleRequest>()
-            .AddHandler<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
-            .AddAsyncHandler<AsyncRequestHandlerWithoutResponse, ExampleRequest>()
-            .AddAsyncHandler<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddHandler<RequestHandlerWithoutResponse, RequestWithoutResponse>()
+            .AddHandler<RequestHandlerWithResponse, RequestWithResponse, Response>()
+            .AddAsyncHandler<AsyncRequestHandlerWithoutResponse, AsyncRequestWithoutResponse>()
+            .AddAsyncHandler<AsyncRequestHandlerWithResponse, AsyncRequestWithResponse, Response>()
             .Services
             .BuildServiceProvider();
     }
@@ -60,8 +60,8 @@ internal sealed class MediatorHandleTest
     {
         // arrange
         using var scope = _provider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<Mediator>();
-        var request = new ExampleRequest { Message = inputMessage };
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var request = new AsyncRequestWithoutResponse { Message = inputMessage };
         var func = () => mediator.SendAsync(request, default);
 
         // act & assert
@@ -87,9 +87,9 @@ internal sealed class MediatorHandleTest
     {
         // arrange
         using var scope = _provider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<Mediator>();
-        var request = new ExampleRequestWithResponse { Message = inputMessage };
-        var func = () => mediator.SendAsync<ExampleRequestWithResponse, ExampleResponse>(request, default);
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var request = new AsyncRequestWithResponse { Message = inputMessage };
+        var func = () => mediator.SendAsync<AsyncRequestWithResponse, Response>(request, default);
 
         // act & assert
         var response = (await func.Should().NotThrowAsync()).Subject;

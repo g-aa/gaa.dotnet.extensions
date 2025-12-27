@@ -24,9 +24,9 @@ internal sealed class MediatorPreProcessorTest
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandler<RequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddHandler<RequestHandlerWithResponse, RequestWithResponse, Response>()
             .AddPreProcessor<RequestPreProcessor>()
-            .AddAsyncHandler<AsyncRequestHandlerWithResponse, ExampleRequestWithResponse, ExampleResponse>()
+            .AddAsyncHandler<AsyncRequestHandlerWithResponse, AsyncRequestWithResponse, Response>()
             .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
             .Services
             .BuildServiceProvider();
@@ -61,9 +61,9 @@ internal sealed class MediatorPreProcessorTest
     {
         // arrange
         using var scope = _provider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<Mediator>();
-        var request = new ExampleRequestWithResponse { Message = inputMessage };
-        var func = () => mediator.SendAsync<ExampleRequestWithResponse, ExampleResponse>(request, default);
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var request = new AsyncRequestWithResponse { Message = inputMessage };
+        var func = () => mediator.SendAsync<AsyncRequestWithResponse, Response>(request, default);
 
         // act & assert
         var response = (await func.Should().NotThrowAsync()).Subject;
