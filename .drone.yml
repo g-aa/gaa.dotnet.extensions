@@ -28,9 +28,21 @@ steps:
       --results-directory results/coverage \
       --filter "Category != Integration"
     reportgenerator -reports:results/coverage/*/coverage.opencover.xml -targetdir:results/report -reportTypes:"TextSummary;Html"
-    cat results/report/Summary.txt
+    cat ./results/report/Summary.txt
   depends_on:
   - build
+
+- name: benchmark
+  image: local/dotnet/sdk:10.0.100-alpine
+  commands:
+  - |
+    dotnet run \
+      --project ./benchmark/Gaa.Extensions.Benchmark \
+      --configuration $V_CONFIGURATION \
+      --filter '*' \
+      --join
+  depends_on:
+  - test
 
 - name: pack
   image: local/dotnet/sdk:10.0.100-alpine

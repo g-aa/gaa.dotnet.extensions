@@ -14,10 +14,13 @@ _TeamCity.*
 *.nupkg
 *.user
 *.suo
+*.log
+*.db
 *.~*
 .*
 
 # indexed
+!.benchmark.sh
 !.dockerignore
 !.drone.yml
 !.editorconfig
