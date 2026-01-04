@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "CA1812:Avoid uninstantiated internal classes", Justification = "Test features", Scope = "namespaceanddescendants", Target = "~N:Gaa.Extensions.Benchmark.Features")]
+[assembly: SuppressMessage("Design", "CA1812:Avoid uninstantiated internal classes", Justification = "Test features", Scope = "namespaceanddescendants", Target = "~N:Gaa.Extensions.Test.Features")]

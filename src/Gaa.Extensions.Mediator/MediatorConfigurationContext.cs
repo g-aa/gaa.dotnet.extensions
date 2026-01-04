@@ -38,12 +38,12 @@ public class MediatorConfigurationContext
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddHandler<THandler, TRequest, TResponse>()
+    public RequestHandlerConfigurationContext<TRequest, TResponse> AddHandler<THandler, TRequest, TResponse>()
         where THandler : class, IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         IsSingleUse<IRequestHandler<TRequest, TResponse>, TRequest>();
-        return new RequestHandlerConfigurationContext<TRequest>
+        return new RequestHandlerConfigurationContext<TRequest, TResponse>
         {
             Services = Services.AddTransient<IRequestHandler<TRequest, TResponse>, THandler>(),
         };
@@ -75,12 +75,12 @@ public class MediatorConfigurationContext
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
     /// <returns>Модифицированная коллекция сервисов.</returns>
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest, TResponse>()
+    public AsyncRequestHandlerConfigurationContext<TRequest, TResponse> AddAsyncHandler<THandler, TRequest, TResponse>()
         where THandler : class, IAsyncRequestHandler<TRequest, TResponse>
         where TRequest : IAsyncRequest<TResponse>
     {
         IsSingleUse<IAsyncRequestHandler<TRequest, TResponse>, TRequest>();
-        return new AsyncRequestHandlerConfigurationContext<TRequest>
+        return new AsyncRequestHandlerConfigurationContext<TRequest, TResponse>
         {
             Services = Services.AddTransient<IAsyncRequestHandler<TRequest, TResponse>, THandler>(),
         };

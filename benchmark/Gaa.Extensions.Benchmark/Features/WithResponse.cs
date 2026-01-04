@@ -1,7 +1,5 @@
 namespace Gaa.Extensions.Benchmark.Features;
 
-#pragma warning disable CA1812
-
 /// <summary>
 /// Кейс для тестирования.
 /// </summary>

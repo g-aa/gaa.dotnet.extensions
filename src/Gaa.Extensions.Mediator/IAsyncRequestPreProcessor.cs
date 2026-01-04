@@ -1,14 +1,14 @@
 namespace Gaa.Extensions;
 
 /// <summary>
-/// Предварительный обработчик запросов.
+/// Препроцессор запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 public interface IAsyncRequestPreProcessor<in TRequest>
     where TRequest : notnull
 {
     /// <summary>
-    /// Выполняет предварительную обработку на запрос.
+    /// Выполняет обработку запроса.
     /// </summary>
     /// <param name="request">Запрос.</param>
     /// <param name="cancellationToken">Токен отмены.</param>

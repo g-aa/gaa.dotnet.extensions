@@ -1,50 +1,50 @@
-namespace Gaa.Extensions.Benchmark.Features;
+namespace Gaa.Extensions.Test.Features;
 
 /// <summary>
 /// Кейс для тестирования.
 /// </summary>
-internal static class AsyncWithResponse
+internal static class WithResponse
 {
     /// <summary>
     /// Пример запроса.
     /// </summary>
     internal sealed class Request
-        : IAsyncRequest<Response>
+        : IRequest<Response>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public string Message { get; init; } = "Test message from request!";
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
     internal sealed class Handler
-        : IAsyncRequestHandler<Request, Response>
+        : IRequestHandler<Request, Response>
     {
-        private readonly IMediator _mediator;
+        private readonly IMessageLogger _log;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
-        /// <param name="mediator">Медиатор.</param>
+        /// <param name="log">Журнал регистрации сообщений.</param>
         public Handler(
-            IMediator mediator)
+            IMessageLogger log)
         {
-            _mediator = mediator;
+            _log = log;
         }
 
         /// <inheritdoc />
-        public Task<Response> HandleAsync(
+        public Response Handle(
             Request request,
             CancellationToken cancellationToken)
         {
-            var response = _mediator.Send<WithResponse.Request, Response>(
-                new() { Message = request.Message },
-                cancellationToken);
-
-            return Task.FromResult(response);
+            _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
+            return new Response
+            {
+                Message = "Output message!",
+            };
         }
     }
 }

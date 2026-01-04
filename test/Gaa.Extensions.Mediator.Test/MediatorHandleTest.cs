@@ -24,10 +24,10 @@ internal sealed class MediatorHandleTest
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandler<RequestHandlerWithoutResponse, RequestWithoutResponse>()
-            .AddHandler<RequestHandlerWithResponse, RequestWithResponse, Response>()
-            .AddAsyncHandler<AsyncRequestHandlerWithoutResponse, AsyncRequestWithoutResponse>()
-            .AddAsyncHandler<AsyncRequestHandlerWithResponse, AsyncRequestWithResponse, Response>()
+            .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
+            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+            .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
             .Services
             .BuildServiceProvider();
     }
@@ -61,18 +61,18 @@ internal sealed class MediatorHandleTest
         // arrange
         using var scope = _provider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var request = new AsyncRequestWithoutResponse { Message = inputMessage };
+        var request = new AsyncWithoutResponse.Request { Message = inputMessage };
         var func = () => mediator.SendAsync(request, default);
 
         // act & assert
         await func.Should().NotThrowAsync();
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(RequestHandlerWithoutResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(WithoutResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncRequestHandlerWithoutResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncWithoutResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
     }
 
@@ -88,8 +88,8 @@ internal sealed class MediatorHandleTest
         // arrange
         using var scope = _provider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var request = new AsyncRequestWithResponse { Message = inputMessage };
-        var func = () => mediator.SendAsync<AsyncRequestWithResponse, Response>(request, default);
+        var request = new AsyncWithResponse.Request { Message = inputMessage };
+        var func = () => mediator.SendAsync<AsyncWithResponse.Request, Response>(request, default);
 
         // act & assert
         var response = (await func.Should().NotThrowAsync()).Subject;
@@ -97,11 +97,11 @@ internal sealed class MediatorHandleTest
         response.Message.Should().Be(outputMessage);
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(RequestHandlerWithResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(WithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncRequestHandlerWithResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncWithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
     }
 }

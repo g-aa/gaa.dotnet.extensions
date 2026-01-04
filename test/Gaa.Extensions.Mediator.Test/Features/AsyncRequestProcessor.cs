@@ -1,63 +1,62 @@
 namespace Gaa.Extensions.Test.Features;
 
-#pragma warning disable CA1812
 #pragma warning disable SA1402 // File may only contain a single type
 #pragma warning disable SA1649 // File name should match first type name
 
 /// <summary>
-/// Обработчик запросов.
+/// Предварительный обработчик запросов.
 /// </summary>
-internal sealed class RequestHandlerWithoutResponse
-    : IRequestHandler<RequestWithoutResponse>
+internal sealed class AsyncRequestPreProcessor
+    : IAsyncRequestPreProcessor<AsyncWithResponse.Request>
 {
     private readonly IMessageLogger _log;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="RequestHandlerWithoutResponse"/>.
+    /// Инициализирует новый экземпляр класса <see cref="AsyncRequestPreProcessor"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public RequestHandlerWithoutResponse(
+    public AsyncRequestPreProcessor(
         IMessageLogger log)
     {
         _log = log;
     }
 
     /// <inheritdoc />
-    public void Handle(
-        RequestWithoutResponse request,
+    public Task ProcessAsync(
+        AsyncWithResponse.Request request,
         CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
+        return Task.CompletedTask;
     }
 }
 
 /// <summary>
-/// Обработчик запросов.
+/// Постпроцессор запросов.
 /// </summary>
-internal sealed class RequestHandlerWithResponse
-    : IRequestHandler<RequestWithResponse, Response>
+internal sealed class AsyncRequestPostProcessor
+    : IAsyncRequestPostProcessor<AsyncWithResponse.Request, Response>
 {
     private readonly IMessageLogger _log;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="RequestHandlerWithResponse"/>.
+    /// Инициализирует новый экземпляр класса <see cref="AsyncRequestPostProcessor"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public RequestHandlerWithResponse(
+    public AsyncRequestPostProcessor(
         IMessageLogger log)
     {
         _log = log;
     }
 
     /// <inheritdoc />
-    public Response Handle(
-        RequestWithResponse request,
+    public Task ProcessAsync(
+        AsyncWithResponse.Request request,
+        Response response,
         CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
-        return new Response
-        {
-            Message = "Output message!",
-        };
+        _log.Log($"{GetType().FullName}: содержимое сообщения {response.Message}.");
+        return Task.CompletedTask;
     }
 }

@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Test;
 /// Набор тестов для <see cref="Mediator"/>.
 /// </summary>
 [TestFixture]
-internal sealed class MediatorPreProcessorTest
+internal sealed class MediatorProcessorTest
 {
     private Mock<IMessageLogger> _mockLog;
 
@@ -24,10 +24,12 @@ internal sealed class MediatorPreProcessorTest
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddScopedMediator()
-            .AddHandler<RequestHandlerWithResponse, RequestWithResponse, Response>()
-            .AddPreProcessor<RequestPreProcessor>()
-            .AddAsyncHandler<AsyncRequestHandlerWithResponse, AsyncRequestWithResponse, Response>()
-            .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
+            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+                .AddPreProcessor<RequestPreProcessor>()
+                .AddPostProcessor<RequestPostProcessor>()
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+                .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
+                .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
             .Services
             .BuildServiceProvider();
     }
@@ -62,8 +64,8 @@ internal sealed class MediatorPreProcessorTest
         // arrange
         using var scope = _provider.CreateScope();
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var request = new AsyncRequestWithResponse { Message = inputMessage };
-        var func = () => mediator.SendAsync<AsyncRequestWithResponse, Response>(request, default);
+        var request = new AsyncWithResponse.Request { Message = inputMessage };
+        var func = () => mediator.SendAsync<AsyncWithResponse.Request, Response>(request, default);
 
         // act & assert
         var response = (await func.Should().NotThrowAsync()).Subject;
@@ -75,7 +77,11 @@ internal sealed class MediatorPreProcessorTest
             Times.Exactly(1));
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(RequestHandlerWithResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(RequestPostProcessor).FullName}: содержимое сообщения {inputMessage}.")),
+            Times.Exactly(1));
+
+        _mockLog.Verify(
+            l => l.Log(It.Is<string>(m => m == $"{typeof(WithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
 
         _mockLog.Verify(
@@ -83,7 +89,11 @@ internal sealed class MediatorPreProcessorTest
             Times.Exactly(1));
 
         _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncRequestHandlerWithResponse).FullName}: содержимое сообщения {inputMessage}.")),
+            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncRequestPostProcessor).FullName}: содержимое сообщения {inputMessage}.")),
+            Times.Exactly(1));
+
+        _mockLog.Verify(
+            l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncWithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
     }
 }

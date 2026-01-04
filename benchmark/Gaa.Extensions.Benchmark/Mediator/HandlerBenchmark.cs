@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Benchmark.Mediator;
 
 #pragma warning disable CA1515
-#pragma warning disable CA1812
 #pragma warning disable CS8618
 
 /// <summary>

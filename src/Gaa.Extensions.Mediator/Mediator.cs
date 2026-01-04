@@ -36,7 +36,9 @@ public sealed class Mediator
     {
         PreProcess(request, cancellationToken);
         var handler = _provider.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
-        return handler.Handle(request, cancellationToken);
+        var response = handler.Handle(request, cancellationToken);
+        PostProcess(request, response, cancellationToken);
+        return response;
     }
 
     /// <inheritdoc />
@@ -58,7 +60,9 @@ public sealed class Mediator
     {
         await AsyncPreProcess(request, cancellationToken);
         var handler = _provider.GetRequiredService<IAsyncRequestHandler<TRequest, TResponse>>();
-        return await handler.HandleAsync(request, cancellationToken);
+        var response = await handler.HandleAsync(request, cancellationToken);
+        await AsyncPostProcess(request, response, cancellationToken);
+        return response;
     }
 
     private void PreProcess<TRequest>(
@@ -74,6 +78,20 @@ public sealed class Mediator
         }
     }
 
+    private void PostProcess<TRequest, TResponse>(
+        TRequest request,
+        TResponse response,
+        CancellationToken cancellationToken)
+        where TRequest : notnull
+    {
+        var postProcessors = _provider.GetServices<IRequestPostProcessor<TRequest, TResponse>>();
+        foreach (var postProcessor in postProcessors)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            postProcessor.Process(request, response, cancellationToken);
+        }
+    }
+
     private async Task AsyncPreProcess<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
@@ -84,6 +102,20 @@ public sealed class Mediator
         {
             cancellationToken.ThrowIfCancellationRequested();
             await preProcessor.ProcessAsync(request, cancellationToken);
+        }
+    }
+
+    private async Task AsyncPostProcess<TRequest, TResponse>(
+        TRequest request,
+        TResponse response,
+        CancellationToken cancellationToken)
+        where TRequest : notnull
+    {
+        var postProcessors = _provider.GetServices<IAsyncRequestPostProcessor<TRequest, TResponse>>();
+        foreach (var postProcessor in postProcessors)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await postProcessor.ProcessAsync(request, response, cancellationToken);
         }
     }
 }

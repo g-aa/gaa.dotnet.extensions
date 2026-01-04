@@ -20,14 +20,14 @@ internal sealed class MediatorRegistrationTest
         var func = () => new ServiceCollection()
             .AddScoped(p => new Mock<IMessageLogger>().Object)
             .AddScopedMediator()
-            .AddHandler<RequestHandlerWithoutResponse, RequestWithoutResponse>()
-            .AddHandler<RequestHandlerWithoutResponse, RequestWithoutResponse>()
+            .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
+            .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .Services
             .BuildServiceProvider();
 
         // act & assert
         func.Should()
             .Throw<InvalidOperationException>()
-            .WithMessage($"Для запроса {typeof(RequestWithoutResponse).FullName} можно добавить только один обработчик!");
+            .WithMessage($"Для запроса {typeof(WithoutResponse.Request).FullName} можно добавить только один обработчик!");
     }
 }

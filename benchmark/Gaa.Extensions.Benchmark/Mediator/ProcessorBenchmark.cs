@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Benchmark.Mediator;
 
 #pragma warning disable CA1515
-#pragma warning disable CA1812
 #pragma warning disable CS8618
 
 /// <summary>
@@ -32,8 +31,11 @@ public class ProcessorBenchmark
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
                 .AddPreProcessor<RequestPreProcessor>()
+                .AddPostProcessor<RequestPostProcessor>()
             .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
             .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+                .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
+                .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
             .Services
             .BuildServiceProvider();
 

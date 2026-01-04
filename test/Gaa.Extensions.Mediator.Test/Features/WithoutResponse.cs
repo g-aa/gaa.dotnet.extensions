@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.Benchmark.Features;
+namespace Gaa.Extensions.Test.Features;
 
 /// <summary>
 /// Кейс для тестирования.
@@ -23,15 +23,16 @@ internal static class WithoutResponse
     internal sealed class Handler
         : IRequestHandler<Request>
     {
-        private readonly TextWriter _writer;
+        private readonly IMessageLogger _log;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
-        /// <param name="writer">Ввод вывод данных.</param>
-        public Handler(TextWriter writer)
+        /// <param name="log">Журнал регистрации сообщений.</param>
+        public Handler(
+            IMessageLogger log)
         {
-            _writer = writer;
+            _log = log;
         }
 
         /// <inheritdoc />
@@ -39,7 +40,7 @@ internal static class WithoutResponse
             Request request,
             CancellationToken cancellationToken)
         {
-            _writer.WriteLine(request.Message);
+            _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
         }
     }
 }
