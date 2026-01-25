@@ -11,13 +11,14 @@ clone:
 
 steps:
 - name: build
-  image: local/dotnet/sdk:10.0.100-alpine
+  image: local/dotnet/sdk:10.0.102
   commands:
-  - dotnet restore
-  - dotnet build --configuration $V_CONFIGURATION
+  - |
+    dotnet restore
+    dotnet build --configuration $V_CONFIGURATION
 
 - name: test
-  image: local/dotnet/sdk:10.0.100-alpine
+  image: local/dotnet/sdk:10.0.102
   commands:
   - |
     dotnet test \
@@ -33,7 +34,7 @@ steps:
   - build
 
 - name: benchmark
-  image: local/dotnet/sdk:10.0.100-alpine
+  image: local/dotnet/sdk:10.0.102
   commands:
   - |
     dotnet run \
@@ -45,7 +46,7 @@ steps:
   - test
 
 - name: pack
-  image: local/dotnet/sdk:10.0.100-alpine
+  image: local/dotnet/sdk:10.0.102
   commands:
   - |
     dotnet pack \
@@ -62,7 +63,7 @@ steps:
       - refs/tags/**
 
 - name: publish
-  image: local/dotnet/sdk:10.0.100-alpine
+  image: local/dotnet/sdk:10.0.102
   commands:
   - |
     for package in ./packages/*.symbols.nupkg
