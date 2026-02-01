@@ -22,7 +22,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Requestum" Version="1.2.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Gaa.Extensions.Mediator/Gaa.Extensions.Mediator.csproj" />

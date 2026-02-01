@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.Benchmark.Features;
+namespace Gaa.Extensions.Benchmark.Custom.Features;
 
 /// <summary>
 /// Пример ответа.

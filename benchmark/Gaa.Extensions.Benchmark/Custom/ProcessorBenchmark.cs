@@ -1,10 +1,10 @@
 using BenchmarkDotNet.Attributes;
 
-using Gaa.Extensions.Benchmark.Features;
+using Gaa.Extensions.Benchmark.Custom.Features;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Benchmark.Mediator;
+namespace Gaa.Extensions.Benchmark.Custom;
 
 #pragma warning disable CA1515
 #pragma warning disable CS8618
@@ -13,7 +13,7 @@ namespace Gaa.Extensions.Benchmark.Mediator;
 /// Контрольный тест.
 /// </summary>
 [MemoryDiagnoser]
-public class HandlerBenchmark
+public class ProcessorBenchmark
 {
     private IServiceScope _scope;
 
@@ -30,8 +30,12 @@ public class HandlerBenchmark
             .AddScopedMediator()
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+                .AddPreProcessor<RequestPreProcessor>()
+                .AddPostProcessor<RequestPostProcessor>()
             .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
             .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+                .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
+                .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
             .Services
             .BuildServiceProvider();
 
@@ -53,12 +57,26 @@ public class HandlerBenchmark
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Benchmark]
-    public Task SendingRequestAsync()
+    public Task SendingRequestWithoutResponseAsync()
     {
         // arrange
         var request = new AsyncWithoutResponse.Request { Message = "Input message!" };
 
         // act
         return _mediator.SendAsync(request, default);
+    }
+
+    /// <summary>
+    /// Отправить асинхронный запрос.
+    /// </summary>
+    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    [Benchmark]
+    public Task SendingRequestWithResponseAsync()
+    {
+        // arrange
+        var request = new AsyncWithResponse.Request { Message = "Input message!" };
+
+        // act
+        return _mediator.SendAsync<AsyncWithResponse.Request, Response>(request, default);
     }
 }

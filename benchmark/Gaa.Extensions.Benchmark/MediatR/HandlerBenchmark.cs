@@ -1,10 +1,10 @@
 using BenchmarkDotNet.Attributes;
 
-using Gaa.Extensions.Benchmark.Features;
+using Gaa.Extensions.Benchmark.MediatR.Features;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Benchmark.Mediator;
+namespace Gaa.Extensions.Benchmark.MediatR;
 
 #pragma warning disable CA1515
 #pragma warning disable CS8618
@@ -13,11 +13,11 @@ namespace Gaa.Extensions.Benchmark.Mediator;
 /// Контрольный тест.
 /// </summary>
 [MemoryDiagnoser]
-public class ProcessorBenchmark
+public class HandlerBenchmark
 {
     private IServiceScope _scope;
 
-    private IMediator _mediator;
+    private global::MediatR.IMediator _mediator;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -27,20 +27,14 @@ public class ProcessorBenchmark
     {
         var provider = new ServiceCollection()
             .AddSingleton(TextWriter.Null)
-            .AddScopedMediator()
-            .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
-            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
-                .AddPreProcessor<RequestPreProcessor>()
-                .AddPostProcessor<RequestPostProcessor>()
-            .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
-            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
-                .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
-                .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
-            .Services
+            .AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            })
             .BuildServiceProvider();
 
         _scope = provider.CreateScope();
-        _mediator = _scope.ServiceProvider.GetRequiredService<IMediator>();
+        _mediator = _scope.ServiceProvider.GetRequiredService<global::MediatR.IMediator>();
     }
 
     /// <summary>
@@ -57,12 +51,26 @@ public class ProcessorBenchmark
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Benchmark]
-    public Task SendingRequestAsync()
+    public Task SendingRequestWithoutResponseAsync()
     {
         // arrange
         var request = new AsyncWithoutResponse.Request { Message = "Input message!" };
 
         // act
-        return _mediator.SendAsync(request, default);
+        return _mediator.Send(request, default);
+    }
+
+    /// <summary>
+    /// Отправить асинхронный запрос.
+    /// </summary>
+    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    [Benchmark]
+    public Task SendingRequestWithResponseAsync()
+    {
+        // arrange
+        var request = new AsyncWithResponse.Request { Message = "Input message!" };
+
+        // act
+        return _mediator.Send(request, default);
     }
 }
