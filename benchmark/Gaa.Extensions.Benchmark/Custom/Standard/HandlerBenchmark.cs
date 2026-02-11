@@ -1,10 +1,8 @@
 using BenchmarkDotNet.Attributes;
-
 using Gaa.Extensions.Benchmark.Custom.Features;
-
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Benchmark.Custom;
+namespace Gaa.Extensions.Benchmark.Custom.Standard;
 
 #pragma warning disable CA1515
 #pragma warning disable CS8618

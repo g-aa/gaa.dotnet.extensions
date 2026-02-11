@@ -31,4 +31,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Gaa.Extensions.Mediator.Abstractions/Gaa.Extensions.Mediator.Abstractions.csproj" />
+  </ItemGroup>
 </Project>

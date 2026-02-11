@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions;
 
 /// <inheritdoc />
-public sealed class Mediator
+internal sealed class Mediator
     : IMediator
 {
     private readonly IServiceProvider _provider;
