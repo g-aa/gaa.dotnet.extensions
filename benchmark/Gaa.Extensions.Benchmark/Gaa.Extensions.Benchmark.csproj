@@ -28,5 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Gaa.Extensions.Mediator/Gaa.Extensions.Mediator.csproj" />
+    <ProjectReference Include="../../src/Gaa.Extensions.Mediator.Lite\Gaa.Extensions.Mediator.Lite.csproj" />
   </ItemGroup>
 </Project>
