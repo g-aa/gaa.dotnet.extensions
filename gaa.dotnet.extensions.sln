@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Observer.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Benchmark", "benchmark\Gaa.Extensions.Benchmark\Gaa.Extensions.Benchmark.csproj", "{CD3F7D74-79F5-4304-AE63-8B32A2C97E8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaa.Extensions.Mediator.Abstractions", "src\Gaa.Extensions.Mediator.Abstractions\Gaa.Extensions.Mediator.Abstractions.csproj", "{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{CD3F7D74-79F5-4304-AE63-8B32A2C97E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD3F7D74-79F5-4304-AE63-8B32A2C97E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD3F7D74-79F5-4304-AE63-8B32A2C97E8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -105,6 +111,7 @@ Global
 		{F2873CD0-8D7B-4D50-95A3-666EB8817B94} = {F81715D0-A05A-47BA-84E2-4F41E9DE63FE}
 		{73AB8A0E-50CA-4C09-AEAE-EE8EBA4FA57C} = {E52491F4-0BC7-43AB-8175-3E34A8CD2A60}
 		{CD3F7D74-79F5-4304-AE63-8B32A2C97E8C} = {584234A5-AC0E-44CC-A449-7B5835E34A18}
+		{083E10DD-0C7C-4AEB-B558-1EFCDAB5A8BF} = {F81715D0-A05A-47BA-84E2-4F41E9DE63FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75145E2F-CEAF-495C-953B-CDBC53F7CFF4}
