@@ -1,6 +1,6 @@
 using AwesomeAssertions.Extensions;
 
-namespace Gaa.Extensions.DotNet.Test;
+namespace Gaa.Extensions.Test;
 
 /// <summary>
 /// Набор тестов для <see cref="SingleNodeLockProvider"/>.

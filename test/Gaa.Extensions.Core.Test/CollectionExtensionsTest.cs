@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.DotNet.Test;
+namespace Gaa.Extensions.Test;
 
 /// <summary>
 /// Набор тесто для <see cref="CollectionExtensions"/>.
