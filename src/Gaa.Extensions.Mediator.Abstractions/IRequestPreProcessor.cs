@@ -5,7 +5,7 @@ namespace Gaa.Extensions;
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 public interface IRequestPreProcessor<in TRequest>
-    where TRequest : notnull
+    where TRequest : notnull, allows ref struct
 {
     /// <summary>
     /// Выполняет обработку запроса.

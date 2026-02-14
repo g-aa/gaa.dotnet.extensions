@@ -31,7 +31,8 @@ internal sealed class RequestPostProcessorHandler
         TRequest request,
         Continuation<TRequest, TResponse> continuation,
         CancellationToken cancellationToken)
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
+        where TResponse : allows ref struct
     {
         var response = continuation(_provider, request, cancellationToken);
         var processors = (IEnumerable<IRequestPostProcessor<TRequest, TResponse>>)_provider.GetRequiredService(typeof(IEnumerable<IRequestPostProcessor<TRequest, TResponse>>));

@@ -15,7 +15,7 @@ public interface IMediator
     void Send<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest;
+        where TRequest : notnull, IRequest, allows ref struct;
 
     /// <summary>
     /// Отправить синхронный запрос.
@@ -29,7 +29,8 @@ public interface IMediator
     TResponse Send<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest<TResponse>;
+        where TRequest : notnull, IRequest<TResponse>, allows ref struct
+        where TResponse : allows ref struct;
 
     /// <summary>
     /// Отправить асинхронный запрос.

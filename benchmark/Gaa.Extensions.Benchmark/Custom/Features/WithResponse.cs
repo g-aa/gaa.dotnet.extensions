@@ -10,12 +10,12 @@ internal static class WithResponse
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IRequest<Response>
+    internal readonly ref struct Request : IRequest<Response>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
@@ -54,12 +54,12 @@ internal static class WithResponse2
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IRequest<Response>
+    internal readonly ref struct Request : IRequest<Response>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
@@ -98,12 +98,12 @@ internal static class WithResponse3
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IRequest<Response>
+    internal readonly ref struct Request : IRequest<Response>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ internal static class WithResponse3
             CancellationToken cancellationToken)
         {
             _writer.WriteLine(request.Message);
-            return new Response
+            return new()
             {
                 Message = "Output message!",
             };

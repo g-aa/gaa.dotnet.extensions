@@ -10,7 +10,7 @@ namespace Gaa.Extensions;
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 public class RequestHandlerConfigurationContext<TRequest>
     : MediatorConfigurationContext
-    where TRequest : notnull
+    where TRequest : notnull, allows ref struct
 {
     /// <summary>
     /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.
@@ -33,7 +33,8 @@ public class RequestHandlerConfigurationContext<TRequest>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
 public class RequestHandlerConfigurationContext<TRequest, TResponse>
     : MediatorConfigurationContext
-    where TRequest : notnull
+    where TRequest : notnull, allows ref struct
+    where TResponse : allows ref struct
 {
     /// <summary>
     /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.

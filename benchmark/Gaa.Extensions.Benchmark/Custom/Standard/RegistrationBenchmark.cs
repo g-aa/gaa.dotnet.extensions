@@ -40,11 +40,11 @@ public class RegistrationBenchmark
             .AddAsyncHandler<AsyncWithoutResponse2.Handler, AsyncWithoutResponse2.Request>()
             .AddAsyncHandler<AsyncWithoutResponse3.Handler, AsyncWithoutResponse3.Request>()
 
-            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, AsyncResponse>()
                 .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
                 .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
-            .AddAsyncHandler<AsyncWithResponse2.Handler, AsyncWithResponse2.Request, Response>()
-            .AddAsyncHandler<AsyncWithResponse3.Handler, AsyncWithResponse3.Request, Response>()
+            .AddAsyncHandler<AsyncWithResponse2.Handler, AsyncWithResponse2.Request, AsyncResponse>()
+            .AddAsyncHandler<AsyncWithResponse3.Handler, AsyncWithResponse3.Request, AsyncResponse>()
             .Services;
 
         // act

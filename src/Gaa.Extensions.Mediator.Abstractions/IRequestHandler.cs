@@ -12,7 +12,7 @@ public interface IRequestHandler;
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 public interface IRequestHandler<in TRequest> : IRequestHandler
-    where TRequest : IRequest
+    where TRequest : IRequest, allows ref struct
 {
     /// <summary>
     /// Выполняет обработку на запрос.
@@ -28,7 +28,8 @@ public interface IRequestHandler<in TRequest> : IRequestHandler
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
 public interface IRequestHandler<in TRequest, out TResponse> : IRequestHandler
-    where TRequest : IRequest<TResponse>
+    where TRequest : IRequest<TResponse>, allows ref struct
+    where TResponse : allows ref struct
 {
     /// <summary>
     /// Выполняет обработку на запрос.

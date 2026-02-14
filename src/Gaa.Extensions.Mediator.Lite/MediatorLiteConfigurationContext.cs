@@ -37,7 +37,7 @@ public sealed class MediatorLiteConfigurationContext
     public MediatorLiteConfigurationContext AddHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
         ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IRequestHandler<TRequest>
-        where TRequest : IRequest
+        where TRequest : IRequest, allows ref struct
     {
         return Add<IRequestHandler<TRequest>, THandler, TRequest>(lifetime);
     }
@@ -53,7 +53,8 @@ public sealed class MediatorLiteConfigurationContext
     public MediatorLiteConfigurationContext AddHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
         ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IRequestHandler<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IRequest<TResponse>, allows ref struct
+        where TResponse : allows ref struct
     {
         return Add<IRequestHandler<TRequest, TResponse>, THandler, TRequest>(lifetime);
     }
@@ -93,7 +94,7 @@ public sealed class MediatorLiteConfigurationContext
         ServiceLifetime lifetime)
         where TInterface : class
         where THandler : class, TInterface
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
     {
         if (Services.Any(e => e.ServiceType == typeof(TInterface)))
         {

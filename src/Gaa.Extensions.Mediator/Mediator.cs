@@ -20,7 +20,7 @@ internal sealed class Mediator : IMediator
     public void Send<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest
+        where TRequest : notnull, IRequest, allows ref struct
     {
         Continuation<TRequest> func = (p, r, t) => p.GetRequiredService<IRequestHandler<TRequest>>().Handle(r, t);
         new RequestPreProcessorHandler(_provider).Handle(request, func, cancellationToken);
@@ -30,7 +30,8 @@ internal sealed class Mediator : IMediator
     public TResponse Send<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull, IRequest<TResponse>
+        where TRequest : notnull, IRequest<TResponse>, allows ref struct
+        where TResponse : allows ref struct
     {
         Continuation<TRequest, TResponse> func = (p, r, t) => p.GetRequiredService<IRequestHandler<TRequest, TResponse>>().Handle(r, t);
         return new RequestPreProcessorHandler(_provider)

@@ -10,18 +10,18 @@ internal static class AsyncWithResponse
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IAsyncRequest<Response>
+    internal sealed class Request : IAsyncRequest<AsyncResponse>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IAsyncRequestHandler<Request, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request, AsyncResponse>
     {
         private readonly IMediator _mediator;
 
@@ -35,11 +35,11 @@ internal static class AsyncWithResponse
         }
 
         /// <inheritdoc />
-        public Task<Response> HandleAsync(
+        public Task<AsyncResponse> HandleAsync(
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.SendAsync<AsyncWithResponse2.Request, Response>(
+            return _mediator.SendAsync<AsyncWithResponse2.Request, AsyncResponse>(
                 new() { Message = request.Message },
                 cancellationToken);
         }
@@ -54,18 +54,18 @@ internal static class AsyncWithResponse2
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IAsyncRequest<Response>
+    internal sealed class Request : IAsyncRequest<AsyncResponse>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IAsyncRequestHandler<Request, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request, AsyncResponse>
     {
         private readonly IMediator _mediator;
 
@@ -79,11 +79,11 @@ internal static class AsyncWithResponse2
         }
 
         /// <inheritdoc />
-        public Task<Response> HandleAsync(
+        public Task<AsyncResponse> HandleAsync(
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.SendAsync<AsyncWithResponse3.Request, Response>(
+            return _mediator.SendAsync<AsyncWithResponse3.Request, AsyncResponse>(
                 new() { Message = request.Message },
                 cancellationToken);
         }
@@ -98,18 +98,18 @@ internal static class AsyncWithResponse3
     /// <summary>
     /// Пример запроса.
     /// </summary>
-    internal sealed class Request : IAsyncRequest<Response>
+    internal sealed class Request : IAsyncRequest<AsyncResponse>
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IAsyncRequestHandler<Request, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request, AsyncResponse>
     {
         private readonly TextWriter _writer;
 
@@ -123,7 +123,7 @@ internal static class AsyncWithResponse3
         }
 
         /// <inheritdoc />
-        public async Task<Response> HandleAsync(
+        public async Task<AsyncResponse> HandleAsync(
             Request request,
             CancellationToken cancellationToken)
         {

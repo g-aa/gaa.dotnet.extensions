@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-02-14
+
+### Добавлено
+
+- Добавление проекта `Gaa.Extensions.Mediator.Abstractions`.
+- Добавление проекта `Gaa.Extensions.Mediator.Lite`.
+- Добавление проекта `Gaa.Extensions.Benchmark`.
+
+### Исправлено
+
+- Обновление проекта `Gaa.Extensions.Mediator`.
+
 ## [1.2.1] - 2025-12-14
 
 ### Исправлено
@@ -48,7 +60,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Реализация политик авторизации `AllClaimsAuthorizationRequirement` и `AnyClaimsAuthorizationRequirement`.
 - Реализация базового функционала проекта.
 
-[Unreleased]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.1...master
+[Unreleased]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.3.0...master
+[1.3.0]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.1.4...v1.2.0
 [1.1.4]: https://github.com/g-aa/gaa.dotnet.extensions/compare/v1.1.0...v1.1.4

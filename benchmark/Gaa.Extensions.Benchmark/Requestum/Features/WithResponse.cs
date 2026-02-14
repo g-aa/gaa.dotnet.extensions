@@ -18,7 +18,7 @@ internal static class WithResponse
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ internal static class WithResponse2
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ internal static class WithResponse3
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>

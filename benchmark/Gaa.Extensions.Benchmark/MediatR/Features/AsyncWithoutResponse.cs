@@ -15,7 +15,7 @@ internal static class AsyncWithoutResponse
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ internal static class AsyncWithoutResponse2
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ internal static class AsyncWithoutResponse3
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>

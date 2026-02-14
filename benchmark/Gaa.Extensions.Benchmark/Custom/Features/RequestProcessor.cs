@@ -83,7 +83,7 @@ internal sealed class AsyncRequestPreProcessor : IAsyncRequestPreProcessor<Async
 /// <summary>
 /// Постпроцессор запросов.
 /// </summary>
-internal sealed class AsyncRequestPostProcessor : IAsyncRequestPostProcessor<AsyncWithResponse.Request, Response>
+internal sealed class AsyncRequestPostProcessor : IAsyncRequestPostProcessor<AsyncWithResponse.Request, AsyncResponse>
 {
     private readonly TextWriter _writer;
 
@@ -99,7 +99,7 @@ internal sealed class AsyncRequestPostProcessor : IAsyncRequestPostProcessor<Asy
     /// <inheritdoc />
     public async Task ProcessAsync(
         AsyncWithResponse.Request request,
-        Response response,
+        AsyncResponse response,
         CancellationToken cancellationToken)
     {
         await _writer.WriteAsync(request.Message);

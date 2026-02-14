@@ -29,7 +29,7 @@ internal sealed class RequestPreProcessorHandler
         TRequest request,
         Continuation<TRequest> continuation,
         CancellationToken cancellationToken)
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
     {
         HandleCore(request, cancellationToken);
         continuation(_provider, request, cancellationToken);
@@ -48,7 +48,8 @@ internal sealed class RequestPreProcessorHandler
         TRequest request,
         Continuation<TRequest, TResponse> continuation,
         CancellationToken cancellationToken)
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
+        where TResponse : allows ref struct
     {
         HandleCore(request, cancellationToken);
         return continuation(_provider, request, cancellationToken);
@@ -57,7 +58,7 @@ internal sealed class RequestPreProcessorHandler
     private void HandleCore<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
     {
         var processors = (IEnumerable<IRequestPreProcessor<TRequest>>)_provider.GetRequiredService(typeof(IEnumerable<IRequestPreProcessor<TRequest>>));
         foreach (var processor in processors)

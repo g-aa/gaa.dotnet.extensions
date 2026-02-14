@@ -12,4 +12,5 @@ public interface IRequest;
 /// Маркер интерфейс запроса с ответом.
 /// </summary>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
-public interface IRequest<out TResponse>;
+public interface IRequest<out TResponse>
+    where TResponse : allows ref struct;

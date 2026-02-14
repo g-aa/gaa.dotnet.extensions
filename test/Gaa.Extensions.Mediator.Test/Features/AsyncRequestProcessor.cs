@@ -6,8 +6,7 @@ namespace Gaa.Extensions.Test.Features;
 /// <summary>
 /// Предварительный обработчик запросов.
 /// </summary>
-internal sealed class AsyncRequestPreProcessor
-    : IAsyncRequestPreProcessor<AsyncWithResponse.Request>
+internal sealed class AsyncRequestPreProcessor : IAsyncRequestPreProcessor<AsyncWithResponse.Request>
 {
     private readonly IMessageLogger _log;
 
@@ -15,8 +14,7 @@ internal sealed class AsyncRequestPreProcessor
     /// Инициализирует новый экземпляр класса <see cref="AsyncRequestPreProcessor"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public AsyncRequestPreProcessor(
-        IMessageLogger log)
+    public AsyncRequestPreProcessor(IMessageLogger log)
     {
         _log = log;
     }
@@ -34,8 +32,7 @@ internal sealed class AsyncRequestPreProcessor
 /// <summary>
 /// Постпроцессор запросов.
 /// </summary>
-internal sealed class AsyncRequestPostProcessor
-    : IAsyncRequestPostProcessor<AsyncWithResponse.Request, Response>
+internal sealed class AsyncRequestPostProcessor : IAsyncRequestPostProcessor<AsyncWithResponse.Request, Response>
 {
     private readonly IMessageLogger _log;
 
@@ -43,8 +40,7 @@ internal sealed class AsyncRequestPostProcessor
     /// Инициализирует новый экземпляр класса <see cref="AsyncRequestPostProcessor"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public AsyncRequestPostProcessor(
-        IMessageLogger log)
+    public AsyncRequestPostProcessor(IMessageLogger log)
     {
         _log = log;
     }

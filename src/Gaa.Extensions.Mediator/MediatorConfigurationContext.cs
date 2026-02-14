@@ -21,7 +21,7 @@ public class MediatorConfigurationContext
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
     public RequestHandlerConfigurationContext<TRequest> AddHandler<THandler, TRequest>()
         where THandler : class, IRequestHandler<TRequest>
-        where TRequest : IRequest
+        where TRequest : IRequest, allows ref struct
     {
         IsSingleUse<IRequestHandler<TRequest>, TRequest>();
         return new RequestHandlerConfigurationContext<TRequest>
@@ -40,7 +40,8 @@ public class MediatorConfigurationContext
     /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
     public RequestHandlerConfigurationContext<TRequest, TResponse> AddHandler<THandler, TRequest, TResponse>()
         where THandler : class, IRequestHandler<TRequest, TResponse>
-        where TRequest : IRequest<TResponse>
+        where TRequest : IRequest<TResponse>, allows ref struct
+        where TResponse : allows ref struct
     {
         IsSingleUse<IRequestHandler<TRequest, TResponse>, TRequest>();
         return new RequestHandlerConfigurationContext<TRequest, TResponse>
@@ -88,7 +89,7 @@ public class MediatorConfigurationContext
 
     private void IsSingleUse<THandler, TRequest>()
         where THandler : class
-        where TRequest : notnull
+        where TRequest : notnull, allows ref struct
     {
         if (Services.Any(e => e.ServiceType == typeof(THandler)))
         {

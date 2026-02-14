@@ -5,8 +5,7 @@ namespace Gaa.Extensions.Test.Features;
 /// <summary>
 /// Тестовый потребитель.
 /// </summary>
-internal sealed class TestConsumer
-    : IAsyncConsumer<string>
+internal sealed class TestConsumer : IAsyncConsumer<string>
 {
     private readonly IMessageLogger _log;
 
@@ -14,7 +13,10 @@ internal sealed class TestConsumer
     /// Инициализирует новый экземпляр класса <see cref="TestConsumer"/>.
     /// </summary>
     /// <param name="log">Журнал регистрации сообщений.</param>
-    public TestConsumer(IMessageLogger log) => _log = log;
+    public TestConsumer(IMessageLogger log)
+    {
+        _log = log;
+    }
 
     /// <inheritdoc />
     public Task ConsumeAsync(MessageContext<string> context)

@@ -8,20 +8,18 @@ internal static class WithoutResponse
     /// <summary>
     /// Запроса.
     /// </summary>
-    internal sealed class Request
-        : IRequest
+    internal readonly ref struct Request : IRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler
-        : IRequestHandler<Request>
+    internal sealed class Handler : IRequestHandler<Request>
     {
         private readonly IMessageLogger _log;
 
@@ -29,8 +27,7 @@ internal static class WithoutResponse
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
         /// <param name="log">Журнал регистрации сообщений.</param>
-        public Handler(
-            IMessageLogger log)
+        public Handler(IMessageLogger log)
         {
             _log = log;
         }

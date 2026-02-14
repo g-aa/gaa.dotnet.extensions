@@ -8,20 +8,18 @@ internal static class AsyncWithoutResponse
     /// <summary>
     /// Запроса.
     /// </summary>
-    internal sealed class Request
-        : IAsyncRequest
+    internal sealed class Request : IAsyncRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
+        public required string Message { get; init; }
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler
-        : IAsyncRequestHandler<Request>
+    internal sealed class Handler : IAsyncRequestHandler<Request>
     {
         private readonly IMessageLogger _log;
 

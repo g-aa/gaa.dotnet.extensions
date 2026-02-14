@@ -1,12 +1,25 @@
 namespace Gaa.Extensions.Benchmark.Custom.Features;
 
+#pragma warning disable SA1402 // File may only contain a single type
+
 /// <summary>
 /// Пример ответа.
 /// </summary>
-internal sealed class Response
+internal readonly ref struct Response
 {
     /// <summary>
     /// Текст с сообщением.
     /// </summary>
-    public string Message { get; init; } = "Test message from response!";
+    public ReadOnlySpan<char> Message { get; init; }
+}
+
+/// <summary>
+/// Пример ответа.
+/// </summary>
+internal sealed class AsyncResponse
+{
+    /// <summary>
+    /// Текст с сообщением.
+    /// </summary>
+    public required string Message { get; init; }
 }

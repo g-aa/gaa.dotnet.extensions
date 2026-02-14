@@ -10,12 +10,12 @@ internal static class WithoutResponse
     /// <summary>
     /// Запроса.
     /// </summary>
-    internal sealed class Request : IRequest
+    internal readonly ref struct Request : IRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
@@ -54,12 +54,12 @@ internal static class WithoutResponse2
     /// <summary>
     /// Запроса.
     /// </summary>
-    internal sealed class Request : IRequest
+    internal readonly ref struct Request : IRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>
@@ -98,12 +98,12 @@ internal static class WithoutResponse3
     /// <summary>
     /// Запроса.
     /// </summary>
-    internal sealed class Request : IRequest
+    internal readonly ref struct Request : IRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public required ReadOnlySpan<char> Message { get; init; }
     }
 
     /// <summary>

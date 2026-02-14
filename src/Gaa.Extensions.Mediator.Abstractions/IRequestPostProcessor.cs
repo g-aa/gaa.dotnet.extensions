@@ -6,7 +6,8 @@ namespace Gaa.Extensions;
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
 public interface IRequestPostProcessor<in TRequest, in TResponse>
-    where TRequest : notnull
+    where TRequest : notnull, allows ref struct
+    where TResponse : allows ref struct
 {
     /// <summary>
     /// Выполняет обработку запроса и ответа.
