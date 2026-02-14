@@ -3,8 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions;
 
 /// <inheritdoc />
-internal sealed class Mediator
-    : IMediator
+internal sealed class Mediator : IMediator
 {
     private readonly IServiceProvider _provider;
 
@@ -23,9 +22,8 @@ internal sealed class Mediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest
     {
-        PreProcess(request, cancellationToken);
-        var handler = _provider.GetRequiredService<IRequestHandler<TRequest>>();
-        handler.Handle(request, cancellationToken);
+        Continuation<TRequest> func = (p, r, t) => p.GetRequiredService<IRequestHandler<TRequest>>().Handle(r, t);
+        new RequestPreProcessorHandler(_provider).Handle(request, func, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -34,88 +32,29 @@ internal sealed class Mediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest<TResponse>
     {
-        PreProcess(request, cancellationToken);
-        var handler = _provider.GetRequiredService<IRequestHandler<TRequest, TResponse>>();
-        var response = handler.Handle(request, cancellationToken);
-        PostProcess(request, response, cancellationToken);
-        return response;
+        Continuation<TRequest, TResponse> func = (p, r, t) => p.GetRequiredService<IRequestHandler<TRequest, TResponse>>().Handle(r, t);
+        return new RequestPreProcessorHandler(_provider)
+            .Handle(request, (p, r, t) => new RequestPostProcessorHandler(p).Handle(r, func, t), cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task SendAsync<TRequest>(
+    public Task SendAsync<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest
     {
-        await AsyncPreProcess(request, cancellationToken);
-        var handler = _provider.GetRequiredService<IAsyncRequestHandler<TRequest>>();
-        await handler.HandleAsync(request, cancellationToken);
+        Continuation<TRequest, Task> func = (p, r, t) => p.GetRequiredService<IAsyncRequestHandler<TRequest>>().HandleAsync(r, t);
+        return new AsyncRequestPreProcessorHandler(_provider).HandleAsync(request, func, cancellationToken);
     }
 
     /// <inheritdoc />
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(
+    public Task<TResponse> SendAsync<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest<TResponse>
     {
-        await AsyncPreProcess(request, cancellationToken);
-        var handler = _provider.GetRequiredService<IAsyncRequestHandler<TRequest, TResponse>>();
-        var response = await handler.HandleAsync(request, cancellationToken);
-        await AsyncPostProcess(request, response, cancellationToken);
-        return response;
-    }
-
-    private void PreProcess<TRequest>(
-        TRequest request,
-        CancellationToken cancellationToken)
-        where TRequest : notnull
-    {
-        var preProcessors = _provider.GetServices<IRequestPreProcessor<TRequest>>();
-        foreach (var preProcessor in preProcessors)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            preProcessor.Process(request, cancellationToken);
-        }
-    }
-
-    private void PostProcess<TRequest, TResponse>(
-        TRequest request,
-        TResponse response,
-        CancellationToken cancellationToken)
-        where TRequest : notnull
-    {
-        var postProcessors = _provider.GetServices<IRequestPostProcessor<TRequest, TResponse>>();
-        foreach (var postProcessor in postProcessors)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            postProcessor.Process(request, response, cancellationToken);
-        }
-    }
-
-    private async Task AsyncPreProcess<TRequest>(
-        TRequest request,
-        CancellationToken cancellationToken)
-        where TRequest : notnull
-    {
-        var preProcessors = _provider.GetServices<IAsyncRequestPreProcessor<TRequest>>();
-        foreach (var preProcessor in preProcessors)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await preProcessor.ProcessAsync(request, cancellationToken);
-        }
-    }
-
-    private async Task AsyncPostProcess<TRequest, TResponse>(
-        TRequest request,
-        TResponse response,
-        CancellationToken cancellationToken)
-        where TRequest : notnull
-    {
-        var postProcessors = _provider.GetServices<IAsyncRequestPostProcessor<TRequest, TResponse>>();
-        foreach (var postProcessor in postProcessors)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await postProcessor.ProcessAsync(request, response, cancellationToken);
-        }
+        Continuation<TRequest, Task<TResponse>> func = (p, r, t) => p.GetRequiredService<IAsyncRequestHandler<TRequest, TResponse>>().HandleAsync(r, t);
+        return new AsyncRequestPreProcessorHandler(_provider)
+            .HandleAsync(request, (p, r, t) => new AsyncRequestPostProcessorHandler(p).HandleAsync(r, func, t), cancellationToken);
     }
 }

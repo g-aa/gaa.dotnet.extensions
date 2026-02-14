@@ -23,7 +23,7 @@ internal sealed class MediatorProcessorTest
         _mockLog = new Mock<IMessageLogger>();
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
-            .AddScopedMediator()
+            .AddMediator()
             .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
                 .AddPreProcessor<RequestPreProcessor>()
                 .AddPostProcessor<RequestPostProcessor>()

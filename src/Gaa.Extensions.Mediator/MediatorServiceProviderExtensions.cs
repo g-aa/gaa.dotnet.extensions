@@ -13,7 +13,9 @@ public static class MediatorServiceProviderExtensions
     /// <param name="provider">Провайдер сервисов.</param>
     /// <returns>Медиатор, посредник.</returns>
     public static IMediator GetMediator(this IServiceProvider provider)
-        => provider.GetRequiredService<IMediator>();
+    {
+        return provider.GetRequiredService<IMediator>();
+    }
 
     /// <summary>
     /// Предоставляет <see cref="IMediator"/>.
@@ -21,5 +23,7 @@ public static class MediatorServiceProviderExtensions
     /// <param name="scope">Область видимости для сервисов.</param>
     /// <returns>Медиатор, посредник.</returns>
     public static IMediator GetMediator(this IServiceScope scope)
-        => scope.ServiceProvider.GetRequiredService<IMediator>();
+    {
+        return scope.ServiceProvider.GetRequiredService<IMediator>();
+    }
 }

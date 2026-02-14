@@ -5,7 +5,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Методы расширения для <see cref="IServiceCollection"/>.
 /// </summary>
-public static class MediatorExtensions
+public static class MediatorServiceCollectionExtensions
 {
     /// <summary>
     /// Регистрирует <see cref="Mediator"/> в коллекции сервисов <see cref="IServiceCollection"/>.
@@ -13,7 +13,7 @@ public static class MediatorExtensions
     /// <param name="services">Коллекция сервисов.</param>
     /// <returns>Контекст <see cref="Mediator"/> для конфигурирования.</returns>
     /// <remarks>Жизненный цикл <see cref="ServiceLifetime.Scoped"/>.</remarks>
-    public static MediatorConfigurationContext AddScopedMediator(this IServiceCollection services)
+    public static MediatorConfigurationContext AddMediator(this IServiceCollection services)
     {
         return new MediatorConfigurationContext
         {
