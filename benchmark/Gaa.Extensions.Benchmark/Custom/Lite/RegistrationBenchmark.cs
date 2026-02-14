@@ -25,11 +25,22 @@ public class RegistrationBenchmark
         // arrange
         var services = new ServiceCollection()
             .AddSingleton(TextWriter.Null)
-            .AddMediatorLite(ServiceLifetime.Scoped)
+            .AddMediatorLite()
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
+            .AddHandler<WithoutResponse2.Handler, WithoutResponse2.Request>()
+            .AddHandler<WithoutResponse3.Handler, WithoutResponse3.Request>()
+
             .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+            .AddHandler<WithResponse2.Handler, WithResponse2.Request, Response>()
+            .AddHandler<WithResponse3.Handler, WithResponse3.Request, Response>()
+
             .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
+            .AddAsyncHandler<AsyncWithoutResponse2.Handler, AsyncWithoutResponse2.Request>()
+            .AddAsyncHandler<AsyncWithoutResponse3.Handler, AsyncWithoutResponse3.Request>()
+
             .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+            .AddAsyncHandler<AsyncWithResponse2.Handler, AsyncWithResponse2.Request, Response>()
+            .AddAsyncHandler<AsyncWithResponse3.Handler, AsyncWithResponse3.Request, Response>()
             .Services;
 
         // act

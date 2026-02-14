@@ -17,6 +17,8 @@ namespace Gaa.Extensions.Benchmark.Requestum;
 [MemoryDiagnoser]
 public class HandlerBenchmark
 {
+    private const string _message = "Input message!";
+
     private IServiceScope _scope;
 
     private IRequestum _requestum;
@@ -32,9 +34,20 @@ public class HandlerBenchmark
             .AddRequestum(cfg =>
             {
                 cfg.RegisterHandler<WithoutResponse.Handler>();
+                cfg.RegisterHandler<WithoutResponse2.Handler>();
+                cfg.RegisterHandler<WithoutResponse3.Handler>();
+
                 cfg.RegisterHandler<WithResponse.Handler>();
+                cfg.RegisterHandler<WithResponse2.Handler>();
+                cfg.RegisterHandler<WithResponse3.Handler>();
+
                 cfg.RegisterHandler<AsyncWithoutResponse.Handler>();
+                cfg.RegisterHandler<AsyncWithoutResponse2.Handler>();
+                cfg.RegisterHandler<AsyncWithoutResponse3.Handler>();
+
                 cfg.RegisterHandler<AsyncWithResponse.Handler>();
+                cfg.RegisterHandler<AsyncWithResponse2.Handler>();
+                cfg.RegisterHandler<AsyncWithResponse3.Handler>();
             })
             .BuildServiceProvider();
 
@@ -52,6 +65,19 @@ public class HandlerBenchmark
     }
 
     /// <summary>
+    /// Отправить синхронный запрос.
+    /// </summary>
+    [Benchmark]
+    public void SendingRequestWithoutResponse()
+    {
+        // arrange
+        var command = new WithoutResponse.Command { Message = _message };
+
+        // act
+        _requestum.Execute(command);
+    }
+
+    /// <summary>
     /// Отправить асинхронный запрос.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
@@ -59,10 +85,23 @@ public class HandlerBenchmark
     public Task SendingRequestWithoutResponseAsync()
     {
         // arrange
-        var command = new AsyncWithoutResponse.Command { Message = "Input message!" };
+        var command = new AsyncWithoutResponse.Command { Message = _message };
 
         // act
         return _requestum.ExecuteAsync(command, default);
+    }
+
+    /// <summary>
+    /// Отправить синхронный запрос.
+    /// </summary>
+    [Benchmark]
+    public void SendingRequestWithResponse()
+    {
+        // arrange
+        var query = new WithResponse.Query { Message = _message };
+
+        // act
+        _requestum.Handle<WithResponse.Query, Response>(query);
     }
 
     /// <summary>
@@ -73,7 +112,7 @@ public class HandlerBenchmark
     public Task SendingRequestWithResponseAsync()
     {
         // arrange
-        var query = new AsyncWithResponse.Query { Message = "Input message!" };
+        var query = new AsyncWithResponse.Query { Message = _message };
 
         // act
         return _requestum.HandleAsync<AsyncWithResponse.Query, Response>(query, default);

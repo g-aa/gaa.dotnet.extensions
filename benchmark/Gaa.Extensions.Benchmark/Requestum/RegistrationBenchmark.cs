@@ -28,9 +28,20 @@ public class RegistrationBenchmark
             .AddRequestum(cfg =>
             {
                 cfg.RegisterHandler<WithoutResponse.Handler>();
+                cfg.RegisterHandler<WithoutResponse2.Handler>();
+                cfg.RegisterHandler<WithoutResponse3.Handler>();
+
                 cfg.RegisterHandler<WithResponse.Handler>();
+                cfg.RegisterHandler<WithResponse2.Handler>();
+                cfg.RegisterHandler<WithResponse3.Handler>();
+
                 cfg.RegisterHandler<AsyncWithoutResponse.Handler>();
+                cfg.RegisterHandler<AsyncWithoutResponse2.Handler>();
+                cfg.RegisterHandler<AsyncWithoutResponse3.Handler>();
+
                 cfg.RegisterHandler<AsyncWithResponse.Handler>();
+                cfg.RegisterHandler<AsyncWithResponse2.Handler>();
+                cfg.RegisterHandler<AsyncWithResponse3.Handler>();
             });
 
         // act

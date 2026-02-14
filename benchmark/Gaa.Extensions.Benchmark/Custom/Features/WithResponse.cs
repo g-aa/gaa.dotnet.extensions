@@ -3,9 +3,97 @@ namespace Gaa.Extensions.Benchmark.Custom.Features;
 #pragma warning disable SA1402 // File may only contain a single type
 
 /// <summary>
-/// Кейс для тестирования.
+/// Кейс для тестирования #1.
 /// </summary>
 internal static class WithResponse
+{
+    /// <summary>
+    /// Пример запроса.
+    /// </summary>
+    internal sealed class Request : IRequest<Response>
+    {
+        /// <summary>
+        /// Текст с сообщением.
+        /// </summary>
+        public string Message { get; init; } = "Test message from request!";
+    }
+
+    /// <summary>
+    /// Обработчик запросов.
+    /// </summary>
+    internal sealed class Handler : IRequestHandler<Request, Response>
+    {
+        private readonly IMediator _mediator;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
+        /// </summary>
+        /// <param name="mediator">Медиатор.</param>
+        public Handler(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        /// <inheritdoc />
+        public Response Handle(
+            Request request,
+            CancellationToken cancellationToken)
+        {
+            return _mediator.Send<WithResponse2.Request, Response>(
+                new() { Message = request.Message },
+                cancellationToken);
+        }
+    }
+}
+
+/// <summary>
+/// Кейс для тестирования #2.
+/// </summary>
+internal static class WithResponse2
+{
+    /// <summary>
+    /// Пример запроса.
+    /// </summary>
+    internal sealed class Request : IRequest<Response>
+    {
+        /// <summary>
+        /// Текст с сообщением.
+        /// </summary>
+        public string Message { get; init; } = "Test message from request!";
+    }
+
+    /// <summary>
+    /// Обработчик запросов.
+    /// </summary>
+    internal sealed class Handler : IRequestHandler<Request, Response>
+    {
+        private readonly IMediator _mediator;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
+        /// </summary>
+        /// <param name="mediator">Медиатор.</param>
+        public Handler(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        /// <inheritdoc />
+        public Response Handle(
+            Request request,
+            CancellationToken cancellationToken)
+        {
+            return _mediator.Send<WithResponse3.Request, Response>(
+                new() { Message = request.Message },
+                cancellationToken);
+        }
+    }
+}
+
+/// <summary>
+/// Кейс для тестирования #3.
+/// </summary>
+internal static class WithResponse3
 {
     /// <summary>
     /// Пример запроса.
@@ -44,52 +132,6 @@ internal static class WithResponse
             {
                 Message = "Output message!",
             };
-        }
-    }
-}
-
-/// <summary>
-/// Кейс для тестирования.
-/// </summary>
-internal static class AsyncWithResponse
-{
-    /// <summary>
-    /// Пример запроса.
-    /// </summary>
-    internal sealed class Request : IAsyncRequest<Response>
-    {
-        /// <summary>
-        /// Текст с сообщением.
-        /// </summary>
-        public string Message { get; init; } = "Test message from async request!";
-    }
-
-    /// <summary>
-    /// Обработчик запросов.
-    /// </summary>
-    internal sealed class Handler : IAsyncRequestHandler<Request, Response>
-    {
-        private readonly IMediator _mediator;
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
-        /// </summary>
-        /// <param name="mediator">Медиатор.</param>
-        public Handler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
-        /// <inheritdoc />
-        public Task<Response> HandleAsync(
-            Request request,
-            CancellationToken cancellationToken)
-        {
-            var response = _mediator.Send<WithResponse.Request, Response>(
-                new() { Message = request.Message },
-                cancellationToken);
-
-            return Task.FromResult(response);
         }
     }
 }

@@ -1,13 +1,12 @@
 namespace Gaa.Extensions.Benchmark.MediatR.Features;
 
-#pragma warning disable CA1849
 #pragma warning disable SA1402 // File may only contain a single type
 #pragma warning disable SA1649 // File name should match first type name
 
 /// <summary>
 /// Предварительный обработчик запросов.
 /// </summary>
-internal sealed class RequestPreProcessor : global::MediatR.Pipeline.IRequestPreProcessor<WithResponse.Request>
+internal sealed class RequestPreProcessor : global::MediatR.Pipeline.IRequestPreProcessor<AsyncWithResponse.Request>
 {
     private readonly TextWriter _writer;
 
@@ -22,18 +21,17 @@ internal sealed class RequestPreProcessor : global::MediatR.Pipeline.IRequestPre
 
     /// <inheritdoc />
     public Task Process(
-        WithResponse.Request request,
+        AsyncWithResponse.Request request,
         CancellationToken cancellationToken)
     {
-        _writer.Write(request.Message);
-        return Task.CompletedTask;
+        return _writer.WriteAsync(request.Message);
     }
 }
 
 /// <summary>
 /// Постпроцессор запросов.
 /// </summary>
-internal sealed class RequestPostProcessor : global::MediatR.Pipeline.IRequestPostProcessor<WithResponse.Request, Response>
+internal sealed class RequestPostProcessor : global::MediatR.Pipeline.IRequestPostProcessor<AsyncWithResponse.Request, Response>
 {
     private readonly TextWriter _writer;
 
@@ -47,13 +45,12 @@ internal sealed class RequestPostProcessor : global::MediatR.Pipeline.IRequestPo
     }
 
     /// <inheritdoc />
-    public Task Process(
-        WithResponse.Request request,
+    public async Task Process(
+        AsyncWithResponse.Request request,
         Response response,
         CancellationToken cancellationToken)
     {
-        _writer.Write(request.Message);
-        _writer.Write(response.Message);
-        return Task.CompletedTask;
+        await _writer.WriteAsync(request.Message);
+        await _writer.WriteAsync(response.Message);
     }
 }

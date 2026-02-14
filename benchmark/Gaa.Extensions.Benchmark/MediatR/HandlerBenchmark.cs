@@ -15,6 +15,8 @@ namespace Gaa.Extensions.Benchmark.MediatR;
 [MemoryDiagnoser]
 public class HandlerBenchmark
 {
+    private const string _message = "Input message!";
+
     private IServiceScope _scope;
 
     private global::MediatR.IMediator _mediator;
@@ -54,7 +56,7 @@ public class HandlerBenchmark
     public Task SendingRequestWithoutResponseAsync()
     {
         // arrange
-        var request = new AsyncWithoutResponse.Request { Message = "Input message!" };
+        var request = new AsyncWithoutResponse.Request { Message = _message };
 
         // act
         return _mediator.Send(request, default);
@@ -68,7 +70,7 @@ public class HandlerBenchmark
     public Task SendingRequestWithResponseAsync()
     {
         // arrange
-        var request = new AsyncWithResponse.Request { Message = "Input message!" };
+        var request = new AsyncWithResponse.Request { Message = _message };
 
         // act
         return _mediator.Send(request, default);

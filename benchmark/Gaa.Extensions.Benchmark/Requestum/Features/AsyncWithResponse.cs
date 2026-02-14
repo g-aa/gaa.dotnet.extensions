@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Benchmark.Requestum.Features;
 /// <summary>
 /// Кейс для тестирования #1.
 /// </summary>
-internal static class WithResponse
+internal static class AsyncWithResponse
 {
     /// <summary>
     /// Пример запроса.
@@ -24,7 +24,7 @@ internal static class WithResponse
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncQueryHandler<Query, Response>
     {
         private readonly IRequestum _requestum;
 
@@ -38,10 +38,13 @@ internal static class WithResponse
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public Task<Response> HandleAsync(
+            Query query,
+            CancellationToken cancellationToken = default)
         {
-            return _requestum.Handle<WithResponse2.Query, Response>(
-                new() { Message = query.Message });
+            return _requestum.HandleAsync<AsyncWithResponse2.Query, Response>(
+                new() { Message = query.Message },
+                cancellationToken);
         }
     }
 }
@@ -49,7 +52,7 @@ internal static class WithResponse
 /// <summary>
 /// Кейс для тестирования #2.
 /// </summary>
-internal static class WithResponse2
+internal static class AsyncWithResponse2
 {
     /// <summary>
     /// Пример запроса.
@@ -65,7 +68,7 @@ internal static class WithResponse2
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncQueryHandler<Query, Response>
     {
         private readonly IRequestum _requestum;
 
@@ -79,10 +82,13 @@ internal static class WithResponse2
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public Task<Response> HandleAsync(
+            Query query,
+            CancellationToken cancellationToken = default)
         {
-            return _requestum.Handle<WithResponse3.Query, Response>(
-                new() { Message = query.Message });
+            return _requestum.HandleAsync<AsyncWithResponse3.Query, Response>(
+                new() { Message = query.Message },
+                cancellationToken);
         }
     }
 }
@@ -90,7 +96,7 @@ internal static class WithResponse2
 /// <summary>
 /// Кейс для тестирования #3.
 /// </summary>
-internal static class WithResponse3
+internal static class AsyncWithResponse3
 {
     /// <summary>
     /// Пример запроса.
@@ -100,13 +106,13 @@ internal static class WithResponse3
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public string Message { get; init; } = "Test message from async request!";
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncQueryHandler<Query, Response>
     {
         private readonly TextWriter _writer;
 
@@ -120,9 +126,11 @@ internal static class WithResponse3
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public async Task<Response> HandleAsync(
+            Query query,
+            CancellationToken cancellationToken = default)
         {
-            _writer.WriteLine(query.Message);
+            await _writer.WriteLineAsync(query.Message);
             return new()
             {
                 Message = "Output message!",

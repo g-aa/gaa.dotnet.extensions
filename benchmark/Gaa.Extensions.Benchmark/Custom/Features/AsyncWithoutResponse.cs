@@ -1,19 +1,16 @@
-using Requestum;
-using Requestum.Contract;
-
-namespace Gaa.Extensions.Benchmark.Requestum.Features;
+namespace Gaa.Extensions.Benchmark.Custom.Features;
 
 #pragma warning disable SA1402 // File may only contain a single type
 
 /// <summary>
 /// Кейс для тестирования #1.
 /// </summary>
-internal static class WithResponse
+internal static class AsyncWithoutResponse
 {
     /// <summary>
-    /// Пример запроса.
+    /// Запроса.
     /// </summary>
-    internal sealed class Query : IQuery<Response>
+    internal sealed class Request : IAsyncRequest
     {
         /// <summary>
         /// Текст с сообщением.
@@ -24,24 +21,27 @@ internal static class WithResponse
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request>
     {
-        private readonly IRequestum _requestum;
+        private readonly IMediator _mediator;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
-        /// <param name="requestum">Медиатор.</param>
-        public Handler(IRequestum requestum)
+        /// <param name="mediator">Медиатор.</param>
+        public Handler(IMediator mediator)
         {
-            _requestum = requestum;
+            _mediator = mediator;
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public Task HandleAsync(
+            Request request,
+            CancellationToken cancellationToken)
         {
-            return _requestum.Handle<WithResponse2.Query, Response>(
-                new() { Message = query.Message });
+            return _mediator.SendAsync<AsyncWithoutResponse2.Request>(
+                new() { Message = request.Message },
+                cancellationToken);
         }
     }
 }
@@ -49,12 +49,12 @@ internal static class WithResponse
 /// <summary>
 /// Кейс для тестирования #2.
 /// </summary>
-internal static class WithResponse2
+internal static class AsyncWithoutResponse2
 {
     /// <summary>
-    /// Пример запроса.
+    /// Запроса.
     /// </summary>
-    internal sealed class Query : IQuery<Response>
+    internal sealed class Request : IAsyncRequest
     {
         /// <summary>
         /// Текст с сообщением.
@@ -65,24 +65,27 @@ internal static class WithResponse2
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request>
     {
-        private readonly IRequestum _requestum;
+        private readonly IMediator _mediator;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
-        /// <param name="requestum">Медиатор.</param>
-        public Handler(IRequestum requestum)
+        /// <param name="mediator">Медиатор.</param>
+        public Handler(IMediator mediator)
         {
-            _requestum = requestum;
+            _mediator = mediator;
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public Task HandleAsync(
+            Request request,
+            CancellationToken cancellationToken)
         {
-            return _requestum.Handle<WithResponse3.Query, Response>(
-                new() { Message = query.Message });
+            return _mediator.SendAsync<AsyncWithoutResponse3.Request>(
+                new() { Message = request.Message },
+                cancellationToken);
         }
     }
 }
@@ -90,23 +93,23 @@ internal static class WithResponse2
 /// <summary>
 /// Кейс для тестирования #3.
 /// </summary>
-internal static class WithResponse3
+internal static class AsyncWithoutResponse3
 {
     /// <summary>
-    /// Пример запроса.
+    /// Запроса.
     /// </summary>
-    internal sealed class Query : IQuery<Response>
+    internal sealed class Request : IAsyncRequest
     {
         /// <summary>
         /// Текст с сообщением.
         /// </summary>
-        public string Message { get; init; } = "Test message from request!";
+        public string Message { get; init; } = "Test message from async request!";
     }
 
     /// <summary>
     /// Обработчик запросов.
     /// </summary>
-    internal sealed class Handler : IQueryHandler<Query, Response>
+    internal sealed class Handler : IAsyncRequestHandler<Request>
     {
         private readonly TextWriter _writer;
 
@@ -120,13 +123,11 @@ internal static class WithResponse3
         }
 
         /// <inheritdoc />
-        public Response Handle(Query query)
+        public Task HandleAsync(
+            Request request,
+            CancellationToken cancellationToken)
         {
-            _writer.WriteLine(query.Message);
-            return new()
-            {
-                Message = "Output message!",
-            };
+            return _writer.WriteLineAsync(request.Message);
         }
     }
 }
