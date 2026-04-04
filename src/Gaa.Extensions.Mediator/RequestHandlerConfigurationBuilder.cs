@@ -8,20 +8,20 @@ namespace Gaa.Extensions;
 /// Контекст обработчика запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
-public class AsyncRequestHandlerConfigurationContext<TRequest>
-    : MediatorConfigurationContext
-    where TRequest : notnull
+public class RequestHandlerConfigurationBuilder<TRequest>
+    : MediatorConfigurationBuilder
+    where TRequest : notnull, allows ref struct
 {
     /// <summary>
-    /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
+    /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.
     /// </summary>
     /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
+    public RequestHandlerConfigurationBuilder<TRequest> AddPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
+        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 }
@@ -31,33 +31,34 @@ public class AsyncRequestHandlerConfigurationContext<TRequest>
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
-public class AsyncRequestHandlerConfigurationContext<TRequest, TResponse>
-    : MediatorConfigurationContext
-    where TRequest : notnull
+public class RequestHandlerConfigurationBuilder<TRequest, TResponse>
+    : MediatorConfigurationBuilder
+    where TRequest : notnull, allows ref struct
+    where TResponse : allows ref struct
 {
     /// <summary>
-    /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
+    /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.
     /// </summary>
     /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest, TResponse> AddAsyncPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
+    public RequestHandlerConfigurationBuilder<TRequest, TResponse> AddPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
+        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 
     /// <summary>
-    /// Регистрирует постпроцессор вида <see cref="IAsyncRequestPostProcessor{TRequest, TResponse}"/>.
+    /// Регистрирует постпроцессор вида <see cref="IRequestPostProcessor{TRequest, TResponse}"/>.
     /// </summary>
     /// <typeparam name="TPostProcessor">Тип постпроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Постпроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest, TResponse> AddAsyncPostProcessor<TPostProcessor>()
-        where TPostProcessor : class, IAsyncRequestPostProcessor<TRequest, TResponse>
+    public RequestHandlerConfigurationBuilder<TRequest, TResponse> AddPostProcessor<TPostProcessor>()
+        where TPostProcessor : class, IRequestPostProcessor<TRequest, TResponse>
     {
-        Services.AddTransient<IAsyncRequestPostProcessor<TRequest, TResponse>, TPostProcessor>();
+        Services.AddTransient<IRequestPostProcessor<TRequest, TResponse>, TPostProcessor>();
         return this;
     }
 }

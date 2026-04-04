@@ -13,9 +13,9 @@ public static class MediatorServiceCollectionExtensions
     /// <param name="services">Коллекция сервисов.</param>
     /// <returns>Контекст <see cref="Mediator"/> для конфигурирования.</returns>
     /// <remarks>Жизненный цикл <see cref="ServiceLifetime.Scoped"/>.</remarks>
-    public static MediatorConfigurationContext AddMediator(this IServiceCollection services)
+    public static MediatorConfigurationBuilder AddMediator(this IServiceCollection services)
     {
-        return new MediatorConfigurationContext
+        return new MediatorConfigurationBuilder
         {
             Services = services.AddScoped<IMediator, Mediator>(),
         };

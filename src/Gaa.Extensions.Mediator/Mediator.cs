@@ -17,7 +17,7 @@ internal sealed class Mediator : IMediator
     }
 
     /// <inheritdoc />
-    public void Send<TRequest>(
+    public void RequiredSend<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest, allows ref struct
@@ -27,7 +27,7 @@ internal sealed class Mediator : IMediator
     }
 
     /// <inheritdoc />
-    public TResponse Send<TRequest, TResponse>(
+    public TResponse RequiredSend<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest<TResponse>, allows ref struct
@@ -39,7 +39,7 @@ internal sealed class Mediator : IMediator
     }
 
     /// <inheritdoc />
-    public Task SendAsync<TRequest>(
+    public Task RequiredSendAsync<TRequest>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest
@@ -49,7 +49,7 @@ internal sealed class Mediator : IMediator
     }
 
     /// <inheritdoc />
-    public Task<TResponse> SendAsync<TRequest, TResponse>(
+    public Task<TResponse> RequiredSendAsync<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest<TResponse>
@@ -57,5 +57,25 @@ internal sealed class Mediator : IMediator
         Continuation<TRequest, Task<TResponse>> func = (p, r, t) => p.GetRequiredService<IAsyncRequestHandler<TRequest, TResponse>>().HandleAsync(r, t);
         return new AsyncRequestPreProcessorHandler(_provider)
             .HandleAsync(request, (p, r, t) => new AsyncRequestPostProcessorHandler(p).HandleAsync(r, func, t), cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public void Send<TRequest>(
+        TRequest request,
+        CancellationToken cancellationToken)
+        where TRequest : notnull, IRequest, allows ref struct
+    {
+        Continuation<TRequest> func = (p, r, t) => p.GetService<IRequestHandler<TRequest>>()?.Handle(r, t);
+        new RequestPreProcessorHandler(_provider).Handle(request, func, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task SendAsync<TRequest>(
+        TRequest request,
+        CancellationToken cancellationToken)
+        where TRequest : notnull, IAsyncRequest
+    {
+        Continuation<TRequest, Task> func = (p, r, t) => p.GetService<IAsyncRequestHandler<TRequest>>()?.HandleAsync(r, t) ?? Task.CompletedTask;
+        return new AsyncRequestPreProcessorHandler(_provider).HandleAsync(request, func, cancellationToken);
     }
 }

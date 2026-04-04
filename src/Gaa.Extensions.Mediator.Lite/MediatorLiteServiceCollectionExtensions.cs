@@ -15,11 +15,11 @@ public static class MediatorLiteServiceCollectionExtensions
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Контекст <see cref="IMediator"/> для конфигурирования.</returns>
-    public static MediatorLiteConfigurationContext AddMediatorLite(
+    public static MediatorLiteConfigurationBuilder AddMediatorLite(
         this IServiceCollection services,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
-        return new MediatorLiteConfigurationContext(services, lifetime);
+        return new MediatorLiteConfigurationBuilder(services, lifetime);
     }
 
     /// <summary>

@@ -8,20 +8,20 @@ namespace Gaa.Extensions;
 /// Контекст обработчика запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
-public class RequestHandlerConfigurationContext<TRequest>
-    : MediatorConfigurationContext
-    where TRequest : notnull, allows ref struct
+public class AsyncRequestHandlerConfigurationBuilder<TRequest>
+    : MediatorConfigurationBuilder
+    where TRequest : notnull
 {
     /// <summary>
-    /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.
+    /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
     /// </summary>
     /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IRequestPreProcessor<TRequest>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest> AddAsyncPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreProcessor>();
+        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 }
@@ -31,34 +31,33 @@ public class RequestHandlerConfigurationContext<TRequest>
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
-public class RequestHandlerConfigurationContext<TRequest, TResponse>
-    : MediatorConfigurationContext
-    where TRequest : notnull, allows ref struct
-    where TResponse : allows ref struct
+public class AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse>
+    : MediatorConfigurationBuilder
+    where TRequest : notnull
 {
     /// <summary>
-    /// Регистрирует препроцессор вида <see cref="IRequestPreProcessor{TRequest}"/>.
+    /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
     /// </summary>
     /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest, TResponse> AddPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IRequestPreProcessor<TRequest>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPreProcessor<TPreProcessor>()
+        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IRequestPreProcessor<TRequest>, TPreProcessor>();
+        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
         return this;
     }
 
     /// <summary>
-    /// Регистрирует постпроцессор вида <see cref="IRequestPostProcessor{TRequest, TResponse}"/>.
+    /// Регистрирует постпроцессор вида <see cref="IAsyncRequestPostProcessor{TRequest, TResponse}"/>.
     /// </summary>
     /// <typeparam name="TPostProcessor">Тип постпроцессора запросов.</typeparam>
     /// <returns>Контекст обработчиков запросов.</returns>
     /// <remarks>Постпроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest, TResponse> AddPostProcessor<TPostProcessor>()
-        where TPostProcessor : class, IRequestPostProcessor<TRequest, TResponse>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPostProcessor<TPostProcessor>()
+        where TPostProcessor : class, IAsyncRequestPostProcessor<TRequest, TResponse>
     {
-        Services.AddTransient<IRequestPostProcessor<TRequest, TResponse>, TPostProcessor>();
+        Services.AddTransient<IAsyncRequestPostProcessor<TRequest, TResponse>, TPostProcessor>();
         return this;
     }
 }

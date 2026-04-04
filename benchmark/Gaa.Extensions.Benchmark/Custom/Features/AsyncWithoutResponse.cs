@@ -39,7 +39,7 @@ internal static class AsyncWithoutResponse
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.SendAsync<AsyncWithoutResponse2.Request>(
+            return _mediator.RequiredSendAsync<AsyncWithoutResponse2.Request>(
                 new() { Message = request.Message },
                 cancellationToken);
         }
@@ -83,7 +83,7 @@ internal static class AsyncWithoutResponse2
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.SendAsync<AsyncWithoutResponse3.Request>(
+            return _mediator.RequiredSendAsync<AsyncWithoutResponse3.Request>(
                 new() { Message = request.Message },
                 cancellationToken);
         }

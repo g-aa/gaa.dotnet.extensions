@@ -27,16 +27,13 @@ internal static class WithResponse
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
         /// <param name="log">Журнал регистрации сообщений.</param>
-        public Handler(
-            IMessageLogger log)
+        public Handler(IMessageLogger log)
         {
             _log = log;
         }
 
         /// <inheritdoc />
-        public Response Handle(
-            Request request,
-            CancellationToken cancellationToken)
+        public Response Handle(Request request, CancellationToken cancellationToken)
         {
             _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
             return new()

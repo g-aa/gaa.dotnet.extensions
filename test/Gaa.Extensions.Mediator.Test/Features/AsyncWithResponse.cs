@@ -23,32 +23,23 @@ internal static class AsyncWithResponse
     {
         private readonly IMessageLogger _log;
 
-        private readonly IMediator _mediator;
-
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Handler"/>.
         /// </summary>
         /// <param name="log">Журнал регистрации сообщений.</param>
-        /// <param name="mediator">Медиатор.</param>
-        public Handler(
-            IMessageLogger log,
-            IMediator mediator)
+        public Handler(IMessageLogger log)
         {
             _log = log;
-            _mediator = mediator;
         }
 
         /// <inheritdoc />
-        public Task<Response> HandleAsync(
-            Request request,
-            CancellationToken cancellationToken)
+        public Task<Response> HandleAsync(Request request, CancellationToken cancellationToken)
         {
             _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
-            var response = _mediator.Send<WithResponse.Request, Response>(
-                new() { Message = request.Message },
-                cancellationToken);
-
-            return Task.FromResult(response);
+            return Task.FromResult(new Response()
+            {
+                Message = "Output message!",
+            });
         }
     }
 }

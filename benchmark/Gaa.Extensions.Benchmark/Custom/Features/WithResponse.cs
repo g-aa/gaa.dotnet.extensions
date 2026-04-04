@@ -39,7 +39,7 @@ internal static class WithResponse
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.Send<WithResponse2.Request, Response>(
+            return _mediator.RequiredSend<WithResponse2.Request, Response>(
                 new() { Message = request.Message },
                 cancellationToken);
         }
@@ -83,7 +83,7 @@ internal static class WithResponse2
             Request request,
             CancellationToken cancellationToken)
         {
-            return _mediator.Send<WithResponse3.Request, Response>(
+            return _mediator.RequiredSend<WithResponse3.Request, Response>(
                 new() { Message = request.Message },
                 cancellationToken);
         }

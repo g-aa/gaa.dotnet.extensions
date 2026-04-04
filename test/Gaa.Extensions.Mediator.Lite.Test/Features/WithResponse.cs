@@ -33,9 +33,7 @@ internal static class WithResponse
         }
 
         /// <inheritdoc />
-        public Response Handle(
-            Request request,
-            CancellationToken cancellationToken)
+        public Response Handle(Request request, CancellationToken cancellationToken)
         {
             _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
             return new()

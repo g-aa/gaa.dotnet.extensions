@@ -1,13 +1,14 @@
 using Gaa.Extensions.Test.Features;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions.Test;
 
 /// <summary>
-/// Набор тестов для <see cref="Mediator"/>.
+/// Набор тестов для <see cref="MediatorLite"/>.
 /// </summary>
 [TestFixture]
-internal sealed class MediatorHandleTest
+internal sealed class MediatorRequiredSendTest
 {
     private Mock<IMessageLogger> _mockLog;
 
@@ -50,25 +51,45 @@ internal sealed class MediatorHandleTest
     }
 
     /// <summary>
-    /// Успешное выполнение для <see cref="IAsyncRequestHandler{TRequest}"/>, <see cref="IRequestHandler{TRequest}"/>.
+    /// Успешное выполнение <see cref="IMediator.RequiredSend{TRequest}(TRequest, CancellationToken)"/>.
+    /// </summary>
+    /// <param name="inputMessage">Входное сообщение.</param>
+    [TestCase("Input message!")]
+    public void SuccessfulRequiredSendWithoutResponse(string inputMessage)
+    {
+        // arrange
+        using var scope = _provider.CreateScope();
+        var mediator = scope.ServiceProvider.GetMediatorLite();
+        var func = () =>
+        {
+            var request = new WithoutResponse.Request { Message = inputMessage };
+            mediator.RequiredSend(request, default);
+        };
+
+        // act & assert
+        func.Should().NotThrow();
+
+        _mockLog.Verify(
+            l => l.Log(It.Is<string>(m => m == $"{typeof(WithoutResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
+            Times.Exactly(1));
+    }
+
+    /// <summary>
+    /// Успешное выполнение <see cref="IMediator.RequiredSendAsync{TRequest}(TRequest, CancellationToken)"/>.
     /// </summary>
     /// <param name="inputMessage">Входное сообщение.</param>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [TestCase("Input message!")]
-    public async Task SuccessfulHandleWithoutResponse(string inputMessage)
+    public async Task SuccessfulRequiredSendWithoutResponseAsync(string inputMessage)
     {
         // arrange
         using var scope = _provider.CreateScope();
         var mediator = scope.GetMediatorLite();
         var request = new AsyncWithoutResponse.Request { Message = inputMessage };
-        var func = () => mediator.SendAsync(request, default);
+        var func = () => mediator.RequiredSendAsync(request, default);
 
         // act & assert
         await func.Should().NotThrowAsync();
-
-        _mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"{typeof(WithoutResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
-            Times.Exactly(1));
 
         _mockLog.Verify(
             l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncWithoutResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
@@ -76,28 +97,51 @@ internal sealed class MediatorHandleTest
     }
 
     /// <summary>
-    /// Успешное выполнение для <see cref="IAsyncRequestHandler{TRequest, TResponse},"/>, <see cref="IRequestHandler{TRequest, TResponse}"/>.
+    /// Успешное выполнение <see cref="IMediator.RequiredSend{TRequest, TResponse}(TRequest, CancellationToken)"/>.
     /// </summary>
     /// <param name="inputMessage">Входное сообщение.</param>
     /// <param name="outputMessage">Выходное сообщение.</param>
-    /// <returns>Результат выполнения асинхронной задачи.</returns>
     [TestCase("Input message!", "Output message!")]
-    public async Task SuccessfulHandleWithResponse(string inputMessage, string outputMessage)
+    public void SuccessfulRequiredSendWithResponse(string inputMessage, string outputMessage)
     {
         // arrange
         using var scope = _provider.CreateScope();
         var mediator = scope.GetMediatorLite();
-        var request = new AsyncWithResponse.Request { Message = inputMessage };
-        var func = () => mediator.SendAsync<AsyncWithResponse.Request, Response>(request, default);
+        var func = () =>
+        {
+            var request = new WithResponse.Request { Message = inputMessage };
+            return mediator.RequiredSend<WithResponse.Request, Response>(request, default);
+        };
 
         // act & assert
-        var response = (await func.Should().NotThrowAsync()).Subject;
+        var response = func.Should().NotThrow().Subject;
         response.Should().NotBeNull();
         response.Message.Should().Be(outputMessage);
 
         _mockLog.Verify(
             l => l.Log(It.Is<string>(m => m == $"{typeof(WithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),
             Times.Exactly(1));
+    }
+
+    /// <summary>
+    /// Успешное выполнение <see cref="IMediator.RequiredSendAsync{TRequest, TResponse}(TRequest, CancellationToken)"/>.
+    /// </summary>
+    /// <param name="inputMessage">Входное сообщение.</param>
+    /// <param name="outputMessage">Выходное сообщение.</param>
+    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    [TestCase("Input message!", "Output message!")]
+    public async Task SuccessfulRequiredSendWithResponseAsync(string inputMessage, string outputMessage)
+    {
+        // arrange
+        using var scope = _provider.CreateScope();
+        var mediator = scope.GetMediatorLite();
+        var request = new AsyncWithResponse.Request { Message = inputMessage };
+        var func = () => mediator.RequiredSendAsync<AsyncWithResponse.Request, Response>(request, default);
+
+        // act & assert
+        var response = (await func.Should().NotThrowAsync()).Subject;
+        response.Should().NotBeNull();
+        response.Message.Should().Be(outputMessage);
 
         _mockLog.Verify(
             l => l.Log(It.Is<string>(m => m == $"{typeof(AsyncWithResponse.Handler).FullName}: содержимое сообщения {inputMessage}.")),

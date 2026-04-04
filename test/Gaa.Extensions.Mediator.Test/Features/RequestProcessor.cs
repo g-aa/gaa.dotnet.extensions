@@ -20,9 +20,7 @@ internal sealed class RequestPreProcessor : IRequestPreProcessor<WithResponse.Re
     }
 
     /// <inheritdoc />
-    public void Process(
-        WithResponse.Request request,
-        CancellationToken cancellationToken)
+    public void Process(WithResponse.Request request, CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
     }
@@ -45,10 +43,7 @@ internal sealed class RequestPostProcessor : IRequestPostProcessor<WithResponse.
     }
 
     /// <inheritdoc />
-    public void Process(
-        WithResponse.Request request,
-        Response response,
-        CancellationToken cancellationToken)
+    public void Process(WithResponse.Request request, Response response, CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
         _log.Log($"{GetType().FullName}: содержимое сообщения {response.Message}.");

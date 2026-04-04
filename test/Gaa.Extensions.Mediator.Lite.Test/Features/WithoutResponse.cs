@@ -33,9 +33,7 @@ internal static class WithoutResponse
         }
 
         /// <inheritdoc />
-        public void Handle(
-            Request request,
-            CancellationToken cancellationToken)
+        public void Handle(Request request, CancellationToken cancellationToken)
         {
             _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
         }

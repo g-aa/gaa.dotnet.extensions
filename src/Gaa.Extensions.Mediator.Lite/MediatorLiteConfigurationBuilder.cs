@@ -1,33 +1,45 @@
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions;
 
 /// <summary>
-/// Контекст <see cref="Mediator"/> для конфигурирования.
+/// Контекст <see cref="IMediator"/> для конфигурирования.
 /// </summary>
-public class MediatorConfigurationContext
+public sealed class MediatorLiteConfigurationBuilder
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="MediatorLiteConfigurationBuilder"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Жизненный цикл.</param>
+    public MediatorLiteConfigurationBuilder(
+        IServiceCollection services,
+        ServiceLifetime lifetime)
+    {
+        Services = services;
+        Services.Add<IMediator, MediatorLite>(lifetime);
+    }
+
     /// <summary>
     /// Коллекция сервисов.
     /// </summary>
-    public IServiceCollection Services { get; init; } = null!;
+    public IServiceCollection Services { get; init; }
 
     /// <summary>
     /// Регистрирует обработчик вида <see cref="IRequestHandler{TRequest}"/> в коллекции сервисов.
     /// </summary>
     /// <typeparam name="THandler">Тип обработчика запросов.</typeparam>
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
+    /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Модифицированная коллекция сервисов.</returns>
-    /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest> AddHandler<THandler, TRequest>()
+    public MediatorLiteConfigurationBuilder AddHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IRequestHandler<TRequest>
         where TRequest : IRequest, allows ref struct
     {
-        IsSingleUse<IRequestHandler<TRequest>, TRequest>();
-        return new RequestHandlerConfigurationContext<TRequest>
-        {
-            Services = Services.AddTransient<IRequestHandler<TRequest>, THandler>(),
-        };
+        return Add<IRequestHandler<TRequest>, THandler, TRequest>(lifetime);
     }
 
     /// <summary>
@@ -36,18 +48,15 @@ public class MediatorConfigurationContext
     /// <typeparam name="THandler">Тип обработчика запросов.</typeparam>
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
+    /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Модифицированная коллекция сервисов.</returns>
-    /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public RequestHandlerConfigurationContext<TRequest, TResponse> AddHandler<THandler, TRequest, TResponse>()
+    public MediatorLiteConfigurationBuilder AddHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IRequestHandler<TRequest, TResponse>
         where TRequest : IRequest<TResponse>, allows ref struct
         where TResponse : allows ref struct
     {
-        IsSingleUse<IRequestHandler<TRequest, TResponse>, TRequest>();
-        return new RequestHandlerConfigurationContext<TRequest, TResponse>
-        {
-            Services = Services.AddTransient<IRequestHandler<TRequest, TResponse>, THandler>(),
-        };
+        return Add<IRequestHandler<TRequest, TResponse>, THandler, TRequest>(lifetime);
     }
 
     /// <summary>
@@ -55,17 +64,14 @@ public class MediatorConfigurationContext
     /// </summary>
     /// <typeparam name="THandler">Тип обработчика запросов.</typeparam>
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
+    /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Модифицированная коллекция сервисов.</returns>
-    /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest> AddAsyncHandler<THandler, TRequest>()
+    public MediatorLiteConfigurationBuilder AddAsyncHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IAsyncRequestHandler<TRequest>
         where TRequest : IAsyncRequest
     {
-        IsSingleUse<IAsyncRequestHandler<TRequest>, TRequest>();
-        return new AsyncRequestHandlerConfigurationContext<TRequest>
-        {
-            Services = Services.AddTransient<IAsyncRequestHandler<TRequest>, THandler>(),
-        };
+        return Add<IAsyncRequestHandler<TRequest>, THandler, TRequest>(lifetime);
     }
 
     /// <summary>
@@ -74,27 +80,29 @@ public class MediatorConfigurationContext
     /// <typeparam name="THandler">Тип обработчика запросов.</typeparam>
     /// <typeparam name="TRequest">Тип запроса.</typeparam>
     /// <typeparam name="TResponse">Тип ответа.</typeparam>
+    /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Модифицированная коллекция сервисов.</returns>
-    /// <remarks>Обработчик регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationContext<TRequest, TResponse> AddAsyncHandler<THandler, TRequest, TResponse>()
+    public MediatorLiteConfigurationBuilder AddAsyncHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest, TResponse>(
+        ServiceLifetime lifetime = ServiceLifetime.Transient)
         where THandler : class, IAsyncRequestHandler<TRequest, TResponse>
         where TRequest : IAsyncRequest<TResponse>
     {
-        IsSingleUse<IAsyncRequestHandler<TRequest, TResponse>, TRequest>();
-        return new AsyncRequestHandlerConfigurationContext<TRequest, TResponse>
-        {
-            Services = Services.AddTransient<IAsyncRequestHandler<TRequest, TResponse>, THandler>(),
-        };
+        return Add<IAsyncRequestHandler<TRequest, TResponse>, THandler, TRequest>(lifetime);
     }
 
-    private void IsSingleUse<THandler, TRequest>()
-        where THandler : class
+    private MediatorLiteConfigurationBuilder Add<TInterface, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] THandler, TRequest>(
+        ServiceLifetime lifetime)
+        where TInterface : class
+        where THandler : class, TInterface
         where TRequest : notnull, allows ref struct
     {
-        if (Services.Any(e => e.ServiceType == typeof(THandler)))
+        if (Services.Any(e => e.ServiceType == typeof(TInterface)))
         {
             var requestName = typeof(TRequest).FullName;
-            throw new InvalidOperationException($"Для запроса {requestName} можно добавить только один обработчик!");
+            throw new InvalidOperationException($"Для запроса '{requestName}' можно добавить только один обработчик!");
         }
+
+        Services.Add<TInterface, THandler>(lifetime);
+        return this;
     }
 }

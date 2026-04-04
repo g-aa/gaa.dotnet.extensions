@@ -20,9 +20,7 @@ internal sealed class AsyncRequestPreProcessor : IAsyncRequestPreProcessor<Async
     }
 
     /// <inheritdoc />
-    public Task ProcessAsync(
-        AsyncWithResponse.Request request,
-        CancellationToken cancellationToken)
+    public Task ProcessAsync(AsyncWithResponse.Request request, CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
         return Task.CompletedTask;
@@ -46,10 +44,7 @@ internal sealed class AsyncRequestPostProcessor : IAsyncRequestPostProcessor<Asy
     }
 
     /// <inheritdoc />
-    public Task ProcessAsync(
-        AsyncWithResponse.Request request,
-        Response response,
-        CancellationToken cancellationToken)
+    public Task ProcessAsync(AsyncWithResponse.Request request, Response response, CancellationToken cancellationToken)
     {
         _log.Log($"{GetType().FullName}: содержимое сообщения {request.Message}.");
         _log.Log($"{GetType().FullName}: содержимое сообщения {response.Message}.");

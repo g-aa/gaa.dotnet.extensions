@@ -75,7 +75,7 @@ public class ProcessorBenchmark
         var request = new WithoutResponse.Request { Message = _message };
 
         // act
-        _mediator.Send(request, default);
+        _mediator.RequiredSend(request, default);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class ProcessorBenchmark
         var request = new AsyncWithoutResponse.Request { Message = _message };
 
         // act
-        return _mediator.SendAsync(request, default);
+        return _mediator.RequiredSendAsync(request, default);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public class ProcessorBenchmark
         var request = new WithResponse.Request { Message = _message };
 
         // act
-        _mediator.Send<WithResponse.Request, Response>(request, default);
+        _mediator.RequiredSend<WithResponse.Request, Response>(request, default);
     }
 
     /// <summary>
@@ -116,6 +116,6 @@ public class ProcessorBenchmark
         var request = new AsyncWithResponse.Request { Message = _message };
 
         // act
-        return _mediator.SendAsync<AsyncWithResponse.Request, AsyncResponse>(request, default);
+        return _mediator.RequiredSendAsync<AsyncWithResponse.Request, AsyncResponse>(request, default);
     }
 }
