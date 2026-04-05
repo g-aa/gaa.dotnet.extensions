@@ -22,7 +22,7 @@ internal sealed class MediatorLite : IMediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest, allows ref struct
     {
-        var handler = (IRequestHandler<TRequest>)_provider.GetRequiredService(typeof(IRequestHandler<TRequest>));
+        var handler = (IRequestHandler<TRequest>)_provider.GetRequiredService(typeof(IBaseRequestHandler<TRequest>));
         handler.Handle(request, cancellationToken);
     }
 
@@ -33,7 +33,7 @@ internal sealed class MediatorLite : IMediator
         where TRequest : notnull, IRequest<TResponse>, allows ref struct
         where TResponse : allows ref struct
     {
-        var handler = (IRequestHandler<TRequest, TResponse>)_provider.GetRequiredService(typeof(IRequestHandler<TRequest, TResponse>));
+        var handler = (IRequestHandler<TRequest, TResponse>)_provider.GetRequiredService(typeof(IBaseRequestHandler<TRequest>));
         return handler.Handle(request, cancellationToken);
     }
 
@@ -43,7 +43,7 @@ internal sealed class MediatorLite : IMediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest
     {
-        var handler = (IAsyncRequestHandler<TRequest>)_provider.GetRequiredService(typeof(IAsyncRequestHandler<TRequest>));
+        var handler = (IAsyncRequestHandler<TRequest>)_provider.GetRequiredService(typeof(IAsyncBaseRequestHandler<TRequest>));
         return handler.HandleAsync(request, cancellationToken);
     }
 
@@ -53,7 +53,7 @@ internal sealed class MediatorLite : IMediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest<TResponse>
     {
-        var handler = (IAsyncRequestHandler<TRequest, TResponse>)_provider.GetRequiredService(typeof(IAsyncRequestHandler<TRequest, TResponse>));
+        var handler = (IAsyncRequestHandler<TRequest, TResponse>)_provider.GetRequiredService(typeof(IAsyncBaseRequestHandler<TRequest>));
         return handler.HandleAsync(request, cancellationToken);
     }
 
@@ -63,7 +63,7 @@ internal sealed class MediatorLite : IMediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IRequest, allows ref struct
     {
-        var handler = (IRequestHandler<TRequest>?)_provider.GetService(typeof(IRequestHandler<TRequest>));
+        var handler = (IRequestHandler<TRequest>?)_provider.GetService(typeof(IBaseRequestHandler<TRequest>));
         handler?.Handle(request, cancellationToken);
     }
 
@@ -73,7 +73,7 @@ internal sealed class MediatorLite : IMediator
         CancellationToken cancellationToken)
         where TRequest : notnull, IAsyncRequest
     {
-        var handler = (IAsyncRequestHandler<TRequest>?)_provider.GetService(typeof(IAsyncRequestHandler<TRequest>));
+        var handler = (IAsyncRequestHandler<TRequest>?)_provider.GetService(typeof(IAsyncBaseRequestHandler<TRequest>));
         return handler != null ? handler.HandleAsync(request, cancellationToken) : Task.CompletedTask;
     }
 }

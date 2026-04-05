@@ -1,10 +1,29 @@
 namespace Gaa.Extensions;
 
+#pragma warning disable CA1040 // Avoid empty interfaces
+
 /// <summary>
 /// Обработчик запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
-public interface IAsyncRequestHandler<in TRequest>
+/// <typeparam name="TResponse">Тип ответа.</typeparam>
+public interface IAsyncRequestHandler<in TRequest, TResponse> : IAsyncBaseRequestHandler<TRequest>
+    where TRequest : IAsyncRequest<TResponse>
+{
+    /// <summary>
+    /// Выполняет обработку на запрос.
+    /// </summary>
+    /// <param name="request">Запрос.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Ответ на запрос.</returns>
+    Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
+}
+
+/// <summary>
+/// Обработчик запросов.
+/// </summary>
+/// <typeparam name="TRequest">Тип запроса.</typeparam>
+public interface IAsyncRequestHandler<in TRequest> : IAsyncBaseRequestHandler<TRequest>
     where TRequest : IAsyncRequest
 {
     /// <summary>
@@ -17,18 +36,7 @@ public interface IAsyncRequestHandler<in TRequest>
 }
 
 /// <summary>
-/// Обработчик запросов.
+/// Базовый интерфейс обработчика запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
-/// <typeparam name="TResponse">Тип ответа.</typeparam>
-public interface IAsyncRequestHandler<in TRequest, TResponse>
-    where TRequest : IAsyncRequest<TResponse>
-{
-    /// <summary>
-    /// Выполняет обработку на запрос.
-    /// </summary>
-    /// <param name="request">Запрос.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Ответ на запрос.</returns>
-    Task<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken);
-}
+public interface IAsyncBaseRequestHandler<in TRequest>;

@@ -25,9 +25,9 @@ internal sealed class MediatorRequiredSendTest
             .AddScoped(p => _mockLog.Object)
             .AddMediatorLite(ServiceLifetime.Scoped)
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
-            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+            .AddHandler<WithResponse.Handler, WithResponse.Request>()
             .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
-            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request>()
             .Services
             .BuildServiceProvider();
     }
