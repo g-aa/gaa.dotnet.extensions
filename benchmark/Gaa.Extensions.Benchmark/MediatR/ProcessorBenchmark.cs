@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.MediatR.Features;
 
@@ -12,6 +13,7 @@ namespace Gaa.Extensions.Benchmark.MediatR;
 /// <summary>
 /// Контрольный тест.
 /// </summary>
+[Orderer(SummaryOrderPolicy.Declared)]
 [MemoryDiagnoser]
 public class ProcessorBenchmark
 {

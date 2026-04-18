@@ -19,7 +19,7 @@ internal sealed class MediatorRegistrationTest
         // arrange
         var func = () => new ServiceCollection()
             .AddScoped(p => new Mock<IMessageLogger>().Object)
-            .AddMediatorLite(ServiceLifetime.Scoped)
+            .AddMediatorLite()
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .Services

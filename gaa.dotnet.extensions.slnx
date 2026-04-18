@@ -1,0 +1,39 @@
+<Solution>
+  <Folder Name="/benchmark/">
+    <Project Path="benchmark/Gaa.Extensions.Benchmark/Gaa.Extensions.Benchmark.csproj" />
+  </Folder>
+  <Folder Name="/build/">
+    <File Path="build/.benchmark.sh" />
+    <File Path="build/.tag.sh" />
+    <File Path="build/.test.sh" />
+    <File Path="build/coverlet.runsettings" />
+    <File Path="build/Version.targets" />
+  </Folder>
+  <Folder Name="/misc/">
+    <File Path=".drone.yml" />
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".version" />
+    <File Path="CHANGELOG.md" />
+    <File Path="icon.png" />
+    <File Path="LICENSE.txt" />
+    <File Path="README.md" />
+    <File Path="TODO" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Gaa.Extensions.AspNetCore.Authorization/Gaa.Extensions.AspNetCore.Authorization.csproj" />
+    <Project Path="src/Gaa.Extensions.Core/Gaa.Extensions.Core.csproj" />
+    <Project Path="src/Gaa.Extensions.Mediator.Abstractions/Gaa.Extensions.Mediator.Abstractions.csproj" />
+    <Project Path="src/Gaa.Extensions.Mediator.Lite/Gaa.Extensions.Mediator.Lite.csproj" />
+    <Project Path="src/Gaa.Extensions.Mediator/Gaa.Extensions.Mediator.csproj" />
+    <Project Path="src/Gaa.Extensions.Observer/Gaa.Extensions.Observer.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Gaa.Extensions.AspNetCore.Authorization.Test/Gaa.Extensions.AspNetCore.Authorization.Test.csproj" />
+    <Project Path="test/Gaa.Extensions.Core.Test/Gaa.Extensions.Core.Test.csproj" />
+    <Project Path="test/Gaa.Extensions.Mediator.Lite.Test/Gaa.Extensions.Mediator.Lite.Test.csproj" />
+    <Project Path="test/Gaa.Extensions.Mediator.Test/Gaa.Extensions.Mediator.Test.csproj" />
+    <Project Path="test/Gaa.Extensions.Observer.Test/Gaa.Extensions.Observer.Test.csproj" />
+  </Folder>
+</Solution>

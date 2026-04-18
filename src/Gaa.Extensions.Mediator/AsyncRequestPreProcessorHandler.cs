@@ -1,11 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Gaa.Extensions;
 
 /// <summary>
 /// Внутренний обработчик коллекции препроцессоров вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
 /// </summary>
-internal sealed class AsyncRequestPreProcessorHandler
+internal readonly struct AsyncRequestPreProcessorHandler
 {
     private readonly IServiceProvider _provider;
 
@@ -32,11 +30,11 @@ internal sealed class AsyncRequestPreProcessorHandler
         CancellationToken cancellationToken)
         where TRequest : notnull
     {
-        var processors = (IEnumerable<IAsyncRequestPreProcessor<TRequest>>)_provider.GetRequiredService(typeof(IEnumerable<IAsyncRequestPreProcessor<TRequest>>));
-        foreach (var processor in processors)
+        var processors = _provider.GetServices<IAsyncRequestPreProcessor<TRequest>>();
+        for (var i = 0; i < processors.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await processor.ProcessAsync(request, cancellationToken);
+            await processors[i].ProcessAsync(request, cancellationToken);
         }
 
         await continuation(_provider, request, cancellationToken);
@@ -57,11 +55,11 @@ internal sealed class AsyncRequestPreProcessorHandler
         CancellationToken cancellationToken)
         where TRequest : notnull
     {
-        var processors = (IEnumerable<IAsyncRequestPreProcessor<TRequest>>)_provider.GetRequiredService(typeof(IEnumerable<IAsyncRequestPreProcessor<TRequest>>));
-        foreach (var processor in processors)
+        var processors = _provider.GetServices<IAsyncRequestPreProcessor<TRequest>>();
+        for (var i = 0; i < processors.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await processor.ProcessAsync(request, cancellationToken);
+            await processors[i].ProcessAsync(request, cancellationToken);
         }
 
         return await continuation(_provider, request, cancellationToken);

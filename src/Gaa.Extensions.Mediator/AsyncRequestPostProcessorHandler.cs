@@ -1,11 +1,9 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Gaa.Extensions;
 
 /// <summary>
 /// Внутренний обработчик коллекции постпроцессоров вида <see cref="IAsyncRequestPostProcessor{TRequest, TResponse}"/>.
 /// </summary>
-internal class AsyncRequestPostProcessorHandler
+internal readonly struct AsyncRequestPostProcessorHandler
 {
     private readonly IServiceProvider _provider;
 
@@ -34,11 +32,11 @@ internal class AsyncRequestPostProcessorHandler
         where TRequest : notnull
     {
         var response = await continuation(_provider, request, cancellationToken);
-        var processors = (IEnumerable<IAsyncRequestPostProcessor<TRequest, TResponse>>)_provider.GetRequiredService(typeof(IEnumerable<IAsyncRequestPostProcessor<TRequest, TResponse>>));
-        foreach (var processor in processors)
+        var processors = _provider.GetServices<IAsyncRequestPostProcessor<TRequest, TResponse>>();
+        for (var i = 0; i < processors.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await processor.ProcessAsync(request, response, cancellationToken);
+            await processors[i].ProcessAsync(request, response, cancellationToken);
         }
 
         return response;

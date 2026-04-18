@@ -5,7 +5,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Внутренний обработчик коллекции постпроцессоров вида <see cref="IRequestPostProcessor{TRequest, TResponse}"/>.
 /// </summary>
-internal sealed class RequestPostProcessorHandler
+internal readonly struct RequestPostProcessorHandler
 {
     private readonly IServiceProvider _provider;
 
@@ -35,11 +35,11 @@ internal sealed class RequestPostProcessorHandler
         where TResponse : allows ref struct
     {
         var response = continuation(_provider, request, cancellationToken);
-        var processors = (IEnumerable<IRequestPostProcessor<TRequest, TResponse>>)_provider.GetRequiredService(typeof(IEnumerable<IRequestPostProcessor<TRequest, TResponse>>));
-        foreach (var processor in processors)
+        var processors = (IRequestPostProcessor<TRequest, TResponse>[])_provider.GetRequiredService(typeof(IEnumerable<IRequestPostProcessor<TRequest, TResponse>>));
+        for (var i = 0; i < processors.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            processor.Process(request, response, cancellationToken);
+            processors[i].Process(request, response, cancellationToken);
         }
 
         return response;

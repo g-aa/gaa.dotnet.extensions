@@ -13,13 +13,15 @@ public static class MediatorLiteServiceCollectionExtensions
     /// Регистрирует <see cref="IMediator"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="lifetime">Жизненный цикл.</param>
-    /// <returns>Контекст <see cref="IMediator"/> для конфигурирования.</returns>
+    /// <param name="mediatorLifetime">Жизненный цикл <see cref="IMediator"/>.</param>
+    /// <param name="handlerLifetime">Жизненный цикл обработчика запросов вида <see cref="IBaseRequestHandler{TRequest}"/> или <see cref="IAsyncBaseRequestHandler{TRequest}"/>.</param>
+    /// <returns>Контекст для конфигурирования <see cref="IMediator"/>.</returns>
     public static MediatorLiteConfigurationBuilder AddMediatorLite(
         this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        ServiceLifetime mediatorLifetime = ServiceLifetime.Scoped,
+        ServiceLifetime handlerLifetime = ServiceLifetime.Transient)
     {
-        return new MediatorLiteConfigurationBuilder(services, lifetime);
+        return new MediatorLiteConfigurationBuilder(services, mediatorLifetime, handlerLifetime);
     }
 
     /// <summary>

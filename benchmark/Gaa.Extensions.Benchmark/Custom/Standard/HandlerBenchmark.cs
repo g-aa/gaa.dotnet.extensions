@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.Custom.Features;
 
@@ -12,6 +13,7 @@ namespace Gaa.Extensions.Benchmark.Custom.Standard;
 /// <summary>
 /// Контрольный тест.
 /// </summary>
+[Orderer(SummaryOrderPolicy.Declared)]
 [MemoryDiagnoser]
 public class HandlerBenchmark
 {
@@ -29,22 +31,22 @@ public class HandlerBenchmark
     {
         var provider = new ServiceCollection()
             .AddSingleton(TextWriter.Null)
-            .AddMediator()
+            .AddMediator(ServiceLifetime.Singleton, ServiceLifetime.Singleton)
             .AddHandler<WithoutResponse.Handler, WithoutResponse.Request>()
             .AddHandler<WithoutResponse2.Handler, WithoutResponse2.Request>()
             .AddHandler<WithoutResponse3.Handler, WithoutResponse3.Request>()
 
-            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
-            .AddHandler<WithResponse2.Handler, WithResponse2.Request, Response>()
-            .AddHandler<WithResponse3.Handler, WithResponse3.Request, Response>()
+            .AddHandler<WithResponse.Handler, WithResponse.Request>()
+            .AddHandler<WithResponse2.Handler, WithResponse2.Request>()
+            .AddHandler<WithResponse3.Handler, WithResponse3.Request>()
 
             .AddAsyncHandler<AsyncWithoutResponse.Handler, AsyncWithoutResponse.Request>()
             .AddAsyncHandler<AsyncWithoutResponse2.Handler, AsyncWithoutResponse2.Request>()
             .AddAsyncHandler<AsyncWithoutResponse3.Handler, AsyncWithoutResponse3.Request>()
 
-            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, AsyncResponse>()
-            .AddAsyncHandler<AsyncWithResponse2.Handler, AsyncWithResponse2.Request, AsyncResponse>()
-            .AddAsyncHandler<AsyncWithResponse3.Handler, AsyncWithResponse3.Request, AsyncResponse>()
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request>()
+            .AddAsyncHandler<AsyncWithResponse2.Handler, AsyncWithResponse2.Request>()
+            .AddAsyncHandler<AsyncWithResponse3.Handler, AsyncWithResponse3.Request>()
             .Services
             .BuildServiceProvider();
 

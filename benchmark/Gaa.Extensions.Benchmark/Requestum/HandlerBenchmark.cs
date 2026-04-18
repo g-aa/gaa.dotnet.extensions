@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.Requestum.Features;
 
@@ -14,6 +15,7 @@ namespace Gaa.Extensions.Benchmark.Requestum;
 /// <summary>
 /// Контрольный тест.
 /// </summary>
+[Orderer(SummaryOrderPolicy.Declared)]
 [MemoryDiagnoser]
 public class HandlerBenchmark
 {

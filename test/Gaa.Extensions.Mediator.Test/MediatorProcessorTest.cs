@@ -24,12 +24,12 @@ internal sealed class MediatorProcessorTest
         _provider = new ServiceCollection()
             .AddScoped(p => _mockLog.Object)
             .AddMediator()
-            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>()
+            .AddHandler<WithResponse.Handler, WithResponse.Request, Response>(b => b
                 .AddPreProcessor<RequestPreProcessor>()
-                .AddPostProcessor<RequestPostProcessor>()
-            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>()
+                .AddPostProcessor<RequestPostProcessor>())
+            .AddAsyncHandler<AsyncWithResponse.Handler, AsyncWithResponse.Request, Response>(b => b
                 .AddAsyncPreProcessor<AsyncRequestPreProcessor>()
-                .AddAsyncPostProcessor<AsyncRequestPostProcessor>()
+                .AddAsyncPostProcessor<AsyncRequestPostProcessor>())
             .Services
             .BuildServiceProvider();
     }

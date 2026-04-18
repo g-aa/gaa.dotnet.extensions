@@ -28,6 +28,6 @@ internal sealed class MediatorRegistrationTest
         // act & assert
         func.Should()
             .Throw<InvalidOperationException>()
-            .WithMessage($"Для запроса {typeof(WithoutResponse.Request).FullName} можно добавить только один обработчик!");
+            .WithMessage($"Для запроса '{typeof(WithoutResponse.Request).FullName}' можно добавить только один обработчик!");
     }
 }

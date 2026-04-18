@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.Custom.Features;
 
@@ -13,6 +14,7 @@ namespace Gaa.Extensions.Benchmark.Custom.Lite;
 /// <summary>
 /// Контрольный тест.
 /// </summary>
+[Orderer(SummaryOrderPolicy.Declared)]
 [MemoryDiagnoser]
 public class RegistrationBenchmark
 {

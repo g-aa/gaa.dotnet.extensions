@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions;
@@ -8,20 +10,36 @@ namespace Gaa.Extensions;
 /// Контекст обработчика запросов.
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
-public class AsyncRequestHandlerConfigurationBuilder<TRequest>
-    : MediatorConfigurationBuilder
+public readonly ref struct AsyncRequestHandlerConfigurationBuilder<TRequest>
     where TRequest : notnull
 {
+    private readonly IServiceCollection _services;
+
+    private readonly ServiceLifetime _lifetime;
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="AsyncRequestHandlerConfigurationBuilder{TRequest}"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Жизненный цикл пред. и пост обработчиков запроса.</param>
+    internal AsyncRequestHandlerConfigurationBuilder(
+        IServiceCollection services,
+        ServiceLifetime lifetime)
+    {
+        _services = services;
+        _lifetime = lifetime;
+    }
+
     /// <summary>
     /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
     /// </summary>
-    /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
-    /// <returns>Контекст обработчиков запросов.</returns>
-    /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationBuilder<TRequest> AddAsyncPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
+    /// <typeparam name="TProcessor">Тип препроцессора запросов.</typeparam>
+    /// <returns>Модифицированный контекст конфигурации.</returns>
+    /// <remarks>Жизненный цикл обработчика запросов берется из настроек <see cref="IMediator"/>.</remarks>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest> AddAsyncPreProcessor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TProcessor>()
+        where TProcessor : class, IAsyncRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
+        _services.Add<IAsyncRequestPreProcessor<TRequest>, TProcessor>(_lifetime);
         return this;
     }
 }
@@ -31,33 +49,49 @@ public class AsyncRequestHandlerConfigurationBuilder<TRequest>
 /// </summary>
 /// <typeparam name="TRequest">Тип запроса.</typeparam>
 /// <typeparam name="TResponse">Тип ответа.</typeparam>
-public class AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse>
-    : MediatorConfigurationBuilder
+public readonly ref struct AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse>
     where TRequest : notnull
 {
+    private readonly IServiceCollection _services;
+
+    private readonly ServiceLifetime _lifetime;
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="AsyncRequestHandlerConfigurationBuilder{TRequest, TResponse}"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="lifetime">Жизненный цикл пред. и пост обработчиков запроса.</param>
+    internal AsyncRequestHandlerConfigurationBuilder(
+        IServiceCollection services,
+        ServiceLifetime lifetime)
+    {
+        _services = services;
+        _lifetime = lifetime;
+    }
+
     /// <summary>
     /// Регистрирует препроцессор вида <see cref="IAsyncRequestPreProcessor{TRequest}"/>.
     /// </summary>
-    /// <typeparam name="TPreProcessor">Тип препроцессора запросов.</typeparam>
-    /// <returns>Контекст обработчиков запросов.</returns>
-    /// <remarks>Препроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPreProcessor<TPreProcessor>()
-        where TPreProcessor : class, IAsyncRequestPreProcessor<TRequest>
+    /// <typeparam name="TProcessor">Тип препроцессора запросов.</typeparam>
+    /// <returns>Модифицированный контекст конфигурации.</returns>
+    /// <remarks>Жизненный цикл обработчика запросов берется из настроек <see cref="IMediator"/>.</remarks>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPreProcessor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TProcessor>()
+        where TProcessor : class, IAsyncRequestPreProcessor<TRequest>
     {
-        Services.AddTransient<IAsyncRequestPreProcessor<TRequest>, TPreProcessor>();
+        _services.Add<IAsyncRequestPreProcessor<TRequest>, TProcessor>(_lifetime);
         return this;
     }
 
     /// <summary>
     /// Регистрирует постпроцессор вида <see cref="IAsyncRequestPostProcessor{TRequest, TResponse}"/>.
     /// </summary>
-    /// <typeparam name="TPostProcessor">Тип постпроцессора запросов.</typeparam>
-    /// <returns>Контекст обработчиков запросов.</returns>
-    /// <remarks>Постпроцессор регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPostProcessor<TPostProcessor>()
-        where TPostProcessor : class, IAsyncRequestPostProcessor<TRequest, TResponse>
+    /// <typeparam name="TProcessor">Тип постпроцессора запросов.</typeparam>
+    /// <returns>Модифицированный контекст конфигурации.</returns>
+    /// <remarks>Жизненный цикл обработчика запросов берется из настроек <see cref="IMediator"/>.</remarks>
+    public AsyncRequestHandlerConfigurationBuilder<TRequest, TResponse> AddAsyncPostProcessor<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TProcessor>()
+        where TProcessor : class, IAsyncRequestPostProcessor<TRequest, TResponse>
     {
-        Services.AddTransient<IAsyncRequestPostProcessor<TRequest, TResponse>, TPostProcessor>();
+        _services.Add<IAsyncRequestPostProcessor<TRequest, TResponse>, TProcessor>(_lifetime);
         return this;
     }
 }

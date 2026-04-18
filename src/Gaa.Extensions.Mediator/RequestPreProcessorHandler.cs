@@ -5,7 +5,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Внутренний обработчик коллекции препроцессоров вида <see cref="IRequestPreProcessor{TRequest}"/>.
 /// </summary>
-internal sealed class RequestPreProcessorHandler
+internal readonly struct RequestPreProcessorHandler
 {
     private readonly IServiceProvider _provider;
 
@@ -31,7 +31,13 @@ internal sealed class RequestPreProcessorHandler
         CancellationToken cancellationToken)
         where TRequest : notnull, allows ref struct
     {
-        HandleCore(request, cancellationToken);
+        var processors = (IRequestPreProcessor<TRequest>[])_provider.GetRequiredService(typeof(IEnumerable<IRequestPreProcessor<TRequest>>));
+        for (var i = 0; i < processors.Length; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            processors[i].Process(request, cancellationToken);
+        }
+
         continuation(_provider, request, cancellationToken);
     }
 
@@ -51,20 +57,13 @@ internal sealed class RequestPreProcessorHandler
         where TRequest : notnull, allows ref struct
         where TResponse : allows ref struct
     {
-        HandleCore(request, cancellationToken);
-        return continuation(_provider, request, cancellationToken);
-    }
-
-    private void HandleCore<TRequest>(
-        TRequest request,
-        CancellationToken cancellationToken)
-        where TRequest : notnull, allows ref struct
-    {
-        var processors = (IEnumerable<IRequestPreProcessor<TRequest>>)_provider.GetRequiredService(typeof(IEnumerable<IRequestPreProcessor<TRequest>>));
-        foreach (var processor in processors)
+        var processors = (IRequestPreProcessor<TRequest>[])_provider.GetRequiredService(typeof(IEnumerable<IRequestPreProcessor<TRequest>>));
+        for (var i = 0; i < processors.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            processor.Process(request, cancellationToken);
+            processors[i].Process(request, cancellationToken);
         }
+
+        return continuation(_provider, request, cancellationToken);
     }
 }
