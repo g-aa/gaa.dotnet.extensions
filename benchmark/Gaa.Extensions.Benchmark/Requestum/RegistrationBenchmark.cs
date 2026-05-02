@@ -44,6 +44,9 @@ public class RegistrationBenchmark
                 cfg.RegisterHandler<AsyncWithResponse.Handler>();
                 cfg.RegisterHandler<AsyncWithResponse2.Handler>();
                 cfg.RegisterHandler<AsyncWithResponse3.Handler>();
+
+                cfg.RegisterMiddleware(typeof(RequestMiddleware<,>));
+                cfg.RegisterMiddleware(typeof(AsyncRequestMiddleware<,>));
             });
 
         // act
