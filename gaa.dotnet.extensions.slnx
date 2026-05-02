@@ -9,7 +9,7 @@
     <File Path="build/coverlet.runsettings" />
     <File Path="build/Version.targets" />
   </Folder>
-  <Folder Name="/misc/">
+  <Folder Name="/root/">
     <File Path=".drone.yml" />
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
