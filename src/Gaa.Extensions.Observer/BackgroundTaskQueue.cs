@@ -8,8 +8,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Имплементация <see cref="IBackgroundTaskQueue"/> по умолчанию.
 /// </summary>
-internal sealed partial class BackgroundTaskQueue
-    : IBackgroundTaskQueue
+internal sealed partial class BackgroundTaskQueue : IBackgroundTaskQueue
 {
     private readonly ILogger _log;
 
@@ -18,11 +17,11 @@ internal sealed partial class BackgroundTaskQueue
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="BackgroundTaskQueue"/>.
     /// </summary>
-    /// <param name="log">Журнал протоколирования событий.</param>
+    /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="options">Настройки шины сообщений.</param>
     public BackgroundTaskQueue(
-      ILogger<BackgroundTaskQueue> log,
-      IOptions<BusOptions> options)
+        ILoggerFactory loggerFactory,
+        IOptions<BusOptions> options)
     {
         var taskQueueCapacity = options.Value.BackgroundTaskQueueCapacity;
         var boundedChannelOptions = new BoundedChannelOptions(taskQueueCapacity)
@@ -33,7 +32,7 @@ internal sealed partial class BackgroundTaskQueue
             SingleWriter = false,
         };
 
-        _log = log;
+        _log = loggerFactory.CreateLogger(CategoryName.Executor);
         _queue = Channel.CreateBounded<IBackgroundTask>(boundedChannelOptions);
         Log.QueueCapacityMessage(_log, taskQueueCapacity);
     }
@@ -54,8 +53,7 @@ internal sealed partial class BackgroundTaskQueue
     {
         Log.StartDequeueTaskMessage(_log);
         var backgroundTask = await _queue.Reader.ReadAsync(cancellationToken);
-        Log.StopDequeueTaskMessage(_log, backgroundTask);
-        Log.QueueTaskCountMessage(_log, _queue.Reader.Count);
+        Log.StopDequeueTaskMessage(_log, backgroundTask, _queue.Reader.Count);
         return backgroundTask;
     }
 
@@ -73,10 +71,7 @@ internal sealed partial class BackgroundTaskQueue
         [LoggerMessage(Level = LogLevel.Trace, Message = "Инициировано извлечение фоновой задачи из очереди для исполнения.")]
         public static partial void StartDequeueTaskMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Фоновая задача '{BackgroundTask}' успешно излечена для исполнения.")]
-        public static partial void StopDequeueTaskMessage(ILogger log, IBackgroundTask backgroundTask);
-
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Количество фоновых задач в очереди: '{Count}' штук.")]
-        public static partial void QueueTaskCountMessage(ILogger log, int count);
+        [LoggerMessage(Level = LogLevel.Trace, Message = "Фоновая задача '{BackgroundTask}' успешно излечена для исполнения, количество фоновых задач в очереди '{Count}' штук.")]
+        public static partial void StopDequeueTaskMessage(ILogger log, IBackgroundTask backgroundTask, int count);
     }
 }

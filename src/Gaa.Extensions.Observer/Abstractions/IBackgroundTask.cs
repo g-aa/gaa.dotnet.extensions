@@ -1,3 +1,5 @@
+#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
+
 namespace Gaa.Extensions;
 
 /// <summary>

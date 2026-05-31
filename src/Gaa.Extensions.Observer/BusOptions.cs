@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Gaa.Extensions;
 
 /// <summary>
@@ -7,11 +5,6 @@ namespace Gaa.Extensions;
 /// </summary>
 public sealed class BusOptions
 {
-    /// <summary>
-    /// Наименование секции в <see cref="IConfiguration"/>.
-    /// </summary>
-    public const string Section = "Bus";
-
     /// <summary>
     /// Емкость очереди фоновых задач.
     /// </summary>

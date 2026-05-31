@@ -1,9 +1,11 @@
+#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
+
 namespace Gaa.Extensions;
 
 /// <summary>
 /// Шина для обмена сообщениями и событиями.
 /// </summary>
-public interface IBus
+public interface IPublisher
 {
     /// <summary>
     /// Публикует сообщение в шину.

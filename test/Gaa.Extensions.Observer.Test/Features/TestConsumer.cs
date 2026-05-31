@@ -19,7 +19,7 @@ internal sealed class TestConsumer : IAsyncConsumer<string>
     }
 
     /// <inheritdoc />
-    public Task ConsumeAsync(MessageContext<string> context)
+    public Task ConsumeAsync(MessageContext<string> context, CancellationToken cancellationToken)
     {
         _log.Log($"Получено сообщение: {context.Message}.");
         return Task.CompletedTask;

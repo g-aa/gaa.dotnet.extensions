@@ -6,8 +6,7 @@ namespace Gaa.Extensions;
 /// Фоновая задача.
 /// </summary>
 /// <typeparam name="TMessage">Тип сообщения.</typeparam>
-internal sealed class BackgroundTask<TMessage>
-    : IBackgroundTask
+internal sealed class BackgroundTask<TMessage> : IBackgroundTask
     where TMessage : notnull
 {
     /// <summary>
@@ -30,10 +29,9 @@ internal sealed class BackgroundTask<TMessage>
         {
             Message = Message,
             Headers = MessageHeaders,
-            CancellationToken = cancellationToken,
         };
 
-        return consumer.ConsumeAsync(context);
+        return consumer.ConsumeAsync(context, cancellationToken);
     }
 
     /// <inheritdoc />

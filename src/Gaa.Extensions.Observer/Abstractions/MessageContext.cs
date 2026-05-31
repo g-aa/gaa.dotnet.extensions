@@ -1,3 +1,5 @@
+#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
+
 namespace Gaa.Extensions;
 
 /// <summary>
@@ -16,9 +18,4 @@ public sealed class MessageContext<TMessage>
     /// Заголовок.
     /// </summary>
     public required IReadOnlyDictionary<string, string> Headers { get; init; }
-
-    /// <summary>
-    /// Токен отмены.
-    /// </summary>
-    public CancellationToken CancellationToken { get; init; }
 }

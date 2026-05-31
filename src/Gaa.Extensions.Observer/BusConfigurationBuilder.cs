@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions;
 
 /// <summary>
-/// Контекст <see cref="IBus"/> для конфигурирования.
+/// Контекст <see cref="IPublisher"/> для конфигурирования.
 /// </summary>
-public sealed class BusConfigurationContext
+public sealed class BusConfigurationBuilder
 {
     /// <summary>
     /// Коллекция сервисов.
@@ -19,7 +19,7 @@ public sealed class BusConfigurationContext
     /// <typeparam name="TMessage">Тип сообщения.</typeparam>
     /// <returns>Контекст конфигурирования.</returns>
     /// <remarks>Потребитель регистрируются с временем жизни <see cref="ServiceLifetime.Transient"/>.</remarks>
-    public BusConfigurationContext AddAsyncConsumer<TConsumer, TMessage>()
+    public BusConfigurationBuilder AddAsyncConsumer<TConsumer, TMessage>()
         where TConsumer : class, IAsyncConsumer<TMessage>
         where TMessage : notnull
     {

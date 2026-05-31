@@ -1,3 +1,5 @@
+#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
+
 namespace Gaa.Extensions;
 
 /// <summary>
@@ -11,6 +13,7 @@ public interface IAsyncConsumer<TMessage>
     /// Обрабатывает сообщение.
     /// </summary>
     /// <param name="context">Контекст сообщения.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
-    Task ConsumeAsync(MessageContext<TMessage> context);
+    Task ConsumeAsync(MessageContext<TMessage> context, CancellationToken cancellationToken);
 }

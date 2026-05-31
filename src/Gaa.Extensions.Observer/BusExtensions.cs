@@ -8,13 +8,12 @@ namespace Gaa.Extensions;
 public static class BusExtensions
 {
     /// <summary>
-    /// Регистрирует компоненты <see cref="IBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты <see cref="IPublisher"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="configureOptions">Настройки конфигурации.</param>
-    /// <returns>Контекст <see cref="IBus"/> для конфигурирования.</returns>
-    /// <remarks>Жизненный цикл <see cref="ServiceLifetime.Scoped"/>.</remarks>
-    public static BusConfigurationContext AddScopedBus(
+    /// <returns>Контекст <see cref="IPublisher"/> для конфигурирования.</returns>
+    public static BusConfigurationBuilder AddBus(
         this IServiceCollection services,
         Action<BusOptions> configureOptions)
     {
@@ -24,7 +23,7 @@ public static class BusExtensions
         }
 
         services
-            .AddScoped<IBus, Bus>()
+            .AddSingleton<IPublisher, BusPublisher>()
             .AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>()
             .AddHostedService<BackgroundTaskExecutionService>();
 

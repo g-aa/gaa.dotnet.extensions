@@ -8,8 +8,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Hosted сервис очереди с фоновыми задачами.
 /// </summary>
-internal sealed partial class BackgroundTaskExecutionService
-    : BackgroundService
+internal sealed partial class BackgroundTaskExecutionService : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -22,17 +21,17 @@ internal sealed partial class BackgroundTaskExecutionService
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="BackgroundTaskExecutionService"/>.
     /// </summary>
-    /// <param name="log">Журнал протоколирования событий.</param>
+    /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="serviceScopeFactory">Фабрика сервисов.</param>
     /// <param name="taskQueue">Очередь с фоновыми задачами.</param>
     /// <param name="options">Настройки шины сообщений.</param>
     public BackgroundTaskExecutionService(
-      ILogger<BackgroundTaskExecutionService> log,
-      IServiceScopeFactory serviceScopeFactory,
-      IBackgroundTaskQueue taskQueue,
-      IOptions<BusOptions> options)
+        ILoggerFactory loggerFactory,
+        IServiceScopeFactory serviceScopeFactory,
+        IBackgroundTaskQueue taskQueue,
+        IOptions<BusOptions> options)
     {
-        _log = log;
+        _log = loggerFactory.CreateLogger(CategoryName.Executor);
         _scopeFactory = serviceScopeFactory;
         _taskQueue = taskQueue;
         _options = options.Value;

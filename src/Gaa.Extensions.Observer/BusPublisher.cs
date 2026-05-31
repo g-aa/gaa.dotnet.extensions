@@ -5,22 +5,22 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Шина для обмена сообщениями и событиями.
 /// </summary>
-internal sealed partial class Bus : IBus
+internal sealed partial class BusPublisher : IPublisher
 {
     private readonly ILogger _log;
 
     private readonly IBackgroundTaskQueue _taskQueue;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="Bus"/>.
+    /// Инициализирует новый экземпляр класса <see cref="BusPublisher"/>.
     /// </summary>
-    /// <param name="log">Журнал протоколирования событий.</param>
+    /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="taskQueue">Очередь фоновых задач.</param>
-    public Bus(
-        ILogger<Bus> log,
+    public BusPublisher(
+        ILoggerFactory loggerFactory,
         IBackgroundTaskQueue taskQueue)
     {
-        _log = log;
+        _log = loggerFactory.CreateLogger(CategoryName.Publisher);
         _taskQueue = taskQueue;
     }
 
