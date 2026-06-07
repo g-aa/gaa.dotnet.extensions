@@ -25,11 +25,11 @@
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="8.10.1">
+    <PackageReference Include="Gaa.DotNet.CodeAnalysis" Version="10.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Gaa.Extensions.Mediator.Abstractions/Gaa.Extensions.Mediator.Abstractions.csproj" />
