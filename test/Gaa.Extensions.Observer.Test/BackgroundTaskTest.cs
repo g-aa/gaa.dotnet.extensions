@@ -27,7 +27,7 @@ internal sealed class BackgroundTaskTest
         var result = backgroundTask.ToString();
 
         // assert
-        result.Should().Be("BackgroundTask<System.String>");
+        result.Should().Be("Gaa.Extensions.BackgroundTask<System.String>");
     }
 
     /// <summary>

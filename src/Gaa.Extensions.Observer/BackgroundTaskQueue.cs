@@ -14,6 +14,10 @@ internal sealed partial class BackgroundTaskQueue : IBackgroundTaskQueue
 
     private readonly Channel<IBackgroundTask> _queue;
 
+    private readonly ChannelReader<IBackgroundTask> _reader;
+
+    private readonly ChannelWriter<IBackgroundTask> _writer;
+
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="BackgroundTaskQueue"/>.
     /// </summary>
@@ -32,34 +36,35 @@ internal sealed partial class BackgroundTaskQueue : IBackgroundTaskQueue
             SingleWriter = false,
         };
 
-        _log = loggerFactory.CreateLogger(CategoryName.Executor);
+        _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
         _queue = Channel.CreateBounded<IBackgroundTask>(boundedChannelOptions);
+        _reader = _queue.Reader;
+        _writer = _queue.Writer;
         Log.QueueCapacityMessage(_log, taskQueueCapacity);
     }
 
     /// <inheritdoc />
-    public async ValueTask QueueTaskAsync(
-      IBackgroundTask backgroundTask,
-      CancellationToken cancellationToken)
+    public async Task QueueTaskAsync(
+        IBackgroundTask backgroundTask,
+        CancellationToken cancellationToken)
     {
         Log.StartQueueTaskMessage(_log, backgroundTask);
-        await _queue.Writer.WriteAsync(backgroundTask, cancellationToken);
+        await _writer.WriteAsync(backgroundTask, cancellationToken);
         Log.StopQueueTaskMessage(_log, backgroundTask);
     }
 
     /// <inheritdoc />
-    public async ValueTask<IBackgroundTask> DequeueTaskAsync(
-        CancellationToken cancellationToken)
+    public async Task<IBackgroundTask> DequeueTaskAsync(CancellationToken cancellationToken)
     {
         Log.StartDequeueTaskMessage(_log);
-        var backgroundTask = await _queue.Reader.ReadAsync(cancellationToken);
-        Log.StopDequeueTaskMessage(_log, backgroundTask, _queue.Reader.Count);
+        var backgroundTask = await _reader.ReadAsync(cancellationToken);
+        Log.StopDequeueTaskMessage(_log, backgroundTask, _reader.Count);
         return backgroundTask;
     }
 
     private static partial class Log
     {
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Емкость очереди фоновых задач: '{Capacity}'.")]
+        [LoggerMessage(Level = LogLevel.Trace, Message = "Емкость очереди фоновых задач установлена равной '{Capacity}'.")]
         public static partial void QueueCapacityMessage(ILogger log, int capacity);
 
         [LoggerMessage(Level = LogLevel.Trace, Message = "Инициировано добавление фоновой задачи '{BackgroundTask}' в очередь.")]

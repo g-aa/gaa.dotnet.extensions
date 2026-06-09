@@ -8,7 +8,7 @@ namespace Gaa.Extensions;
 /// <summary>
 /// Hosted сервис очереди с фоновыми задачами.
 /// </summary>
-internal sealed partial class BackgroundTaskExecutionService : BackgroundService
+internal sealed partial class DefaultBusExecutor : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -16,42 +16,32 @@ internal sealed partial class BackgroundTaskExecutionService : BackgroundService
 
     private readonly IBackgroundTaskQueue _taskQueue;
 
-    private readonly BusOptions _options;
+    private readonly IOptions<BusOptions> _options;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="BackgroundTaskExecutionService"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBusExecutor"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
-    /// <param name="serviceScopeFactory">Фабрика сервисов.</param>
+    /// <param name="scopeFactory">Фабрика сервисов.</param>
     /// <param name="taskQueue">Очередь с фоновыми задачами.</param>
     /// <param name="options">Настройки шины сообщений.</param>
-    public BackgroundTaskExecutionService(
+    public DefaultBusExecutor(
         ILoggerFactory loggerFactory,
-        IServiceScopeFactory serviceScopeFactory,
+        IServiceScopeFactory scopeFactory,
         IBackgroundTaskQueue taskQueue,
         IOptions<BusOptions> options)
     {
-        _log = loggerFactory.CreateLogger(CategoryName.Executor);
-        _scopeFactory = serviceScopeFactory;
+        _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
+        _scopeFactory = scopeFactory;
         _taskQueue = taskQueue;
-        _options = options.Value;
+        _options = options;
     }
 
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Log.StartMessage(_log);
-        Log.ExecutionTimeLimitMessage(_log, _options.BackgroundTaskExecutionTimeLimit);
-
-        var count = _options.ProcessingBackgroundTaskCount;
-        Log.ProcessingTaskCountMessage(_log, count);
-
-        var tasks = Enumerable
-            .Range(1, count)
-            .Select(_ => InternalExecuteAsync(stoppingToken))
-            .ToList();
-
-        await Task.WhenAll(tasks);
+        await InternalExecuteAsync(stoppingToken);
         Log.StopMessage(_log);
     }
 
@@ -64,7 +54,7 @@ internal sealed partial class BackgroundTaskExecutionService : BackgroundService
                 var backgroundTask = await _taskQueue.DequeueTaskAsync(stoppingToken);
                 using var scope = _scopeFactory.CreateScope();
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                cts.CancelAfter(_options.BackgroundTaskExecutionTimeLimit);
+                cts.CancelAfter(backgroundTask.ExecutionTimeLimit ?? _options.Value.BackgroundTaskExecutionTimeLimit);
                 await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);
             }
             catch (OperationCanceledException)
@@ -80,19 +70,13 @@ internal sealed partial class BackgroundTaskExecutionService : BackgroundService
 
     private static partial class Log
     {
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Сервис фоновых задач запущен на выполнение...")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Сервис фоновых задач запущен на выполнение...")]
         public static partial void StartMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Ограничение по времени выполнения фоновой задачи выставлено равным: '{Time}'.")]
-        public static partial void ExecutionTimeLimitMessage(ILogger log, TimeSpan time);
-
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Количество одновременно обрабатываемых задач: '{Count}'.")]
-        public static partial void ProcessingTaskCountMessage(ILogger log, int count);
-
-        [LoggerMessage(Level = LogLevel.Trace, Message = "Сервис фоновых задач остановлен.")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Сервис фоновых задач остановлен.")]
         public static partial void StopMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Error, Message = "Сработала ошибка в процессе выполнения фоновой задачи!")]
+        [LoggerMessage(Level = LogLevel.Error, Message = "Сработала необработанное исключение в процессе выполнения фоновой задачи!")]
         public static partial void ErrorMessage(ILogger log, Exception ex);
     }
 }

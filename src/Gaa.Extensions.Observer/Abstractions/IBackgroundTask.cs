@@ -8,6 +8,11 @@ namespace Gaa.Extensions;
 public interface IBackgroundTask
 {
     /// <summary>
+    /// Предьлное время обрабтки сообщения.
+    /// </summary>
+    TimeSpan? ExecutionTimeLimit { get; }
+
+    /// <summary>
     /// Выполняет логику задачи.
     /// </summary>
     /// <param name="provider">Провайдер сервисов.</param>

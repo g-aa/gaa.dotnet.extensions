@@ -14,7 +14,7 @@ public interface IBackgroundTaskQueue
     /// <param name="backgroundTask">Фоновая задача.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
-    ValueTask QueueTaskAsync(
+    Task QueueTaskAsync(
         IBackgroundTask backgroundTask,
         CancellationToken cancellationToken);
 
@@ -23,6 +23,6 @@ public interface IBackgroundTaskQueue
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Фоновая задача.</returns>
-    ValueTask<IBackgroundTask> DequeueTaskAsync(
+    Task<IBackgroundTask> DequeueTaskAsync(
         CancellationToken cancellationToken);
 }

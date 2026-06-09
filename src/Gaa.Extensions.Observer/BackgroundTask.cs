@@ -20,11 +20,17 @@ internal sealed class BackgroundTask<TMessage> : IBackgroundTask
     public required IReadOnlyDictionary<string, string> MessageHeaders { get; init; }
 
     /// <inheritdoc />
-    public Task ExecuteAsync(
-        IServiceProvider provider,
-        CancellationToken cancellationToken)
+    public TimeSpan? ExecutionTimeLimit { get; init; }
+
+    /// <inheritdoc />
+    public Task ExecuteAsync(IServiceProvider provider, CancellationToken cancellationToken)
     {
-        var consumer = provider.GetRequiredService<IAsyncConsumer<TMessage>>();
+        var consumer = provider.GetService<IAsyncConsumer<TMessage>>();
+        if (consumer == null)
+        {
+            return Task.CompletedTask;
+        }
+
         var context = new MessageContext<TMessage>
         {
             Message = Message,
@@ -38,6 +44,6 @@ internal sealed class BackgroundTask<TMessage> : IBackgroundTask
     public override string ToString()
     {
         var messageType = typeof(TMessage);
-        return $"BackgroundTask<{messageType.Namespace}.{messageType.Name}>";
+        return $"Gaa.Extensions.BackgroundTask<{messageType.Namespace}.{messageType.Name}>";
     }
 }
