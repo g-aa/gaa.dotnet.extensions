@@ -3,8 +3,6 @@ using Requestum.Contract;
 
 namespace Gaa.Extensions.Benchmark.Requestum.Features;
 
-#pragma warning disable SA1402 // File may only contain a single type
-
 /// <summary>
 /// Кейс для тестирования #1.
 /// </summary>

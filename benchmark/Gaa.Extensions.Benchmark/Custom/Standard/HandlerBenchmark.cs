@@ -2,13 +2,12 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.Custom.Features;
-
+using Gaa.Extensions.Mediator;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions.Benchmark.Custom.Standard;
 
-#pragma warning disable CA1515
-#pragma warning disable CS8618
+#pragma warning disable CS8618 // Non-nullable variable must contain a non-null value when exiting constructor. Consider declaring it as nullable.
 
 /// <summary>
 /// Контрольный тест.

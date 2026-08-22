@@ -2,15 +2,12 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 
 using Gaa.Extensions.Benchmark.Requestum.Features;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Requestum;
 
 namespace Gaa.Extensions.Benchmark.Requestum;
 
-#pragma warning disable CA1515
-#pragma warning disable CS8618
+#pragma warning disable CS8618 // Non-nullable variable must contain a non-null value when exiting constructor. Consider declaring it as nullable.
 
 /// <summary>
 /// Контрольный тест.

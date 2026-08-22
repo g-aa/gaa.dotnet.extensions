@@ -2,8 +2,6 @@ using Requestum.Contract;
 
 namespace Gaa.Extensions.Benchmark.Requestum.Features;
 
-#pragma warning disable SA1402 // File may only contain a single type
-
 /// <summary>
 /// Промежуточное ПО для запроса.
 /// </summary>

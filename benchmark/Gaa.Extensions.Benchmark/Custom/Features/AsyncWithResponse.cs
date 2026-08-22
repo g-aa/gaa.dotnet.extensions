@@ -1,6 +1,6 @@
-namespace Gaa.Extensions.Benchmark.Custom.Features;
+using Gaa.Extensions.Mediator;
 
-#pragma warning disable SA1402 // File may only contain a single type
+namespace Gaa.Extensions.Benchmark.Custom.Features;
 
 /// <summary>
 /// Кейс для тестирования #1.
