@@ -1,7 +1,7 @@
-#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
-#pragma warning disable CA1711  // Идентификаторы не должны иметь неправильных суффиксов
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+#pragma warning disable CA1711  // Identifiers should not have incorrect suffix
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Очередь фоновых задач.

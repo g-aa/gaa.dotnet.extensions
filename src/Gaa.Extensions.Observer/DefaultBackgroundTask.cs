@@ -1,12 +1,12 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Фоновая задача.
 /// </summary>
 /// <typeparam name="TMessage">Тип сообщения.</typeparam>
-internal sealed class BackgroundTask<TMessage> : IBackgroundTask
+internal sealed class DefaultBackgroundTask<TMessage> : IBackgroundTask
     where TMessage : notnull
 {
     /// <summary>
@@ -26,18 +26,7 @@ internal sealed class BackgroundTask<TMessage> : IBackgroundTask
     public Task ExecuteAsync(IServiceProvider provider, CancellationToken cancellationToken)
     {
         var consumer = provider.GetService<IAsyncConsumer<TMessage>>();
-        if (consumer == null)
-        {
-            return Task.CompletedTask;
-        }
-
-        var context = new MessageContext<TMessage>
-        {
-            Message = Message,
-            Headers = MessageHeaders,
-        };
-
-        return consumer.ConsumeAsync(context, cancellationToken);
+        return consumer != null ? ConsumeAsync(consumer, cancellationToken) : Task.CompletedTask;
     }
 
     /// <inheritdoc />
@@ -45,5 +34,16 @@ internal sealed class BackgroundTask<TMessage> : IBackgroundTask
     {
         var messageType = typeof(TMessage);
         return $"Gaa.Extensions.BackgroundTask<{messageType.Namespace}.{messageType.Name}>";
+    }
+
+    private Task ConsumeAsync(IAsyncConsumer<TMessage> consumer, CancellationToken cancellationToken)
+    {
+        var message = new MessageContext<TMessage>
+        {
+            Message = Message,
+            Headers = MessageHeaders,
+        };
+
+        return consumer.ConsumeAsync(message, cancellationToken);
     }
 }

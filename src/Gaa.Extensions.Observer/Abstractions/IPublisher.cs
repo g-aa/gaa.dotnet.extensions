@@ -1,6 +1,6 @@
-#pragma warning disable IDE0130 // Пространство имен (namespace) не соответствует структуре папок.
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Шина для обмена сообщениями и событиями.

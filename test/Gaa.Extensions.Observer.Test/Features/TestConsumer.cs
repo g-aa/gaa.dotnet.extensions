@@ -1,6 +1,4 @@
-namespace Gaa.Extensions.Test.Features;
-
-#pragma warning disable CA1812
+namespace Gaa.Extensions.Observer.Test.Features;
 
 /// <summary>
 /// Тестовый потребитель.

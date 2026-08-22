@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Методы расширения для <see cref="IServiceCollection"/>.
@@ -27,7 +27,7 @@ public static class BusExtensions
         services
             .AddHostedService<DefaultBusExecutor>()
             .AddSingleton<IPublisher, DefaultBusPublisher>()
-            .AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            .AddSingleton<IBackgroundTaskQueue, DefaultBackgroundTaskQueue>();
 
         return new()
         {

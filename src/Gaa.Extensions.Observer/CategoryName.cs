@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Категории журналов для <see cref="ILogger"/>.
@@ -8,7 +8,7 @@ namespace Gaa.Extensions;
 internal static class CategoryName
 {
     /// <summary>
-    /// Категория для <see cref="BackgroundTaskQueue"/>, <see cref="DefaultBusExecutor"/>.
+    /// Категория для <see cref="DefaultBackgroundTaskQueue"/>, <see cref="DefaultBusExecutor"/>.
     /// </summary>
-    internal const string DefaultBus = "Gaa.Extensions.Default.Bus";
+    internal const string DefaultBus = "Gaa.Extensions.Observer.Default.Bus";
 }

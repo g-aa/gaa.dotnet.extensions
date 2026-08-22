@@ -1,23 +1,23 @@
-using Gaa.Extensions.Test.Features;
+using Gaa.Extensions.Observer.Test.Features;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Test;
+namespace Gaa.Extensions.Observer.Test;
 
 /// <summary>
-/// Набор тестов для <see cref="BackgroundTask{TMessage}"/>.
+/// Набор тестов для <see cref="DefaultBackgroundTask{TMessage}"/>.
 /// </summary>
 [TestFixture]
 internal sealed class BackgroundTaskTest
 {
     /// <summary>
-    /// Успешное выполнение <see cref="BackgroundTask{TMessage}.ToString()"/>.
+    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ToString()"/>.
     /// </summary>
     [Test]
     public void SuccessfulToString()
     {
         // arrange
-        var backgroundTask = new BackgroundTask<string>
+        var backgroundTask = new DefaultBackgroundTask<string>
         {
             Message = "Test message",
             MessageHeaders = new Dictionary<string, string>(),
@@ -31,7 +31,7 @@ internal sealed class BackgroundTaskTest
     }
 
     /// <summary>
-    /// Успешное выполнение <see cref="BackgroundTask{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Test]
@@ -46,7 +46,7 @@ internal sealed class BackgroundTaskTest
             .AddTransient(_ => mockLog.Object)
             .BuildServiceProvider();
 
-        var backgroundTask = new BackgroundTask<string>
+        var backgroundTask = new DefaultBackgroundTask<string>
         {
             Message = "Test message",
             MessageHeaders = new Dictionary<string, string>(),

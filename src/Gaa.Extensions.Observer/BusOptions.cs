@@ -1,4 +1,4 @@
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Настройки шины сообщений и событий.

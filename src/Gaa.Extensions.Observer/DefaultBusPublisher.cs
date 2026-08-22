@@ -1,4 +1,4 @@
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Observer;
 
 /// <summary>
 /// Шина для обмена сообщениями и событиями.
@@ -43,7 +43,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         where TMessage : notnull
     {
         return _taskQueue.QueueTaskAsync(
-            new BackgroundTask<TMessage>
+            new DefaultBackgroundTask<TMessage>
             {
                 Message = message,
                 MessageHeaders = messageHeaders,
@@ -61,7 +61,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         where TMessage : notnull
     {
         return _taskQueue.QueueTaskAsync(
-            new BackgroundTask<TMessage>
+            new DefaultBackgroundTask<TMessage>
             {
                 Message = message,
                 MessageHeaders = messageHeaders,
