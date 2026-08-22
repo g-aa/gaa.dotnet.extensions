@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Контекст для конфигурирования <see cref="IMediator"/>.

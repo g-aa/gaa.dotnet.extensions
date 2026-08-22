@@ -1,4 +1,4 @@
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <inheritdoc />
 internal sealed class MediatorLite : IMediator
