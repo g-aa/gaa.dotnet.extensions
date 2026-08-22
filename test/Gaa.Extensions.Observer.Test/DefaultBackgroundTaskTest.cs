@@ -1,5 +1,4 @@
 using Gaa.Extensions.Observer.Test.Features;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions.Observer.Test;
@@ -8,7 +7,7 @@ namespace Gaa.Extensions.Observer.Test;
 /// Набор тестов для <see cref="DefaultBackgroundTask{TMessage}"/>.
 /// </summary>
 [TestFixture]
-internal sealed class BackgroundTaskTest
+internal sealed class DefaultBackgroundTaskTest
 {
     /// <summary>
     /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ToString()"/>.
@@ -35,15 +34,12 @@ internal sealed class BackgroundTaskTest
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Test]
-    public async Task SuccessfulExecuteAsync()
+    public async Task SuccessfulExecuteWithConsumeAsync()
     {
         // arrange
-        var mockLog = new Mock<IMessageLogger>();
-        mockLog.Setup(l => l.Log(It.IsAny<string>()));
-
         var provider = new ServiceCollection()
             .AddTransient<IAsyncConsumer<string>, TestConsumer>()
-            .AddTransient(_ => mockLog.Object)
+            .AddMessageLogger()
             .BuildServiceProvider();
 
         var backgroundTask = new DefaultBackgroundTask<string>
@@ -58,8 +54,42 @@ internal sealed class BackgroundTaskTest
         // assert
         await func.Should().NotThrowAsync();
 
-        mockLog.Verify(
-            l => l.Log(It.Is<string>(m => m == $"Получено сообщение: {backgroundTask.Message}.")),
-            Times.Exactly(1));
+        provider
+            .GetRequiredService<Mock<IMessageLogger>>()
+            .Verify(
+                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: {backgroundTask.Message}.")),
+                Times.Exactly(1));
+    }
+
+    /// <summary>
+    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// </summary>
+    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    /// <remarks>Без вызов потребителя сообщения.</remarks>
+    [Test]
+    public async Task SuccessfulExecuteWithoutConsumeAsync()
+    {
+        // arrange
+        using var provider = new ServiceCollection()
+            .AddMessageLogger()
+            .BuildServiceProvider();
+
+        var backgroundTask = new DefaultBackgroundTask<string>
+        {
+            Message = "Test message",
+            MessageHeaders = new Dictionary<string, string>(),
+        };
+
+        // act
+        var func = () => backgroundTask.ExecuteAsync(provider, CancellationToken.None);
+
+        // assert
+        await func.Should().NotThrowAsync();
+
+        provider
+            .GetRequiredService<Mock<IMessageLogger>>()
+            .Verify(
+                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: {backgroundTask.Message}.")),
+                Times.Never());
     }
 }
