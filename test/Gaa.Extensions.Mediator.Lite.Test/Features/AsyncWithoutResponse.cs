@@ -1,4 +1,4 @@
-namespace Gaa.Extensions.Test.Features;
+namespace Gaa.Extensions.Mediator.Test.Features;
 
 /// <summary>
 /// Кейс для тестирования.
