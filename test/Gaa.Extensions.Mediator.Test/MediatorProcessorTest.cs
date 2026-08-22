@@ -1,11 +1,10 @@
-using Gaa.Extensions.Test.Features;
-
+using Gaa.Extensions.Mediator.Test.Features;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Test;
+namespace Gaa.Extensions.Mediator.Test;
 
 /// <summary>
-/// Набор тестов для <see cref="Mediator"/>.
+/// Набор тестов для <see cref="DefaultMediator"/>.
 /// </summary>
 [TestFixture]
 internal sealed class MediatorProcessorTest
