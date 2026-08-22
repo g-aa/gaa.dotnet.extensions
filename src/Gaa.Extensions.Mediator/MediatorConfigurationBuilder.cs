@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Контекст <see cref="IMediator"/> для конфигурирования.
@@ -27,7 +27,7 @@ public sealed class MediatorConfigurationBuilder
         ServiceLifetime processorLifetime)
     {
         Services = services;
-        Services.Add<IMediator, Mediator>(mediatorLifetime);
+        Services.Add<IMediator, DefaultMediator>(mediatorLifetime);
         _handlerLifetime = handlerLifetime;
         _processorLifetime = processorLifetime;
     }

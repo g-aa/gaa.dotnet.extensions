@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Внутренний обработчик коллекции постпроцессоров вида <see cref="IRequestPostProcessor{TRequest, TResponse}"/>.

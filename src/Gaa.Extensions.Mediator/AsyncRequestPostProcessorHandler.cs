@@ -1,4 +1,4 @@
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Внутренний обработчик коллекции постпроцессоров вида <see cref="IAsyncRequestPostProcessor{TRequest, TResponse}"/>.

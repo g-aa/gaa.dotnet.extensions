@@ -2,9 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions;
-
-#pragma warning disable SA1402 // File may only contain a single type
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Контекст обработчика запросов.
