@@ -1,6 +1,4 @@
-namespace Gaa.Extensions;
-
-#pragma warning disable CA1040 // Avoid empty interfaces
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Обработчик запросов.

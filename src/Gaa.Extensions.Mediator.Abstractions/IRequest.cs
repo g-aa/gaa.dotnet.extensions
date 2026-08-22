@@ -1,7 +1,4 @@
-namespace Gaa.Extensions;
-
-#pragma warning disable CA1040 // Avoid empty interfaces
-#pragma warning disable S2326  // Unused type parameters should be removed
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Маркер интерфейс запроса.

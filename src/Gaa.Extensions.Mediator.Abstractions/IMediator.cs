@@ -1,4 +1,4 @@
-namespace Gaa.Extensions;
+namespace Gaa.Extensions.Mediator;
 
 /// <summary>
 /// Медиатор, посредник.
