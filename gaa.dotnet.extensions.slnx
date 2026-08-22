@@ -9,6 +9,9 @@
     <File Path="build/coverlet.runsettings" />
     <File Path="build/Version.targets" />
   </Folder>
+  <Folder Name="/example/">
+    <Project Path="example/Gaa.Worker/Gaa.Worker.csproj" />
+  </Folder>
   <Folder Name="/root/">
     <File Path=".drone.yml" />
     <File Path=".editorconfig" />
