@@ -17,6 +17,6 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="6.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Gaa.Extensions.Observer\Gaa.Extensions.Observer.csproj" />
+    <ProjectReference Include="../../src/Gaa.Extensions.Observer/Gaa.Extensions.Observer.csproj" />
   </ItemGroup>
 </Project>
