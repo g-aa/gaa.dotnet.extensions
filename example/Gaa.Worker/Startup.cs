@@ -2,6 +2,8 @@ using Gaa.Extensions.Observer;
 using Gaa.Worker.Consumers;
 using Gaa.Worker.Messages;
 using Gaa.Worker.Workers;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 namespace Gaa.Worker;
 
@@ -29,5 +31,16 @@ internal static class Startup
 
         services
             .AddHealthChecks();
+
+        services
+            .AddOpenTelemetry()
+            .ConfigureResource(builder => builder.AddService("Gaa.Worker"))
+            .WithMetrics(builder => builder
+                .AddMeter(DefaultBusMetrics.MeterName)
+                .AddInstrumentation<DefaultBusMetrics>()
+                .AddConsoleExporter((exporterOptions, metricReaderOptions) =>
+                {
+                    metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
+                }));
     }
 }
