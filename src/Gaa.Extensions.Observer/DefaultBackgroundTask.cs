@@ -9,18 +9,54 @@ namespace Gaa.Extensions.Observer;
 internal sealed class DefaultBackgroundTask<TMessage> : IBackgroundTask
     where TMessage : notnull
 {
+    private readonly TMessage _message;
+
+    private readonly IReadOnlyDictionary<string, string> _messageHeaders;
+
+    private readonly TimeSpan? _executionTimeLimit;
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTask{TMessage}"/>.
+    /// </summary>
+    /// <param name="message">Сообщение.</param>
+    /// <param name="messageHeaders">Заголовки сообщения.</param>
+    internal DefaultBackgroundTask(
+        TMessage message,
+        IReadOnlyDictionary<string, string> messageHeaders)
+    {
+        _message = message;
+        _messageHeaders = messageHeaders;
+        _executionTimeLimit = null;
+    }
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTask{TMessage}"/>.
+    /// </summary>
+    /// <param name="message">Сообщение.</param>
+    /// <param name="messageHeaders">Заголовки сообщения.</param>
+    /// <param name="executionTimeLimit">Предьлное время обрабтки сообщения.</param>
+    internal DefaultBackgroundTask(
+        TMessage message,
+        IReadOnlyDictionary<string, string> messageHeaders,
+        TimeSpan? executionTimeLimit)
+    {
+        _message = message;
+        _messageHeaders = messageHeaders;
+        _executionTimeLimit = executionTimeLimit;
+    }
+
     /// <summary>
     /// Сообщение.
     /// </summary>
-    public required TMessage Message { get; init; }
+    public TMessage Message => _message;
 
     /// <summary>
     /// Заголовки сообщения.
     /// </summary>
-    public required IReadOnlyDictionary<string, string> MessageHeaders { get; init; }
+    public IReadOnlyDictionary<string, string> MessageHeaders => _messageHeaders;
 
     /// <inheritdoc />
-    public TimeSpan? ExecutionTimeLimit { get; init; }
+    public TimeSpan? ExecutionTimeLimit => _executionTimeLimit;
 
     /// <inheritdoc />
     public Task ExecuteAsync(IServiceProvider provider, CancellationToken cancellationToken)
@@ -33,17 +69,12 @@ internal sealed class DefaultBackgroundTask<TMessage> : IBackgroundTask
     public override string ToString()
     {
         var messageType = typeof(TMessage);
-        return $"Gaa.Extensions.BackgroundTask<{messageType.Namespace}.{messageType.Name}>";
+        return $"Gaa.Extensions.Observer.BackgroundTask<{messageType.Namespace}.{messageType.Name}>";
     }
 
     private Task ConsumeAsync(IAsyncConsumer<TMessage> consumer, CancellationToken cancellationToken)
     {
-        var message = new MessageContext<TMessage>
-        {
-            Message = Message,
-            Headers = MessageHeaders,
-        };
-
+        var message = new MessageContext<TMessage>(Message, MessageHeaders);
         return consumer.ConsumeAsync(message, cancellationToken);
     }
 }

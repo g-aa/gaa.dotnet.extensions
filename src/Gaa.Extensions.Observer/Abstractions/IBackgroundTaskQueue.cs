@@ -9,20 +9,27 @@ namespace Gaa.Extensions.Observer;
 public interface IBackgroundTaskQueue
 {
     /// <summary>
+    /// Емкость очереди сообщений.
+    /// </summary>
+    int Capacity { get; }
+
+    /// <summary>
+    /// Количество сообщений в очереди.
+    /// </summary>
+    int Count { get; }
+
+    /// <summary>
     /// Добавляет фоновую задачу в очередь на выполнение.
     /// </summary>
     /// <param name="backgroundTask">Фоновая задача.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
-    Task QueueTaskAsync(
-        IBackgroundTask backgroundTask,
-        CancellationToken cancellationToken);
+    Task QueueTaskAsync(IBackgroundTask backgroundTask, CancellationToken cancellationToken);
 
     /// <summary>
     /// Изымает фоновую задачу из очереди для исполнения.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Фоновая задача.</returns>
-    Task<IBackgroundTask> DequeueTaskAsync(
-        CancellationToken cancellationToken);
+    Task<IBackgroundTask> DequeueTaskAsync(CancellationToken cancellationToken);
 }

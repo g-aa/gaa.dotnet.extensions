@@ -6,16 +6,31 @@ namespace Gaa.Extensions.Observer;
 /// Контекст сообщения.
 /// </summary>
 /// <typeparam name="TMessage">Тип сообщения.</typeparam>
-public sealed class MessageContext<TMessage>
+public readonly ref struct MessageContext<TMessage>
     where TMessage : notnull
 {
+    private readonly TMessage _message;
+
+    private readonly IReadOnlyDictionary<string, string> _headers;
+
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="MessageContext{TMessage}"/>.
+    /// </summary>
+    /// <param name="message">Сообщение.</param>
+    /// <param name="headers">Заголовки сообщения.</param>
+    internal MessageContext(TMessage message, IReadOnlyDictionary<string, string> headers)
+    {
+        _message = message;
+        _headers = headers;
+    }
+
     /// <summary>
     /// Сообщение.
     /// </summary>
-    public required TMessage Message { get; init; }
+    public TMessage Message => _message;
 
     /// <summary>
-    /// Заголовок.
+    /// Заголовки сообщения.
     /// </summary>
-    public required IReadOnlyDictionary<string, string> Headers { get; init; }
+    public IReadOnlyDictionary<string, string> Headers => _headers;
 }

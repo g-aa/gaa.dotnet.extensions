@@ -7,6 +7,8 @@ internal sealed partial class DefaultBusPublisher : IPublisher
 {
     private readonly IBackgroundTaskQueue _taskQueue;
 
+    private readonly IReadOnlyDictionary<string, string> _messageHeaders;
+
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultBusPublisher"/>.
     /// </summary>
@@ -14,6 +16,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
     public DefaultBusPublisher(IBackgroundTaskQueue taskQueue)
     {
         _taskQueue = taskQueue;
+        _messageHeaders = new Dictionary<string, string>();
     }
 
     /// <inheritdoc />
@@ -22,7 +25,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         CancellationToken cancellationToken)
         where TMessage : notnull
     {
-        return PublishAsync(message, new Dictionary<string, string>(), cancellationToken);
+        return PublishAsync(message, _messageHeaders, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -32,7 +35,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         CancellationToken cancellationToken)
         where TMessage : notnull
     {
-        return PublishAsync(message, new Dictionary<string, string>(), executionTimeLimit, cancellationToken);
+        return PublishAsync(message, _messageHeaders, executionTimeLimit, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -42,14 +45,8 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         CancellationToken cancellationToken)
         where TMessage : notnull
     {
-        return _taskQueue.QueueTaskAsync(
-            new DefaultBackgroundTask<TMessage>
-            {
-                Message = message,
-                MessageHeaders = messageHeaders,
-                ExecutionTimeLimit = null,
-            },
-            cancellationToken);
+        var backgroundTask = new DefaultBackgroundTask<TMessage>(message, messageHeaders);
+        return _taskQueue.QueueTaskAsync(backgroundTask, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -60,13 +57,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
         CancellationToken cancellationToken)
         where TMessage : notnull
     {
-        return _taskQueue.QueueTaskAsync(
-            new DefaultBackgroundTask<TMessage>
-            {
-                Message = message,
-                MessageHeaders = messageHeaders,
-                ExecutionTimeLimit = executionTimeLimit,
-            },
-            cancellationToken);
+        var backgroundTask = new DefaultBackgroundTask<TMessage>(message, messageHeaders, executionTimeLimit);
+        return _taskQueue.QueueTaskAsync(backgroundTask, cancellationToken);
     }
 }

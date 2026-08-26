@@ -9,6 +9,8 @@ namespace Gaa.Extensions.Observer.Test;
 [TestFixture]
 internal sealed class DefaultBackgroundTaskTest
 {
+    private static readonly Dictionary<string, string> MessageHeaders = [];
+
     /// <summary>
     /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ToString()"/>.
     /// </summary>
@@ -16,17 +18,13 @@ internal sealed class DefaultBackgroundTaskTest
     public void SuccessfulToString()
     {
         // arrange
-        var backgroundTask = new DefaultBackgroundTask<string>
-        {
-            Message = "Test message",
-            MessageHeaders = new Dictionary<string, string>(),
-        };
+        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
 
         // act
         var result = backgroundTask.ToString();
 
         // assert
-        result.Should().Be("Gaa.Extensions.BackgroundTask<System.String>");
+        result.Should().Be("Gaa.Extensions.Observer.BackgroundTask<System.String>");
     }
 
     /// <summary>
@@ -42,11 +40,7 @@ internal sealed class DefaultBackgroundTaskTest
             .AddMessageLogger()
             .BuildServiceProvider();
 
-        var backgroundTask = new DefaultBackgroundTask<string>
-        {
-            Message = "Test message",
-            MessageHeaders = new Dictionary<string, string>(),
-        };
+        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
 
         // act
         var func = () => backgroundTask.ExecuteAsync(provider, CancellationToken.None);
@@ -74,11 +68,7 @@ internal sealed class DefaultBackgroundTaskTest
             .AddMessageLogger()
             .BuildServiceProvider();
 
-        var backgroundTask = new DefaultBackgroundTask<string>
-        {
-            Message = "Test message",
-            MessageHeaders = new Dictionary<string, string>(),
-        };
+        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
 
         // act
         var func = () => backgroundTask.ExecuteAsync(provider, CancellationToken.None);
