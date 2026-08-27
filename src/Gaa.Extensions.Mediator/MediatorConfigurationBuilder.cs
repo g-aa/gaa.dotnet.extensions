@@ -27,7 +27,7 @@ public sealed class MediatorConfigurationBuilder
         ServiceLifetime processorLifetime)
     {
         Services = services;
-        Services.Add<IMediator, DefaultMediator>(mediatorLifetime);
+        Services.Add<IMediator, MediatorStandard>(mediatorLifetime);
         _handlerLifetime = handlerLifetime;
         _processorLifetime = processorLifetime;
     }

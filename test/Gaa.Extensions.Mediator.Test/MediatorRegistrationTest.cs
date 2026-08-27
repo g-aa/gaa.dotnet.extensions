@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Mediator.Test;
 
 /// <summary>
-/// Набор тестов для <see cref="DefaultMediator"/>.
+/// Набор тестов для <see cref="MediatorStandard"/>.
 /// </summary>
 [TestFixture]
 internal sealed class MediatorRegistrationTest

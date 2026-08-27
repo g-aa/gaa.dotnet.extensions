@@ -1,15 +1,15 @@
 namespace Gaa.Extensions.Mediator;
 
 /// <inheritdoc />
-internal sealed class DefaultMediator : IMediator
+internal sealed class MediatorStandard : IMediator
 {
     private readonly IServiceProvider _provider;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultMediator"/>.
+    /// Инициализирует новый экземпляр класса <see cref="MediatorStandard"/>.
     /// </summary>
     /// <param name="provider">Провайдер сервисов.</param>
-    public DefaultMediator(IServiceProvider provider)
+    public MediatorStandard(IServiceProvider provider)
     {
         _provider = provider;
     }

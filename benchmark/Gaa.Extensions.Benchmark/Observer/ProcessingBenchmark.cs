@@ -36,8 +36,8 @@ public class ProcessingBenchmark
             .AddSingleton(p =>
             {
                 var mockFactory = new Mock<ILoggerFactory>();
-                mockFactory.Setup(l => l.CreateLogger(It.IsAny<string>()));
-                return mockFactory;
+                mockFactory.Setup(l => l.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
+                return mockFactory.Object;
             })
             .Configure<BusOptions>(options =>
             {
