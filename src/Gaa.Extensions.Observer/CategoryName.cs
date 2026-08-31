@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Observer;
 internal static class CategoryName
 {
     /// <summary>
-    /// Категория для <see cref="DefaultBackgroundTaskQueue"/>, <see cref="DefaultBusExecutor"/>.
+    /// Категория для <see cref="DefaultChildBus"/>, <see cref="DefaultBusExecutor"/>.
     /// </summary>
     internal const string DefaultBus = "Gaa.Extensions.Observer.Default.Bus";
 }

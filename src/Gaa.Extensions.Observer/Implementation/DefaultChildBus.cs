@@ -1,14 +1,15 @@
 using System.Threading.Channels;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Имплементация <see cref="IBackgroundTaskQueue"/> по умолчанию.
+/// Имплементация <see cref="IChildBus"/> по умолчанию.
 /// </summary>
-internal sealed partial class DefaultBackgroundTaskQueue : IBackgroundTaskQueue
+internal sealed partial class DefaultChildBus : IChildBus
 {
     private readonly ILogger _log;
 
@@ -18,17 +19,20 @@ internal sealed partial class DefaultBackgroundTaskQueue : IBackgroundTaskQueue
 
     private readonly ChannelWriter<IBackgroundTask> _writer;
 
+    private readonly string _name;
+
     private readonly int _taskQueueCapacity;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskQueue"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultChildBus"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultBackgroundTaskQueue(ILoggerFactory loggerFactory, IOptions<BusOptions> options)
+    public DefaultChildBus(ILoggerFactory loggerFactory, ChildBusOptions options)
     {
-        _taskQueueCapacity = options.Value.BackgroundTaskQueueCapacity;
-        var boundedChannelOptions = new BoundedChannelOptions(_taskQueueCapacity)
+        _name = options.Name;
+        _taskQueueCapacity = options.Capacity;
+        var channelOptions = new BoundedChannelOptions(_taskQueueCapacity)
         {
             AllowSynchronousContinuations = false,
             FullMode = BoundedChannelFullMode.Wait,
@@ -37,11 +41,16 @@ internal sealed partial class DefaultBackgroundTaskQueue : IBackgroundTaskQueue
         };
 
         _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
-        _queue = Channel.CreateBounded<IBackgroundTask>(boundedChannelOptions);
+        _queue = Channel.CreateBounded<IBackgroundTask>(channelOptions);
         _reader = _queue.Reader;
         _writer = _queue.Writer;
         Log.QueueCapacityMessage(_log, _taskQueueCapacity);
     }
+
+    /// <summary>
+    /// Наименование шины.
+    /// </summary>
+    public string Name => _name;
 
     /// <inheritdoc />
     public int Capacity => _taskQueueCapacity;
@@ -62,6 +71,12 @@ internal sealed partial class DefaultBackgroundTaskQueue : IBackgroundTaskQueue
         var backgroundTask = await _reader.ReadAsync(cancellationToken);
         Log.StopDequeueTaskMessage(_log, backgroundTask);
         return backgroundTask;
+    }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return $"Bus name:{Name}; Message capacity:{Capacity}, count:{Count}";
     }
 
     private static partial class Log

@@ -12,14 +12,14 @@ public sealed class DefaultBusMetrics
     /// </summary>
     public const string MeterName = "Gaa.Extensions.Observer.Default.Bus";
 
-    private readonly IBackgroundTaskQueue _taskQueue;
+    private readonly IChildBus _taskQueue;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultBusMetrics"/>.
     /// </summary>
     /// <param name="meterFactory">Фабрика метрик.</param>
     /// <param name="taskQueue">Очередь фоновых задач.</param>
-    public DefaultBusMetrics(IMeterFactory meterFactory, IBackgroundTaskQueue taskQueue)
+    internal DefaultBusMetrics(IMeterFactory meterFactory, IChildBus taskQueue)
     {
         _taskQueue = taskQueue;
         var meter = meterFactory.Create(MeterName);

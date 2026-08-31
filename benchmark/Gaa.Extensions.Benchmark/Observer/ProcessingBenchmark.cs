@@ -4,7 +4,6 @@ using Gaa.Extensions.Benchmark.Observer.Features;
 using Gaa.Extensions.Observer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Gaa.Extensions.Benchmark.Observer;
@@ -18,13 +17,15 @@ namespace Gaa.Extensions.Benchmark.Observer;
 [MemoryDiagnoser]
 public class ProcessingBenchmark
 {
+    private const string BusName = "Test.Bus";
+
     private const string Message = "Test message!";
 
     private ServiceProvider _provider;
 
     private DefaultBusPublisher _publisher;
 
-    private DefaultBackgroundTaskQueue _taskQueue;
+    private DefaultChildBus _childBus;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -41,17 +42,19 @@ public class ProcessingBenchmark
             })
             .Configure<BusOptions>(options =>
             {
-                options.BackgroundTaskQueueCapacity = 100;
-                options.BackgroundTaskExecutionTimeLimit = TimeSpan.FromMinutes(1);
+                options.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
+                options.Subscriptions.Add(BusName, [typeof(string)]);
+                options.Options.Add(new() { Name = BusName, Capacity = 10 });
             })
+            .AddSingleton<DefaultChildBusFactory>()
+            .AddSingleton<DefaultChildBusSelector>()
+            .AddSingleton<DefaultBusPublisher>()
+
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();
 
-        var loggerFactory = _provider.GetRequiredService<ILoggerFactory>();
-        var options = _provider.GetRequiredService<IOptions<BusOptions>>();
-
-        _taskQueue = new DefaultBackgroundTaskQueue(loggerFactory, options);
-        _publisher = new DefaultBusPublisher(_taskQueue);
+        _childBus = _provider.GetRequiredService<DefaultChildBusFactory>().GetOrCreate(BusName);
+        _publisher = _provider.GetRequiredService<DefaultBusPublisher>();
     }
 
     /// <summary>
@@ -72,7 +75,7 @@ public class ProcessingBenchmark
     {
         // arrange & act
         await _publisher.PublishAsync(Message, CancellationToken.None);
-        var backgroundTask = await _taskQueue.DequeueTaskAsync(CancellationToken.None);
+        var backgroundTask = await _childBus.DequeueTaskAsync(CancellationToken.None);
         await backgroundTask.ExecuteAsync(_provider, CancellationToken.None);
     }
 }

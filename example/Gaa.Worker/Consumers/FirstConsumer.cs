@@ -4,23 +4,23 @@ using Gaa.Worker.Messages;
 namespace Gaa.Worker.Consumers;
 
 /// <summary>
-/// Пример потребителя сообщений.
+/// Первый потребитель сообщений.
 /// </summary>
-public sealed partial class ExampleConsumer : IAsyncConsumer<ExampleMessage>
+public sealed partial class FirstConsumer : IAsyncConsumer<FirstMessage>
 {
     private readonly ILogger _log;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="ExampleConsumer"/>.
+    /// Инициализирует новывый экземпляр класса <see cref="FirstConsumer"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
-    public ExampleConsumer(ILoggerFactory loggerFactory)
+    public FirstConsumer(ILoggerFactory loggerFactory)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Consumer");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.First.Consumer");
     }
 
     /// <inheritdoc />
-    public Task ConsumeAsync(MessageContext<ExampleMessage> context, CancellationToken cancellationToken)
+    public Task ConsumeAsync(MessageContext<FirstMessage> context, CancellationToken cancellationToken)
     {
         var message = context.Message;
         var processingTime = (DateTimeOffset.UtcNow - message.CreationTime).TotalMicroseconds;

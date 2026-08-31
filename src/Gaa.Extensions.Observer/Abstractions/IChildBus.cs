@@ -1,13 +1,17 @@
 #pragma warning disable IDE0130 // Namespace does not match folder structure
-#pragma warning disable CA1711  // Identifiers should not have incorrect suffix
 
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Очередь фоновых задач.
+/// Дочерняя шина для <see cref="IBackgroundTask"/>.
 /// </summary>
-public interface IBackgroundTaskQueue
+internal interface IChildBus
 {
+    /// <summary>
+    /// Наименование.
+    /// </summary>
+    string Name { get; }
+
     /// <summary>
     /// Емкость очереди сообщений.
     /// </summary>

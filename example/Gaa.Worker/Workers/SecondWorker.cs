@@ -7,7 +7,7 @@ namespace Gaa.Worker.Workers;
 /// <summary>
 /// Пример фонового задания публикующего сообщения.
 /// </summary>
-public sealed partial class ExampleWorker : BackgroundService
+public sealed partial class SecondWorker : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -16,16 +16,16 @@ public sealed partial class ExampleWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="ExampleWorker"/>.
+    /// Инициализирует новывый экземпляр класса <see cref="SecondWorker"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
     /// <param name="options">Настройки.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
-    public ExampleWorker(ILoggerFactory loggerFactory, IOptions<TimeDelayOptions> options, IPublisher publisher)
+    public SecondWorker(ILoggerFactory loggerFactory, IOptions<TimeDelayOptions> options, IPublisher publisher)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Publisher");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Second.Publisher");
         _publisher = publisher;
-        _delay = options.Value.ExampleWorker;
+        _delay = options.Value.SecondWorker;
     }
 
     /// <inheritdoc />
@@ -40,7 +40,7 @@ public sealed partial class ExampleWorker : BackgroundService
             {
                 try
                 {
-                    var message = new ExampleMessage
+                    var message = new SecondMessage
                     {
                         Id = Guid.NewGuid(),
                         Text = $"Сообщение #{number}",

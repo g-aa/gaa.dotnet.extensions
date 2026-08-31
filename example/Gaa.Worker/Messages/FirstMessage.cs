@@ -1,9 +1,9 @@
 namespace Gaa.Worker.Messages;
 
 /// <summary>
-/// Пример сообщения.
+/// Первое сообщение.
 /// </summary>
-public sealed record ExampleMessage
+public sealed record FirstMessage
 {
     /// <summary>
     /// Идентификатор.

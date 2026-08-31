@@ -3,6 +3,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
+#pragma warning disable SA1204  // Static elements should appear before instance elements
+
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
@@ -14,27 +17,27 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
 
     private readonly IServiceScopeFactory _scopeFactory;
 
-    private readonly IBackgroundTaskQueue _taskQueue;
+    private readonly IChildBusFactory<DefaultChildBus> _busFactory;
 
-    private readonly IOptions<BusOptions> _options;
+    private readonly BusOptions _options;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultBusExecutor"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="scopeFactory">Фабрика сервисов.</param>
-    /// <param name="taskQueue">Очередь с фоновыми задачами.</param>
+    /// <param name="busFactory">Очередь с фоновыми задачами.</param>
     /// <param name="options">Настройки шины сообщений.</param>
     public DefaultBusExecutor(
         ILoggerFactory loggerFactory,
         IServiceScopeFactory scopeFactory,
-        IBackgroundTaskQueue taskQueue,
+        IChildBusFactory<DefaultChildBus> busFactory,
         IOptions<BusOptions> options)
     {
         _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
         _scopeFactory = scopeFactory;
-        _taskQueue = taskQueue;
-        _options = options;
+        _busFactory = busFactory;
+        _options = options.Value;
     }
 
     /// <inheritdoc />
@@ -45,16 +48,32 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
         Log.StopMessage(_log);
     }
 
-    private async Task InternalExecuteAsync(CancellationToken stoppingToken)
+    private Task InternalExecuteAsync(CancellationToken stoppingToken)
+    {
+        var busTasks = new List<Task>(_options.Options.Count);
+        foreach (var busOptions in _options.Options)
+        {
+            var childBus = _busFactory.GetOrCreate(busOptions.Name);
+            var busTask = Task.Run(
+                () => BusExecuteAsync(childBus, _options.ExecutionTimeLimit, stoppingToken),
+                stoppingToken);
+
+            busTasks.Add(busTask);
+        }
+
+        return Task.WhenAll(busTasks);
+    }
+
+    private async Task BusExecuteAsync(DefaultChildBus childBus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var backgroundTask = await _taskQueue.DequeueTaskAsync(stoppingToken);
+                var backgroundTask = await childBus.DequeueTaskAsync(stoppingToken);
                 using var scope = _scopeFactory.CreateScope();
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                cts.CancelAfter(backgroundTask.ExecutionTimeLimit ?? _options.Value.BackgroundTaskExecutionTimeLimit);
+                cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
                 await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);
             }
             catch (OperationCanceledException)
@@ -66,6 +85,16 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
                 Log.ErrorMessage(_log, ex);
             }
         }
+    }
+
+    private static TimeSpan GetTimeLimit(TimeSpan? taskTimeLimit, TimeSpan defaultTimeLimit)
+    {
+        if (taskTimeLimit == null)
+        {
+            return defaultTimeLimit;
+        }
+
+        return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
     }
 
     private static partial class Log

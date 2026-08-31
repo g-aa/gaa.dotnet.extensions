@@ -5,7 +5,7 @@ namespace Gaa.Extensions.Observer;
 /// <summary>
 /// Фоновая задача.
 /// </summary>
-public interface IBackgroundTask
+internal interface IBackgroundTask
 {
     /// <summary>
     /// Предьлное время обрабтки сообщения.

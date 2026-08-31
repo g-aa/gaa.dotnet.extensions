@@ -15,7 +15,8 @@ public static class BusExtensions
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="configureOptions">Настройки конфигурации.</param>
     /// <returns>Контекст <see cref="IPublisher"/> для конфигурирования.</returns>
-    public static BusConfigurationBuilder AddBus(
+    /// <remarks>Регистрирует шину в памяти.</remarks>
+    public static BusConfigurationBuilder AddInMemoryBus(
         this IServiceCollection services,
         Action<BusOptions> configureOptions)
     {
@@ -26,13 +27,41 @@ public static class BusExtensions
 
         services
             .AddHostedService<DefaultBusExecutor>()
-            .AddSingleton<IPublisher, DefaultBusPublisher>()
-            .AddSingleton<IBackgroundTaskQueue, DefaultBackgroundTaskQueue>();
+            .AddSingleton<IChildBusFactory<DefaultChildBus>, DefaultChildBusFactory>()
+            .AddSingleton<IChildBusSelector, DefaultChildBusSelector>()
+            .AddSingleton<IPublisher, DefaultBusPublisher>();
 
         return new()
         {
             Services = services,
         };
+    }
+
+    /// <summary>
+    /// Регистрирует компоненты <see cref="IChildBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="busName">Наименование дочерней шины.</param>
+    /// <param name="configureOptions">Настройки конфигурации дочерней шины.</param>
+    /// <returns>Контекст конфигурирования.</returns>
+    internal static ChildBusConfigurationBuilder AddChildBus(
+        this IServiceCollection services,
+        string busName,
+        Action<ChildBusOptions> configureOptions)
+    {
+        var childOptions = new ChildBusOptions
+        {
+            Name = busName,
+        };
+
+        configureOptions.Invoke(childOptions);
+        services.Configure<BusOptions>(options =>
+        {
+            options.Options.Add(childOptions);
+            options.Subscriptions.Add(busName, new HashSet<Type>());
+        });
+
+        return new(busName, services);
     }
 
     /// <summary>

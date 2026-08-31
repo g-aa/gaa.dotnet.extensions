@@ -2,8 +2,6 @@ using Gaa.Extensions.Observer;
 using Gaa.Worker.Consumers;
 using Gaa.Worker.Messages;
 using Gaa.Worker.Workers;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 
 namespace Gaa.Worker;
 
@@ -20,27 +18,46 @@ internal static class Startup
     internal static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddBus(options =>
+            .AddHostedService<ExampleWorker>()
+            .AddHostedService<FirstWorker>()
+            .AddHostedService<SecondWorker>()
+            .Configure<TimeDelayOptions>(delayOptions =>
             {
-                options.BackgroundTaskQueueCapacity = 1_000;
-                options.BackgroundTaskExecutionTimeLimit = TimeSpan.FromMinutes(1);
+                delayOptions.ExampleWorker = TimeSpan.FromMilliseconds(50);
+
+                delayOptions.FirstWorker = TimeSpan.FromMilliseconds(150);
+                delayOptions.SecondWorker = TimeSpan.FromMilliseconds(100);
+            });
+
+        services
+            .AddInMemoryBus(busOptions =>
+            {
+                busOptions.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
             })
-            .AddAsyncConsumer<ExampleConsumer, ExampleMessage>(ServiceLifetime.Singleton)
-            .Services
-            .AddHostedService<ExampleWorker>();
+            .AddChildBus("Example.Bus", childBusOptions =>
+            {
+                childBusOptions.Capacity = 100;
+            })
+            .AddAsyncConsumer<ExampleConsumer, ExampleMessage>()
+            .AddChildBus("Another.Bus", childBusOptions =>
+            {
+                childBusOptions.Capacity = 200;
+            })
+            .AddAsyncConsumer<FirstConsumer, FirstMessage>()
+            .AddAsyncConsumer<SecondConsumer, SecondMessage>();
 
         services
             .AddHealthChecks();
 
-        services
-            .AddOpenTelemetry()
-            .ConfigureResource(builder => builder.AddService("Gaa.Worker"))
-            .WithMetrics(builder => builder
-                .AddMeter(DefaultBusMetrics.MeterName)
-                .AddInstrumentation<DefaultBusMetrics>()
-                .AddConsoleExporter((exporterOptions, metricReaderOptions) =>
-                {
-                    metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
-                }));
+        ////services
+        ////    .AddOpenTelemetry()
+        ////    .ConfigureResource(builder => builder.AddService("Gaa.Worker"))
+        ////    .WithMetrics(builder => builder
+        ////        .AddMeter(DefaultBusMetrics.MeterName)
+        ////        .AddInstrumentation<DefaultBusMetrics>()
+        ////        .AddConsoleExporter((exporterOptions, metricReaderOptions) =>
+        ////        {
+        ////            metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
+        ////        }));
     }
 }
