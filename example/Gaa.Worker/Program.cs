@@ -1,5 +1,3 @@
-using Gaa.Extensions.Observer;
-using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Extensions.Logging;
 

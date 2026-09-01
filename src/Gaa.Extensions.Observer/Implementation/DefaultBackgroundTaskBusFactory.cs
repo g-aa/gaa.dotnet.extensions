@@ -10,7 +10,7 @@ namespace Gaa.Extensions.Observer;
 /// Фабрика дочерних шин по умолчанию.
 /// </summary>
 /// <remarks>Кэширует созданные шины.</remarks>
-internal sealed class DefaultChildBusFactory : IChildBusFactory<DefaultChildBus>
+internal sealed class DefaultBackgroundTaskBusFactory : IBackgroundTaskBusFactory
 {
     private readonly Lock _lock;
 
@@ -18,13 +18,13 @@ internal sealed class DefaultChildBusFactory : IChildBusFactory<DefaultChildBus>
 
     private readonly BusOptions _options;
 
-    private readonly Dictionary<string, DefaultChildBus> _cachedBuses;
+    private readonly Dictionary<string, DefaultBackgroundTaskBus> _cachedBuses;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultChildBusFactory"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBusFactory"/>.
     /// </summary>
     /// <param name="provider">Провайдер сервисов.</param>
-    public DefaultChildBusFactory(IServiceProvider provider)
+    public DefaultBackgroundTaskBusFactory(IServiceProvider provider)
     {
         _lock = new();
         _provider = provider;
@@ -33,21 +33,21 @@ internal sealed class DefaultChildBusFactory : IChildBusFactory<DefaultChildBus>
     }
 
     /// <inheritdoc />
-    public DefaultChildBus GetOrCreate(string name)
+    public IBackgroundTaskBus GetOrCreate(string busName)
     {
-        return _cachedBuses.TryGetValue(name, out var childBus)
-            ? childBus
-            : Create(name);
+        return _cachedBuses.TryGetValue(busName, out var bus)
+            ? bus
+            : Create(busName);
     }
 
-    private DefaultChildBus Create(string name)
+    private DefaultBackgroundTaskBus Create(string name)
     {
         lock (_lock)
         {
-            DefaultChildBus? newChildBus;
-            if (_cachedBuses.TryGetValue(name, out newChildBus))
+            DefaultBackgroundTaskBus? newBus;
+            if (_cachedBuses.TryGetValue(name, out newBus))
             {
-                return newChildBus;
+                return newBus;
             }
 
             var childOptions = _options.Options.FirstOrDefault(o => o.Name == name);
@@ -57,9 +57,9 @@ internal sealed class DefaultChildBusFactory : IChildBusFactory<DefaultChildBus>
             }
 
             var loggerFactory = _provider.GetRequiredService<ILoggerFactory>();
-            newChildBus = new DefaultChildBus(loggerFactory, childOptions);
-            _cachedBuses.Add(name, newChildBus);
-            return newChildBus;
+            newBus = new DefaultBackgroundTaskBus(loggerFactory, childOptions);
+            _cachedBuses.Add(name, newBus);
+            return newBus;
         }
     }
 }

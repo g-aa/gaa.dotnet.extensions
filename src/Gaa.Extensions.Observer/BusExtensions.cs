@@ -27,9 +27,9 @@ public static class BusExtensions
 
         services
             .AddHostedService<DefaultBusExecutor>()
-            .AddSingleton<IChildBusFactory<DefaultChildBus>, DefaultChildBusFactory>()
-            .AddSingleton<IChildBusSelector, DefaultChildBusSelector>()
-            .AddSingleton<IPublisher, DefaultBusPublisher>();
+            .AddSingleton<IPublisher, DefaultBusPublisher>()
+            .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
+            .AddSingleton<IBackgroundTaskBusSelector, DefaultBackgroundTaskBusSelector>();
 
         return new()
         {
@@ -38,7 +38,7 @@ public static class BusExtensions
     }
 
     /// <summary>
-    /// Регистрирует компоненты <see cref="IChildBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты <see cref="IBackgroundTaskBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="busName">Наименование дочерней шины.</param>

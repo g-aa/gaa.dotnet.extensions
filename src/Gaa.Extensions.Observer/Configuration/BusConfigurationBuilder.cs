@@ -15,7 +15,7 @@ public sealed class BusConfigurationBuilder
     public IServiceCollection Services { get; init; } = null!;
 
     /// <summary>
-    /// Регистрирует компоненты <see cref="IChildBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты <see cref="IBackgroundTaskBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="busName">Наименование дочерней шины.</param>
     /// <param name="configureOptions">Настройки конфигурации дочерней шины.</param>

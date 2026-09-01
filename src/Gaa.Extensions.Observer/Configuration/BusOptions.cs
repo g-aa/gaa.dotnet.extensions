@@ -15,7 +15,7 @@ public sealed class BusOptions
     /// <summary>
     /// Коллекция настроек дочерних шин.
     /// </summary>
-    public ICollection<ChildBusOptions> Options { get; private set; } = new List<ChildBusOptions>();
+    public ICollection<ChildBusOptions> Options { get; private set; } = new HashSet<ChildBusOptions>();
 
     /// <summary>
     /// Подписка шин на сообщения.

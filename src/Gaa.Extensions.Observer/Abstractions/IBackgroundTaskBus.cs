@@ -5,7 +5,7 @@ namespace Gaa.Extensions.Observer;
 /// <summary>
 /// Дочерняя шина для <see cref="IBackgroundTask"/>.
 /// </summary>
-internal interface IChildBus
+public interface IBackgroundTaskBus
 {
     /// <summary>
     /// Наименование.

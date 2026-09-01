@@ -2,6 +2,8 @@ using Gaa.Extensions.Observer;
 using Gaa.Worker.Consumers;
 using Gaa.Worker.Messages;
 using Gaa.Worker.Workers;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 namespace Gaa.Worker;
 
@@ -23,10 +25,10 @@ internal static class Startup
             .AddHostedService<SecondWorker>()
             .Configure<TimeDelayOptions>(delayOptions =>
             {
-                delayOptions.ExampleWorker = TimeSpan.FromMilliseconds(50);
+                delayOptions.ExampleWorker = TimeSpan.FromMilliseconds(500);
 
-                delayOptions.FirstWorker = TimeSpan.FromMilliseconds(150);
-                delayOptions.SecondWorker = TimeSpan.FromMilliseconds(100);
+                delayOptions.FirstWorker = TimeSpan.FromMilliseconds(1_500);
+                delayOptions.SecondWorker = TimeSpan.FromMilliseconds(1_000);
             });
 
         services
@@ -49,15 +51,15 @@ internal static class Startup
         services
             .AddHealthChecks();
 
-        ////services
-        ////    .AddOpenTelemetry()
-        ////    .ConfigureResource(builder => builder.AddService("Gaa.Worker"))
-        ////    .WithMetrics(builder => builder
-        ////        .AddMeter(DefaultBusMetrics.MeterName)
-        ////        .AddInstrumentation<DefaultBusMetrics>()
-        ////        .AddConsoleExporter((exporterOptions, metricReaderOptions) =>
-        ////        {
-        ////            metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
-        ////        }));
+        services
+            .AddOpenTelemetry()
+            .ConfigureResource(builder => builder.AddService("Gaa.Worker"))
+            .WithMetrics(builder => builder
+                .AddMeter(DefaultBusMetrics.MeterName)
+                .AddInstrumentation<DefaultBusMetrics>()
+                .AddConsoleExporter((exporterOptions, metricReaderOptions) =>
+                {
+                    metricReaderOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = 5_000;
+                }));
     }
 }

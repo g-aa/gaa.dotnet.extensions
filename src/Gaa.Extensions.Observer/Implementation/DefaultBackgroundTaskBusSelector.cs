@@ -7,15 +7,15 @@ namespace Gaa.Extensions.Observer;
 /// <summary>
 /// Селектро дочерних шин.
 /// </summary>
-internal sealed class DefaultChildBusSelector : IChildBusSelector
+internal sealed class DefaultBackgroundTaskBusSelector : IBackgroundTaskBusSelector
 {
     private readonly Dictionary<Type, string> _routes;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultChildBusSelector"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBusSelector"/>.
     /// </summary>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultChildBusSelector(IOptions<BusOptions> options)
+    public DefaultBackgroundTaskBusSelector(IOptions<BusOptions> options)
     {
         var subscriptions = options.Value.Subscriptions;
         _routes = subscriptions.SelectMany(Reverse).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);

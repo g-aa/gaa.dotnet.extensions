@@ -5,14 +5,12 @@ namespace Gaa.Extensions.Observer;
 /// <summary>
 /// Фабрика дочерних шин.
 /// </summary>
-/// <typeparam name="TBus">Тип дочерней шины.</typeparam>
-internal interface IChildBusFactory<out TBus>
-    where TBus : IChildBus
+public interface IBackgroundTaskBusFactory
 {
     /// <summary>
     /// Создает дочернюю шину.
     /// </summary>
-    /// <param name="name">Наименование шины.</param>
+    /// <param name="busName">Наименование шины.</param>
     /// <returns>Дочерняя шина.</returns>
-    TBus GetOrCreate(string name);
+    IBackgroundTaskBus GetOrCreate(string busName);
 }

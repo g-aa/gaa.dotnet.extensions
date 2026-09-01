@@ -5,10 +5,10 @@ namespace Gaa.Extensions.Observer;
 /// <summary>
 /// Селектро дочерних шин.
 /// </summary>
-internal interface IChildBusSelector
+public interface IBackgroundTaskBusSelector
 {
     /// <summary>
-    /// Предоставляет наименование <see cref="IChildBus"/> по <typeparamref name="TMessage"/>.
+    /// Предоставляет наименование <see cref="IBackgroundTaskBus"/> по <typeparamref name="TMessage"/>.
     /// </summary>
     /// <typeparam name="TMessage">Тип сообщения.</typeparam>
     /// <returns>Наименование дочерней шины.</returns>

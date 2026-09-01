@@ -17,7 +17,7 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
 
     private readonly IServiceScopeFactory _scopeFactory;
 
-    private readonly IChildBusFactory<DefaultChildBus> _busFactory;
+    private readonly IBackgroundTaskBusFactory _busFactory;
 
     private readonly BusOptions _options;
 
@@ -31,7 +31,7 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
     public DefaultBusExecutor(
         ILoggerFactory loggerFactory,
         IServiceScopeFactory scopeFactory,
-        IChildBusFactory<DefaultChildBus> busFactory,
+        IBackgroundTaskBusFactory busFactory,
         IOptions<BusOptions> options)
     {
         _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
@@ -53,9 +53,9 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
         var busTasks = new List<Task>(_options.Options.Count);
         foreach (var busOptions in _options.Options)
         {
-            var childBus = _busFactory.GetOrCreate(busOptions.Name);
+            var bus = _busFactory.GetOrCreate(busOptions.Name);
             var busTask = Task.Run(
-                () => BusExecuteAsync(childBus, _options.ExecutionTimeLimit, stoppingToken),
+                () => BusExecuteAsync(bus, _options.ExecutionTimeLimit, stoppingToken),
                 stoppingToken);
 
             busTasks.Add(busTask);
@@ -64,13 +64,13 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
         return Task.WhenAll(busTasks);
     }
 
-    private async Task BusExecuteAsync(DefaultChildBus childBus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
+    private async Task BusExecuteAsync(IBackgroundTaskBus bus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var backgroundTask = await childBus.DequeueTaskAsync(stoppingToken);
+                var backgroundTask = await bus.DequeueTaskAsync(stoppingToken);
                 using var scope = _scopeFactory.CreateScope();
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
                 cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));

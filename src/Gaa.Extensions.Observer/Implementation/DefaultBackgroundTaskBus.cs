@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Имплементация <see cref="IChildBus"/> по умолчанию.
+/// Имплементация <see cref="IBackgroundTaskBus"/> по умолчанию.
 /// </summary>
-internal sealed partial class DefaultChildBus : IChildBus
+internal sealed partial class DefaultBackgroundTaskBus : IBackgroundTaskBus
 {
     private readonly ILogger _log;
 
@@ -21,18 +21,18 @@ internal sealed partial class DefaultChildBus : IChildBus
 
     private readonly string _name;
 
-    private readonly int _taskQueueCapacity;
+    private readonly int _channelCapacity;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultChildBus"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBus"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultChildBus(ILoggerFactory loggerFactory, ChildBusOptions options)
+    public DefaultBackgroundTaskBus(ILoggerFactory loggerFactory, ChildBusOptions options)
     {
         _name = options.Name;
-        _taskQueueCapacity = options.Capacity;
-        var channelOptions = new BoundedChannelOptions(_taskQueueCapacity)
+        _channelCapacity = options.Capacity;
+        var channelOptions = new BoundedChannelOptions(_channelCapacity)
         {
             AllowSynchronousContinuations = false,
             FullMode = BoundedChannelFullMode.Wait,
@@ -44,7 +44,7 @@ internal sealed partial class DefaultChildBus : IChildBus
         _queue = Channel.CreateBounded<IBackgroundTask>(channelOptions);
         _reader = _queue.Reader;
         _writer = _queue.Writer;
-        Log.QueueCapacityMessage(_log, _taskQueueCapacity);
+        Log.QueueCapacityMessage(_log, _channelCapacity);
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ internal sealed partial class DefaultChildBus : IChildBus
     public string Name => _name;
 
     /// <inheritdoc />
-    public int Capacity => _taskQueueCapacity;
+    public int Capacity => _channelCapacity;
 
     /// <inheritdoc />
     public int Count => _reader.Count;
