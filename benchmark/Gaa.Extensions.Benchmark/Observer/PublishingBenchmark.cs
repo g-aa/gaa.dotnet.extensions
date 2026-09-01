@@ -4,7 +4,6 @@ using Gaa.Extensions.Benchmark.Observer.Features;
 using Gaa.Extensions.Observer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Gaa.Extensions.Benchmark.Observer;
@@ -16,7 +15,7 @@ namespace Gaa.Extensions.Benchmark.Observer;
 /// </summary>
 [Orderer(SummaryOrderPolicy.Declared)]
 [MemoryDiagnoser]
-public class ProcessingBenchmark
+public class PublishingBenchmark
 {
     private const string BusName = "Test.Bus";
 
@@ -24,13 +23,9 @@ public class ProcessingBenchmark
 
     private ServiceProvider _provider;
 
-    private IServiceScopeFactory _scopeFactory;
-
     private DefaultBusPublisher _publisher;
 
     private DefaultChildBus _childBus;
-
-    private TimeSpan _timeLimit;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -58,8 +53,6 @@ public class ProcessingBenchmark
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();
 
-        _scopeFactory = _provider.GetRequiredService<IServiceScopeFactory>();
-        _timeLimit = _provider.GetRequiredService<IOptions<BusOptions>>().Value.ExecutionTimeLimit;
         _childBus = _provider.GetRequiredService<IChildBusFactory<DefaultChildBus>>().GetOrCreate(BusName);
         _publisher = _provider.GetRequiredService<DefaultBusPublisher>();
     }
@@ -78,36 +71,11 @@ public class ProcessingBenchmark
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Benchmark]
-    public async Task PublishAndConsumeAsync()
+    public async Task PublishAsync()
     {
         // arrange & act
         await _publisher.PublishAsync(Message, CancellationToken.None);
-        await BusExecuteAsync(_childBus, _timeLimit, CancellationToken.None);
-    }
-
-    private static TimeSpan GetTimeLimit(TimeSpan? taskTimeLimit, TimeSpan defaultTimeLimit)
-    {
-        if (taskTimeLimit == null)
-        {
-            return defaultTimeLimit;
-        }
-
-        return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
-    }
-
-    private async Task BusExecuteAsync(DefaultChildBus childBus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
-    {
-        try
-        {
-            var backgroundTask = await childBus.DequeueTaskAsync(stoppingToken);
-            using var scope = _scopeFactory.CreateScope();
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-            cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
-            await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);
-        }
-        catch
-        {
-            /* Можно не обрабатывать */
-        }
+        var backgroundTask = await _childBus.DequeueTaskAsync(CancellationToken.None);
+        await backgroundTask.ExecuteAsync(_provider, CancellationToken.None);
     }
 }
