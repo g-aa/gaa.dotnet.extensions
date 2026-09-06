@@ -1,13 +1,12 @@
 using Gaa.Extensions.Observer;
-using Gaa.Worker.Messages;
 using Microsoft.Extensions.Options;
 
-namespace Gaa.Worker.Workers;
+namespace Gaa.Worker.Example;
 
 /// <summary>
 /// Пример фонового задания публикующего сообщения.
 /// </summary>
-public sealed partial class FirstWorker : BackgroundService
+public sealed partial class ExampleWorker : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -16,16 +15,16 @@ public sealed partial class FirstWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="FirstWorker"/>.
+    /// Инициализирует новывый экземпляр класса <see cref="ExampleWorker"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
-    /// <param name="options">Настройки.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
-    public FirstWorker(ILoggerFactory loggerFactory, IOptions<TimeDelayOptions> options, IPublisher publisher)
+    /// <param name="options">Настройки.</param>
+    public ExampleWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeDelayOptions> options)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.First.Publisher");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Publisher");
         _publisher = publisher;
-        _delay = options.Value.FirstWorker;
+        _delay = options.Value.ExampleWorker;
     }
 
     /// <inheritdoc />
@@ -40,7 +39,7 @@ public sealed partial class FirstWorker : BackgroundService
             {
                 try
                 {
-                    var message = new FirstMessage
+                    var message = new ExampleMessage
                     {
                         Id = Guid.NewGuid(),
                         Text = $"Сообщение #{number}",

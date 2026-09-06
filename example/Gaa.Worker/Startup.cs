@@ -1,7 +1,6 @@
 using Gaa.Extensions.Observer;
-using Gaa.Worker.Consumers;
-using Gaa.Worker.Messages;
-using Gaa.Worker.Workers;
+using Gaa.Worker.Error;
+using Gaa.Worker.Example;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 
@@ -21,14 +20,11 @@ internal static class Startup
     {
         services
             .AddHostedService<ExampleWorker>()
-            .AddHostedService<FirstWorker>()
-            .AddHostedService<SecondWorker>()
+            .AddHostedService<ErrorWorker>()
             .Configure<TimeDelayOptions>(delayOptions =>
             {
                 delayOptions.ExampleWorker = TimeSpan.FromMilliseconds(500);
-
-                delayOptions.FirstWorker = TimeSpan.FromMilliseconds(1_500);
-                delayOptions.SecondWorker = TimeSpan.FromMilliseconds(1_000);
+                delayOptions.ErrorWorker = TimeSpan.FromMilliseconds(1_000);
             });
 
         services
@@ -41,12 +37,11 @@ internal static class Startup
                 childBusOptions.Capacity = 100;
             })
             .AddAsyncConsumer<ExampleConsumer, ExampleMessage>()
-            .AddChildBus("Another.Bus", childBusOptions =>
+            .AddChildBus("Error.Bus", childBusOptions =>
             {
                 childBusOptions.Capacity = 200;
             })
-            .AddAsyncConsumer<FirstConsumer, FirstMessage>()
-            .AddAsyncConsumer<SecondConsumer, SecondMessage>();
+            .AddAsyncConsumer<ErrorConsumer, ErrorMessage>();
 
         services
             .AddHealthChecks();

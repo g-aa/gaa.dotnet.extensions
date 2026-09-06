@@ -1,13 +1,12 @@
 using Gaa.Extensions.Observer;
-using Gaa.Worker.Messages;
 using Microsoft.Extensions.Options;
 
-namespace Gaa.Worker.Workers;
+namespace Gaa.Worker.Error;
 
 /// <summary>
 /// Пример фонового задания публикующего сообщения.
 /// </summary>
-public sealed partial class SecondWorker : BackgroundService
+public sealed partial class ErrorWorker : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -16,16 +15,16 @@ public sealed partial class SecondWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="SecondWorker"/>.
+    /// Инициализирует новывый экземпляр класса <see cref="ErrorWorker"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
-    /// <param name="options">Настройки.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
-    public SecondWorker(ILoggerFactory loggerFactory, IOptions<TimeDelayOptions> options, IPublisher publisher)
+    /// <param name="options">Настройки.</param>
+    public ErrorWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeDelayOptions> options)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.Second.Publisher");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Error.Publisher");
         _publisher = publisher;
-        _delay = options.Value.SecondWorker;
+        _delay = options.Value.ErrorWorker;
     }
 
     /// <inheritdoc />
@@ -40,13 +39,7 @@ public sealed partial class SecondWorker : BackgroundService
             {
                 try
                 {
-                    var message = new SecondMessage
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = $"Сообщение #{number}",
-                        CreationTime = DateTimeOffset.UtcNow,
-                    };
-
+                    var message = new ErrorMessage();
                     await _publisher.PublishAsync(message, stoppingToken);
                     Log.Message(_log, number);
                     number++;

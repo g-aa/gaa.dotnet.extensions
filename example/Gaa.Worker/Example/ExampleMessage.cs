@@ -1,9 +1,9 @@
-namespace Gaa.Worker.Messages;
+namespace Gaa.Worker.Example;
 
 /// <summary>
-/// Второе сообщение.
+/// Пример сообщения.
 /// </summary>
-public sealed record SecondMessage
+public sealed record ExampleMessage
 {
     /// <summary>
     /// Идентификатор.

@@ -6,17 +6,12 @@ namespace Gaa.Worker;
 public sealed class TimeDelayOptions
 {
     /// <summary>
-    /// Задержка между вызовами для <see cref="Workers.ExampleWorker"/>.
+    /// Задержка между вызовами для <see cref="Example.ExampleWorker"/>.
     /// </summary>
     public TimeSpan ExampleWorker { get; set; }
 
     /// <summary>
-    /// Задержка между вызовами для <see cref="Workers.FirstWorker"/>.
+    /// Задержка между вызовами для <see cref="Error.ErrorWorker"/>.
     /// </summary>
-    public TimeSpan FirstWorker { get; set; }
-
-    /// <summary>
-    /// Задержка между вызовами для <see cref="Workers.SecondWorker"/>.
-    /// </summary>
-    public TimeSpan SecondWorker { get; set; }
+    public TimeSpan ErrorWorker { get; set; }
 }

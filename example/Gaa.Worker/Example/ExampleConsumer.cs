@@ -1,26 +1,25 @@
 using Gaa.Extensions.Observer;
-using Gaa.Worker.Messages;
 
-namespace Gaa.Worker.Consumers;
+namespace Gaa.Worker.Example;
 
 /// <summary>
-/// Первый потребитель сообщений.
+/// Пример потребителя сообщений.
 /// </summary>
-public sealed partial class FirstConsumer : IAsyncConsumer<FirstMessage>
+public sealed partial class ExampleConsumer : IAsyncConsumer<ExampleMessage>
 {
     private readonly ILogger _log;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="FirstConsumer"/>.
+    /// Инициализирует новывый экземпляр класса <see cref="ExampleConsumer"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
-    public FirstConsumer(ILoggerFactory loggerFactory)
+    public ExampleConsumer(ILoggerFactory loggerFactory)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.First.Consumer");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Consumer");
     }
 
     /// <inheritdoc />
-    public Task ConsumeAsync(MessageContext<FirstMessage> context, CancellationToken cancellationToken)
+    public Task ConsumeAsync(MessageContext<ExampleMessage> context, CancellationToken cancellationToken)
     {
         var message = context.Message;
         var processingTime = (DateTimeOffset.UtcNow - message.CreationTime).TotalMicroseconds;
