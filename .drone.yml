@@ -33,17 +33,17 @@ steps:
   depends_on:
   - build
 
-- name: benchmark
-  image: local/dotnet/sdk:10.0
-  commands:
-  - |
-    dotnet run \
-      --project ./benchmark/Gaa.Extensions.Benchmark \
-      --configuration $V_CONFIGURATION \
-      --filter '*' \
-      --join
-  depends_on:
-  - test
+# - name: benchmark
+#   image: local/dotnet/sdk:10.0
+#   commands:
+#   - |
+#     dotnet run \
+#       --project ./benchmark/Gaa.Extensions.Benchmark \
+#       --configuration $V_CONFIGURATION \
+#       --filter 'Gaa.Extensions.Benchmark.Observer*' \
+#       --join
+#   depends_on:
+#   - test
 
 - name: pack
   image: local/dotnet/sdk:10.0
