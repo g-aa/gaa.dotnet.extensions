@@ -3,9 +3,9 @@
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Селектро дочерних шин.
+/// Селектро наименований дочерних шин.
 /// </summary>
-public interface IBackgroundTaskBusSelector
+public interface IBackgroundTaskBusNameSelector
 {
     /// <summary>
     /// Предоставляет наименование <see cref="IBackgroundTaskBus"/> по <typeparamref name="TMessage"/>.

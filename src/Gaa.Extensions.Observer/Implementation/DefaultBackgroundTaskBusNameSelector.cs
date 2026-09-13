@@ -1,24 +1,24 @@
+using System.Collections.Frozen;
+
 using Microsoft.Extensions.Options;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 
 namespace Gaa.Extensions.Observer;
 
-/// <summary>
-/// Селектро дочерних шин.
-/// </summary>
-internal sealed class DefaultBackgroundTaskBusSelector : IBackgroundTaskBusSelector
+/// <inheritdoc cref="IBackgroundTaskBusNameSelector" />
+internal sealed class DefaultBackgroundTaskBusNameSelector : IBackgroundTaskBusNameSelector
 {
-    private readonly Dictionary<Type, string> _routes;
+    private readonly FrozenDictionary<Type, string> _routes;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBusSelector"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBusNameSelector"/>.
     /// </summary>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultBackgroundTaskBusSelector(IOptions<BusOptions> options)
+    public DefaultBackgroundTaskBusNameSelector(IOptions<BusOptions> options)
     {
         var subscriptions = options.Value.Subscriptions;
-        _routes = subscriptions.SelectMany(Reverse).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        _routes = subscriptions.SelectMany(Reverse).ToFrozenDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     /// <inheritdoc />

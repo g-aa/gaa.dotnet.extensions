@@ -29,7 +29,7 @@ public static class BusExtensions
             .AddHostedService<DefaultBusExecutor>()
             .AddSingleton<IPublisher, DefaultBusPublisher>()
             .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusSelector, DefaultBackgroundTaskBusSelector>();
+            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>();
 
         return new()
         {

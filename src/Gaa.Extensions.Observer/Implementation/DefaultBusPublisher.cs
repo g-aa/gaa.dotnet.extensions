@@ -7,7 +7,7 @@ namespace Gaa.Extensions.Observer;
 /// </summary>
 internal sealed partial class DefaultBusPublisher : IPublisher
 {
-    private readonly IBackgroundTaskBusSelector _busSelector;
+    private readonly IBackgroundTaskBusNameSelector _busSelector;
 
     private readonly IBackgroundTaskBusFactory _busFactory;
 
@@ -19,7 +19,7 @@ internal sealed partial class DefaultBusPublisher : IPublisher
     /// <param name="busSelector">Селектро дочерних шин.</param>
     /// <param name="busFactory">Фабрика дочерних шин.</param>
     public DefaultBusPublisher(
-        IBackgroundTaskBusSelector busSelector,
+        IBackgroundTaskBusNameSelector busSelector,
         IBackgroundTaskBusFactory busFactory)
     {
         _busSelector = busSelector;

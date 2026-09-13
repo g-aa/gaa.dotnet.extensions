@@ -53,7 +53,7 @@ public class ProcessingBenchmark
             })
             .AddSingleton<DefaultBusPublisher>()
             .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusSelector, DefaultBackgroundTaskBusSelector>()
+            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>()
 
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();
@@ -95,12 +95,12 @@ public class ProcessingBenchmark
         return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
     }
 
-    private async Task BusExecuteAsync(IBackgroundTaskBus childBus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
+    private async Task BusExecuteAsync(IBackgroundTaskBus bus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         try
         {
-            var backgroundTask = await childBus.DequeueTaskAsync(stoppingToken);
-            using var scope = _scopeFactory.CreateScope();
+            var backgroundTask = await bus.DequeueTaskAsync(stoppingToken);
+            await using var scope = _scopeFactory.CreateAsyncScope();
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
             await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);

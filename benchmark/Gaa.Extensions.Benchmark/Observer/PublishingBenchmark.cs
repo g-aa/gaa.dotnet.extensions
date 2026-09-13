@@ -48,7 +48,7 @@ public class PublishingBenchmark
             })
             .AddSingleton<DefaultBusPublisher>()
             .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusSelector, DefaultBackgroundTaskBusSelector>()
+            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>()
 
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();

@@ -71,7 +71,7 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
             try
             {
                 var backgroundTask = await bus.DequeueTaskAsync(stoppingToken);
-                using var scope = _scopeFactory.CreateScope();
+                await using var scope = _scopeFactory.CreateAsyncScope();
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
                 cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
                 await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);

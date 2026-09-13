@@ -16,7 +16,7 @@ public class SelectionBenchmark
 {
     private ServiceProvider _provider;
 
-    private DefaultBackgroundTaskBusSelector _selector;
+    private DefaultBackgroundTaskBusNameSelector _selector;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -33,10 +33,10 @@ public class SelectionBenchmark
                 options.Subscriptions.Add("Intager", [typeof(short), typeof(int), typeof(long), typeof(ushort), typeof(uint), typeof(ulong)]);
                 options.Subscriptions.Add("Float", [typeof(float), typeof(double), typeof(decimal)]);
             })
-            .AddSingleton<DefaultBackgroundTaskBusSelector>()
+            .AddSingleton<DefaultBackgroundTaskBusNameSelector>()
             .BuildServiceProvider();
 
-        _selector = _provider.GetRequiredService<DefaultBackgroundTaskBusSelector>();
+        _selector = _provider.GetRequiredService<DefaultBackgroundTaskBusNameSelector>();
     }
 
     /// <summary>
