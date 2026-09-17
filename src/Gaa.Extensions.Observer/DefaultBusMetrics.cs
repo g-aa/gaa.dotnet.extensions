@@ -14,53 +14,53 @@ public sealed class DefaultBusMetrics
     /// </summary>
     public const string MeterName = "Gaa.Extensions.Observer.Default.Bus";
 
-    private readonly List<IBackgroundTaskBus> _buses;
+    private readonly List<InMemoryTransport> _transports;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultBusMetrics"/>.
     /// </summary>
     /// <param name="meterFactory">Фабрика метрик.</param>
-    /// <param name="busFactory">Очередь с фоновыми задачами.</param>
-    /// <param name="options">Настройки шины сообщений.</param>
+    /// <param name="transportSelector">Селектор для выбора транспортной шины.</param>
+    /// <param name="busOptions">Общие настройки шины.</param>
     public DefaultBusMetrics(
         IMeterFactory meterFactory,
-        IOptions<BusOptions> options,
-        IBackgroundTaskBusFactory busFactory)
+        IOptions<BusOptions> busOptions,
+        ITransportSelector transportSelector)
     {
-        var busOprions = options.Value.Options;
-        _buses = new(busOprions.Count);
-        foreach (var childOptions in busOprions)
+        var transportOptions = busOptions.Value.Transports.Where(o => o is InMemoryTransportOptions).Cast<InMemoryTransportOptions>().ToList();
+        _transports = new(transportOptions.Count);
+        foreach (var options in transportOptions)
         {
-            _buses.Add(busFactory.GetOrCreate(childOptions.Name));
+            _transports.Add((InMemoryTransport)transportSelector.GetTransport(options.Name));
         }
 
         var meter = meterFactory.Create(MeterName);
 
         meter.CreateObservableUpDownCounter(
             "gaa.extensions.observer.bus.message.count",
-            () => CreateCountMeasurementList(_buses),
+            () => CreateCountMeasurementList(_transports),
             unit: "{messages}",
             description: "Number of messages in the queue.");
 
         meter.CreateObservableCounter(
             "gaa.extensions.observer.bus.message.capacity",
-            () => CreateCapacityMeasurementList(_buses),
+            () => CreateCapacityMeasurementList(_transports),
             unit: "{messages}",
             description: "Message queue capacity.");
     }
 
-    private static List<Measurement<int>> CreateCountMeasurementList(List<IBackgroundTaskBus> buses)
+    private static List<Measurement<int>> CreateCountMeasurementList(List<InMemoryTransport> transports)
     {
-        return [.. buses.Select(static bus => new Measurement<int>(bus.Count, CreateBusTag(bus)))];
+        return [.. transports.Select(static t => new Measurement<int>(t.Count, CreateBusTag(t)))];
     }
 
-    private static List<Measurement<int>> CreateCapacityMeasurementList(List<IBackgroundTaskBus> buses)
+    private static List<Measurement<int>> CreateCapacityMeasurementList(List<InMemoryTransport> transports)
     {
-        return [.. buses.Select(static bus => new Measurement<int>(bus.Capacity, CreateBusTag(bus)))];
+        return [.. transports.Select(static t => new Measurement<int>(t.Capacity, CreateBusTag(t)))];
     }
 
-    private static KeyValuePair<string, object?> CreateBusTag(IBackgroundTaskBus bus)
+    private static KeyValuePair<string, object?> CreateBusTag(InMemoryTransport transport)
     {
-        return new KeyValuePair<string, object?>("bus.name", bus.Name);
+        return new KeyValuePair<string, object?>("bus.name", transport.Name);
     }
 }

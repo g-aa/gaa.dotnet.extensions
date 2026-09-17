@@ -9,34 +9,34 @@ using Microsoft.Extensions.Options;
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Hosted сервис очереди с фоновыми задачами.
+/// Hosted сервис транспортной шины в памяти.
 /// </summary>
-internal sealed partial class DefaultBusExecutor : BackgroundService
+internal sealed partial class InMemoryTransportExecutor : BackgroundService
 {
     private readonly ILogger _log;
 
     private readonly IServiceScopeFactory _scopeFactory;
 
-    private readonly IBackgroundTaskBusFactory _busFactory;
+    private readonly ITransportSelector _transportSelector;
 
     private readonly BusOptions _options;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultBusExecutor"/>.
+    /// Инициализирует новый экземпляр класса <see cref="InMemoryTransportExecutor"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика журналов протоколирования событий.</param>
     /// <param name="scopeFactory">Фабрика сервисов.</param>
-    /// <param name="busFactory">Очередь с фоновыми задачами.</param>
-    /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultBusExecutor(
+    /// <param name="transportSelector">Селектор для выбора транспортной шины.</param>
+    /// <param name="options">Общие настройки шины.</param>
+    public InMemoryTransportExecutor(
         ILoggerFactory loggerFactory,
         IServiceScopeFactory scopeFactory,
-        IBackgroundTaskBusFactory busFactory,
+        ITransportSelector transportSelector,
         IOptions<BusOptions> options)
     {
         _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
         _scopeFactory = scopeFactory;
-        _busFactory = busFactory;
+        _transportSelector = transportSelector;
         _options = options.Value;
     }
 
@@ -50,12 +50,13 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
 
     private Task InternalExecuteAsync(CancellationToken stoppingToken)
     {
-        var busTasks = new List<Task>(_options.Options.Count);
-        foreach (var busOptions in _options.Options)
+        var transportOptions = _options.Transports.Where(o => o is InMemoryTransportOptions).Cast<InMemoryTransportOptions>().ToList();
+        var busTasks = new List<Task>(transportOptions.Count);
+        foreach (var options in transportOptions)
         {
-            var bus = _busFactory.GetOrCreate(busOptions.Name);
+            var transport = (InMemoryTransport)_transportSelector.GetTransport(options.Name);
             var busTask = Task.Run(
-                () => BusExecuteAsync(bus, _options.ExecutionTimeLimit, stoppingToken),
+                () => BusExecuteAsync(transport, options.ExecutionTimeLimit, stoppingToken),
                 stoppingToken);
 
             busTasks.Add(busTask);
@@ -64,17 +65,17 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
         return Task.WhenAll(busTasks);
     }
 
-    private async Task BusExecuteAsync(IBackgroundTaskBus bus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
+    private async Task BusExecuteAsync(InMemoryTransport transport, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
-                var backgroundTask = await bus.DequeueTaskAsync(stoppingToken);
+                var executionContext = await transport.ReadAsync(stoppingToken);
                 await using var scope = _scopeFactory.CreateAsyncScope();
                 using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
-                await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);
+                cts.CancelAfter(defaultTimeLimit);
+                await executionContext.ExecuteAsync(scope.ServiceProvider, cts.Token);
             }
             catch (OperationCanceledException)
             {
@@ -99,13 +100,13 @@ internal sealed partial class DefaultBusExecutor : BackgroundService
 
     private static partial class Log
     {
-        [LoggerMessage(Level = LogLevel.Debug, Message = "Сервис фоновых задач запущен на выполнение...")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортной шины в памяти запущен на выполнение...")]
         public static partial void StartMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Debug, Message = "Сервис фоновых задач остановлен.")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортной шины в памяти остановлен.")]
         public static partial void StopMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Error, Message = "Сработала необработанное исключение в процессе выполнения фоновой задачи!")]
+        [LoggerMessage(Level = LogLevel.Error, Message = "Сработала необработанное исключение в процессе обработки сообщения!")]
         public static partial void ErrorMessage(ILogger log, Exception ex);
     }
 }

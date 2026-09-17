@@ -3,17 +3,12 @@
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Фоновая задача.
+/// Контекст выполнения для сообщения.
 /// </summary>
-public interface IBackgroundTask
+internal interface IMessageExecutionContext
 {
     /// <summary>
-    /// Предьлное время обрабтки сообщения.
-    /// </summary>
-    TimeSpan? ExecutionTimeLimit { get; }
-
-    /// <summary>
-    /// Выполняет логику задачи.
+    /// Выполняет логику.
     /// </summary>
     /// <param name="provider">Провайдер сервисов.</param>
     /// <param name="cancellationToken">Токен отмены.</param>

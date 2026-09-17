@@ -1,4 +1,5 @@
 #pragma warning disable IDE0130 // Namespace does not match folder structure
+#pragma warning disable SA1600  // Elements should be documented
 
 namespace Gaa.Extensions.Observer;
 
@@ -9,28 +10,28 @@ namespace Gaa.Extensions.Observer;
 public readonly ref struct MessageContext<TMessage>
     where TMessage : notnull
 {
-    private readonly TMessage _message;
+    internal readonly IReadOnlyDictionary<string, string> _headers;
 
-    private readonly IReadOnlyDictionary<string, string> _headers;
+    internal readonly TMessage _message;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="MessageContext{TMessage}"/>.
     /// </summary>
-    /// <param name="message">Сообщение.</param>
     /// <param name="headers">Заголовки сообщения.</param>
-    internal MessageContext(TMessage message, IReadOnlyDictionary<string, string> headers)
+    /// <param name="message">Сообщение.</param>
+    internal MessageContext(IReadOnlyDictionary<string, string> headers, TMessage message)
     {
-        _message = message;
         _headers = headers;
+        _message = message;
     }
-
-    /// <summary>
-    /// Сообщение.
-    /// </summary>
-    public TMessage Message => _message;
 
     /// <summary>
     /// Заголовки сообщения.
     /// </summary>
     public IReadOnlyDictionary<string, string> Headers => _headers;
+
+    /// <summary>
+    /// Сообщение.
+    /// </summary>
+    public TMessage Message => _message;
 }

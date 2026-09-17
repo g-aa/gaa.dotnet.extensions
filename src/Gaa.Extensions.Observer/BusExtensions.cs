@@ -10,13 +10,12 @@ namespace Gaa.Extensions.Observer;
 public static class BusExtensions
 {
     /// <summary>
-    /// Регистрирует компоненты <see cref="IPublisher"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты <see cref="IPublisher"/> и <see cref="ITransport"/> в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="configureOptions">Настройки конфигурации.</param>
-    /// <returns>Контекст <see cref="IPublisher"/> для конфигурирования.</returns>
-    /// <remarks>Регистрирует шину в памяти.</remarks>
-    public static BusConfigurationBuilder AddInMemoryBus(
+    /// <param name="configureOptions">Настройки шины.</param>
+    /// <returns>Контекст конфигурирования.</returns>
+    public static BusConfigurationBuilder AddBus(
         this IServiceCollection services,
         Action<BusOptions> configureOptions)
     {
@@ -26,10 +25,11 @@ public static class BusExtensions
         }
 
         services
-            .AddHostedService<DefaultBusExecutor>()
-            .AddSingleton<IPublisher, DefaultBusPublisher>()
-            .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>();
+            .AddHostedService<InMemoryTransportExecutor>()
+            .AddSingleton<ITransportFactory, InMemoryTransportFactory>()
+            .AddSingleton<ITransportSelector, DefaultTransportSelector>()
+            .AddSingleton<ITransportNameSelector, DefaultTransportNameSelector>()
+            .AddSingleton<IPublisher, DefaultPublisher>();
 
         return new()
         {
@@ -38,30 +38,30 @@ public static class BusExtensions
     }
 
     /// <summary>
-    /// Регистрирует компоненты <see cref="IBackgroundTaskBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты транспортной шины в памяти в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
-    /// <param name="busName">Наименование дочерней шины.</param>
-    /// <param name="configureOptions">Настройки конфигурации дочерней шины.</param>
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="configureOptions">Настройки транспортной шины.</param>
     /// <returns>Контекст конфигурирования.</returns>
-    internal static ChildBusConfigurationBuilder AddChildBus(
+    internal static TransportConfigurationBuilder InMemoryTransport(
         this IServiceCollection services,
-        string busName,
-        Action<ChildBusOptions> configureOptions)
+        string transportName,
+        Action<InMemoryTransportOptions> configureOptions)
     {
-        var childOptions = new ChildBusOptions
+        var transportOptions = new InMemoryTransportOptions
         {
-            Name = busName,
+            Name = transportName,
         };
 
-        configureOptions.Invoke(childOptions);
+        configureOptions.Invoke(transportOptions);
         services.Configure<BusOptions>(options =>
         {
-            options.Options.Add(childOptions);
-            options.Subscriptions.Add(busName, new HashSet<Type>());
+            options.Transports.Add(transportOptions);
+            options.Subscriptions.Add(transportName, new HashSet<Type>());
         });
 
-        return new(busName, services);
+        return new(transportName, services);
     }
 
     /// <summary>

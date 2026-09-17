@@ -7,22 +7,22 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Контекст для конфигурирования <see cref="IBackgroundTaskBus"/>.
+/// Контекст для конфигурирования <see cref="ITransport"/>.
 /// </summary>
-public sealed class ChildBusConfigurationBuilder
+public sealed class TransportConfigurationBuilder
 {
-    private readonly string _busName;
+    private readonly string _transportName;
 
     private readonly IServiceCollection _services;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="ChildBusConfigurationBuilder"/>.
+    /// Инициализирует новый экземпляр класса <see cref="TransportConfigurationBuilder"/>.
     /// </summary>
-    /// <param name="busName">Наименование дочерней шины.</param>
-    /// <param name="services">коллекция сервисов.</param>
-    internal ChildBusConfigurationBuilder(string busName, IServiceCollection services)
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="services">Коллекция сервисов.</param>
+    internal TransportConfigurationBuilder(string transportName, IServiceCollection services)
     {
-        _busName = busName;
+        _transportName = transportName;
         _services = services;
     }
 
@@ -38,7 +38,7 @@ public sealed class ChildBusConfigurationBuilder
     /// <typeparam name="TMessage">Тип сообщения.</typeparam>
     /// <param name="lifetime">Жизненный цикл.</param>
     /// <returns>Контекст конфигурирования.</returns>
-    public ChildBusConfigurationBuilder AddAsyncConsumer<TConsumer, TMessage>(
+    public TransportConfigurationBuilder AddAsyncConsumer<TConsumer, TMessage>(
         ServiceLifetime lifetime = ServiceLifetime.Transient)
         where TConsumer : class, IAsyncConsumer<TMessage>
         where TMessage : notnull
@@ -47,16 +47,16 @@ public sealed class ChildBusConfigurationBuilder
     }
 
     /// <summary>
-    /// Регистрирует компоненты <see cref="IBackgroundTaskBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты транспортной шины в памяти в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
-    /// <param name="busName">Наименование дочерней шины.</param>
-    /// <param name="configureOptions">Настройки конфигурации дочерней шины.</param>
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="configureOptions">Настройки транспортной шины.</param>
     /// <returns>Контекст конфигурирования.</returns>
-    public ChildBusConfigurationBuilder AddChildBus(
-        string busName,
-        Action<ChildBusOptions> configureOptions) => _services.AddChildBus(busName, configureOptions);
+    public TransportConfigurationBuilder InMemoryTransport(
+        string transportName,
+        Action<InMemoryTransportOptions> configureOptions) => Services.InMemoryTransport(transportName, configureOptions);
 
-    private ChildBusConfigurationBuilder Add<TMessage, TInterface, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConsumer>(
+    private TransportConfigurationBuilder Add<TMessage, TInterface, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConsumer>(
         ServiceLifetime lifetime)
         where TMessage : notnull
         where TInterface : class
@@ -71,7 +71,7 @@ public sealed class ChildBusConfigurationBuilder
         _services.Add<TInterface, TConsumer>(lifetime);
         _services.Configure<BusOptions>(options =>
         {
-            options.Subscriptions[_busName].Add(typeof(TMessage));
+            options.Subscriptions[_transportName].Add(typeof(TMessage));
         });
 
         return this;

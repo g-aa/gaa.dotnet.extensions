@@ -8,7 +8,7 @@ namespace Gaa.Extensions.Observer;
 internal static class CategoryName
 {
     /// <summary>
-    /// Категория для <see cref="DefaultBackgroundTaskBus"/>, <see cref="DefaultBusExecutor"/>.
+    /// Категория логирования для шин по умолчанию.
     /// </summary>
     internal const string DefaultBus = "Gaa.Extensions.Observer.Default.Bus";
 }

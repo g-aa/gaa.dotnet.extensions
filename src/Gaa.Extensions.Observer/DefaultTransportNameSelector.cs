@@ -6,34 +6,35 @@ using Microsoft.Extensions.Options;
 
 namespace Gaa.Extensions.Observer;
 
-/// <inheritdoc cref="IBackgroundTaskBusNameSelector" />
-internal sealed class DefaultBackgroundTaskBusNameSelector : IBackgroundTaskBusNameSelector
+/// <summary>
+/// Селектор для выбора наименования транспортной шины.
+/// </summary>
+internal sealed class DefaultTransportNameSelector : ITransportNameSelector
 {
     private readonly FrozenDictionary<Type, string> _routes;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="DefaultBackgroundTaskBusNameSelector"/>.
+    /// Инициализирует новый экземпляр класса <see cref="DefaultTransportNameSelector"/>.
     /// </summary>
     /// <param name="options">Настройки шины сообщений.</param>
-    public DefaultBackgroundTaskBusNameSelector(IOptions<BusOptions> options)
+    public DefaultTransportNameSelector(IOptions<BusOptions> options)
     {
         var subscriptions = options.Value.Subscriptions;
         _routes = subscriptions.SelectMany(Reverse).ToFrozenDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     /// <inheritdoc />
-    public string? GetBusName<TMessage>()
-        where TMessage : notnull
+    public string? GetTransportName<TMessage>()
     {
         var messageType = typeof(TMessage);
-        return _routes.TryGetValue(messageType, out var busName)
-            ? busName
+        return _routes.TryGetValue(messageType, out var transportName)
+            ? transportName
             : default;
     }
 
     private static IEnumerable<KeyValuePair<Type, string>> Reverse(KeyValuePair<string, ICollection<Type>> subscription)
     {
-        var busName = subscription.Key;
-        return subscription.Value.Select(messageType => new KeyValuePair<Type, string>(messageType, busName));
+        var transportName = subscription.Key;
+        return subscription.Value.Select(messageType => new KeyValuePair<Type, string>(messageType, transportName));
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
-/// Контекст для конфигурирования <see cref="IPublisher"/>.
+/// Контекст для конфигурирования <see cref="IPublisher"/> и <see cref="ITransport"/>.
 /// </summary>
 public sealed class BusConfigurationBuilder
 {
@@ -15,12 +15,12 @@ public sealed class BusConfigurationBuilder
     public IServiceCollection Services { get; init; } = null!;
 
     /// <summary>
-    /// Регистрирует компоненты <see cref="IBackgroundTaskBus"/> в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// Регистрирует компоненты транспортной шины в памяти в коллекции сервисов <see cref="IServiceCollection"/>.
     /// </summary>
-    /// <param name="busName">Наименование дочерней шины.</param>
-    /// <param name="configureOptions">Настройки конфигурации дочерней шины.</param>
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="configureOptions">Настройки транспортной шины.</param>
     /// <returns>Контекст конфигурирования.</returns>
-    public ChildBusConfigurationBuilder AddChildBus(
-        string busName,
-        Action<ChildBusOptions> configureOptions) => Services.AddChildBus(busName, configureOptions);
+    public TransportConfigurationBuilder InMemoryTransport(
+        string transportName,
+        Action<InMemoryTransportOptions> configureOptions) => Services.InMemoryTransport(transportName, configureOptions);
 }

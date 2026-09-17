@@ -4,7 +4,6 @@ using Gaa.Extensions.Benchmark.Observer.Features;
 using Gaa.Extensions.Observer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Gaa.Extensions.Benchmark.Observer;
@@ -18,19 +17,19 @@ namespace Gaa.Extensions.Benchmark.Observer;
 [MemoryDiagnoser]
 public class ProcessingBenchmark
 {
-    private const string BusName = "Test.Bus";
+    private const string TransportName = "Mock.Transport";
 
     private const string Message = "Test message!";
+
+    private static readonly TimeSpan ExecutionTimeLimit = TimeSpan.FromMinutes(1);
 
     private ServiceProvider _provider;
 
     private IServiceScopeFactory _scopeFactory;
 
-    private DefaultBusPublisher _publisher;
+    private DefaultPublisher _publisher;
 
-    private IBackgroundTaskBus _bus;
-
-    private TimeSpan _timeLimit;
+    private InMemoryTransport _transport;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -47,21 +46,20 @@ public class ProcessingBenchmark
             })
             .Configure<BusOptions>(options =>
             {
-                options.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
-                options.Subscriptions.Add(BusName, [typeof(string)]);
-                options.Options.Add(new() { Name = BusName, Capacity = 1_000 });
+                options.Subscriptions.Add(TransportName, [typeof(string)]);
+                options.Transports.Add(new InMemoryTransportOptions { Name = TransportName });
             })
-            .AddSingleton<DefaultBusPublisher>()
-            .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>()
+            .AddSingleton<DefaultPublisher>()
+            .AddSingleton<ITransportFactory, InMemoryTransportFactory>()
+            .AddSingleton<ITransportNameSelector, DefaultTransportNameSelector>()
+            .AddSingleton<ITransportSelector, DefaultTransportSelector>()
 
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();
 
         _scopeFactory = _provider.GetRequiredService<IServiceScopeFactory>();
-        _timeLimit = _provider.GetRequiredService<IOptions<BusOptions>>().Value.ExecutionTimeLimit;
-        _bus = _provider.GetRequiredService<IBackgroundTaskBusFactory>().GetOrCreate(BusName);
-        _publisher = _provider.GetRequiredService<DefaultBusPublisher>();
+        _transport = (InMemoryTransport)_provider.GetRequiredService<ITransportSelector>().GetTransport(TransportName);
+        _publisher = _provider.GetRequiredService<DefaultPublisher>();
     }
 
     /// <summary>
@@ -82,7 +80,7 @@ public class ProcessingBenchmark
     {
         // arrange & act
         await _publisher.PublishAsync(Message, CancellationToken.None);
-        await BusExecuteAsync(_bus, _timeLimit, CancellationToken.None);
+        await BusExecuteAsync(_transport, ExecutionTimeLimit, CancellationToken.None);
     }
 
     private static TimeSpan GetTimeLimit(TimeSpan? taskTimeLimit, TimeSpan defaultTimeLimit)
@@ -95,15 +93,15 @@ public class ProcessingBenchmark
         return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
     }
 
-    private async Task BusExecuteAsync(IBackgroundTaskBus bus, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
+    private async Task BusExecuteAsync(InMemoryTransport transport, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         try
         {
-            var backgroundTask = await bus.DequeueTaskAsync(stoppingToken);
+            var executionContext = await transport.ReadAsync(stoppingToken);
             await using var scope = _scopeFactory.CreateAsyncScope();
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-            cts.CancelAfter(GetTimeLimit(backgroundTask.ExecutionTimeLimit, defaultTimeLimit));
-            await backgroundTask.ExecuteAsync(scope.ServiceProvider, cts.Token);
+            cts.CancelAfter(defaultTimeLimit);
+            await executionContext.ExecuteAsync(scope.ServiceProvider, cts.Token);
         }
         catch
         {

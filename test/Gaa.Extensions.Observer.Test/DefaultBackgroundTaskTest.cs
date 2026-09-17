@@ -4,31 +4,31 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Gaa.Extensions.Observer.Test;
 
 /// <summary>
-/// Набор тестов для <see cref="DefaultBackgroundTask{TMessage}"/>.
+/// Набор тестов для <see cref="MessageExecutionContext{TMessage}"/>.
 /// </summary>
 [TestFixture]
 internal sealed class DefaultBackgroundTaskTest
 {
-    private static readonly Dictionary<string, string> MessageHeaders = [];
+    private static readonly Dictionary<string, string> Headers = [];
 
     /// <summary>
-    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ToString()"/>.
+    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ToString()"/>.
     /// </summary>
     [Test]
     public void SuccessfulToString()
     {
         // arrange
-        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
+        var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
 
         // act
-        var result = backgroundTask.ToString();
+        var result = executionContext.ToString();
 
         // assert
-        result.Should().Be("Gaa.Extensions.Observer.BackgroundTask<System.String>");
+        result.Should().Be("Gaa.Extensions.Observer.MessageExecutionContext<System.String>");
     }
 
     /// <summary>
-    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Test]
@@ -40,10 +40,10 @@ internal sealed class DefaultBackgroundTaskTest
             .AddMessageLogger()
             .BuildServiceProvider();
 
-        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
+        var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
 
         // act
-        var func = () => backgroundTask.ExecuteAsync(provider, CancellationToken.None);
+        var func = () => executionContext.ExecuteAsync(provider, CancellationToken.None);
 
         // assert
         await func.Should().NotThrowAsync();
@@ -51,12 +51,12 @@ internal sealed class DefaultBackgroundTaskTest
         provider
             .GetRequiredService<Mock<IMessageLogger>>()
             .Verify(
-                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: {backgroundTask.Message}.")),
+                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")),
                 Times.Exactly(1));
     }
 
     /// <summary>
-    /// Успешное выполнение <see cref="DefaultBackgroundTask{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     /// <remarks>Без вызов потребителя сообщения.</remarks>
@@ -68,10 +68,10 @@ internal sealed class DefaultBackgroundTaskTest
             .AddMessageLogger()
             .BuildServiceProvider();
 
-        var backgroundTask = new DefaultBackgroundTask<string>("Test message", MessageHeaders);
+        var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
 
         // act
-        var func = () => backgroundTask.ExecuteAsync(provider, CancellationToken.None);
+        var func = () => executionContext.ExecuteAsync(provider, CancellationToken.None);
 
         // assert
         await func.Should().NotThrowAsync();
@@ -79,7 +79,7 @@ internal sealed class DefaultBackgroundTaskTest
         provider
             .GetRequiredService<Mock<IMessageLogger>>()
             .Verify(
-                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: {backgroundTask.Message}.")),
+                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")),
                 Times.Never());
     }
 }

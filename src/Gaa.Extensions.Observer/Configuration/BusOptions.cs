@@ -8,17 +8,12 @@ namespace Gaa.Extensions.Observer;
 public sealed class BusOptions
 {
     /// <summary>
-    /// Ограничение по времени выполнения обработки одного сообщения.
+    /// Коллекция настроек транспортных шин.
     /// </summary>
-    public TimeSpan ExecutionTimeLimit { get; set; } = TimeSpan.FromSeconds(30);
+    public ICollection<TransportOptions> Transports { get; private set; } = new HashSet<TransportOptions>();
 
     /// <summary>
-    /// Коллекция настроек дочерних шин.
-    /// </summary>
-    public ICollection<ChildBusOptions> Options { get; private set; } = new HashSet<ChildBusOptions>();
-
-    /// <summary>
-    /// Подписка шин на сообщения.
+    /// Подписка транспортных шин на сообщения.
     /// </summary>
     public IDictionary<string, ICollection<Type>> Subscriptions { get; private set; } = new Dictionary<string, ICollection<Type>>();
 }

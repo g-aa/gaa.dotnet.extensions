@@ -17,15 +17,13 @@ namespace Gaa.Extensions.Benchmark.Observer;
 [MemoryDiagnoser]
 public class PublishingBenchmark
 {
-    private const string BusName = "Test.Bus";
+    private const string TransportName = "Mock.Transport";
 
     private const string Message = "Test message!";
 
     private ServiceProvider _provider;
 
-    private DefaultBusPublisher _publisher;
-
-    private IBackgroundTaskBus _bus;
+    private DefaultPublisher _publisher;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -42,19 +40,18 @@ public class PublishingBenchmark
             })
             .Configure<BusOptions>(options =>
             {
-                options.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
-                options.Subscriptions.Add(BusName, [typeof(string)]);
-                options.Options.Add(new() { Name = BusName, Capacity = 1_000 });
+                options.Subscriptions.Add(TransportName, [typeof(string)]);
+                options.Transports.Add(new InMemoryTransportOptions { Name = TransportName });
             })
-            .AddSingleton<DefaultBusPublisher>()
-            .AddSingleton<IBackgroundTaskBusFactory, DefaultBackgroundTaskBusFactory>()
-            .AddSingleton<IBackgroundTaskBusNameSelector, DefaultBackgroundTaskBusNameSelector>()
+            .AddSingleton<DefaultPublisher>()
+            .AddSingleton<ITransportFactory, MockTransportFactory>()
+            .AddSingleton<ITransportNameSelector, DefaultTransportNameSelector>()
+            .AddSingleton<ITransportSelector, DefaultTransportSelector>()
 
             .AddSingleton<IAsyncConsumer<string>, StringConsumer>()
             .BuildServiceProvider();
 
-        _bus = _provider.GetRequiredService<IBackgroundTaskBusFactory>().GetOrCreate(BusName);
-        _publisher = _provider.GetRequiredService<DefaultBusPublisher>();
+        _publisher = _provider.GetRequiredService<DefaultPublisher>();
     }
 
     /// <summary>
@@ -75,7 +72,5 @@ public class PublishingBenchmark
     {
         // arrange & act
         await _publisher.PublishAsync(Message, CancellationToken.None);
-        var backgroundTask = await _bus.DequeueTaskAsync(CancellationToken.None);
-        await backgroundTask.ExecuteAsync(_provider, CancellationToken.None);
     }
 }

@@ -16,7 +16,7 @@ public class SelectionBenchmark
 {
     private ServiceProvider _provider;
 
-    private DefaultBackgroundTaskBusNameSelector _selector;
+    private DefaultTransportNameSelector _selector;
 
     /// <summary>
     /// Глобально настраивает окружение.
@@ -30,13 +30,13 @@ public class SelectionBenchmark
                 options.Subscriptions.Add("Guid", [typeof(Guid)]);
                 options.Subscriptions.Add("Bool", [typeof(bool)]);
                 options.Subscriptions.Add("Char", [typeof(char)]);
-                options.Subscriptions.Add("Intager", [typeof(short), typeof(int), typeof(long), typeof(ushort), typeof(uint), typeof(ulong)]);
+                options.Subscriptions.Add("Integer", [typeof(short), typeof(int), typeof(long), typeof(ushort), typeof(uint), typeof(ulong)]);
                 options.Subscriptions.Add("Float", [typeof(float), typeof(double), typeof(decimal)]);
             })
-            .AddSingleton<DefaultBackgroundTaskBusNameSelector>()
+            .AddSingleton<DefaultTransportNameSelector>()
             .BuildServiceProvider();
 
-        _selector = _provider.GetRequiredService<DefaultBackgroundTaskBusNameSelector>();
+        _selector = _provider.GetRequiredService<DefaultTransportNameSelector>();
     }
 
     /// <summary>
@@ -55,6 +55,6 @@ public class SelectionBenchmark
     public void GetBusName()
     {
         // arrange & act
-        _ = _selector.GetBusName<long>();
+        _ = _selector.GetTransportName<long>();
     }
 }

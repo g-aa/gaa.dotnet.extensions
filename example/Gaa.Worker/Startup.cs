@@ -28,18 +28,17 @@ internal static class Startup
             });
 
         services
-            .AddInMemoryBus(busOptions =>
+            .AddBus(busOptions => { })
+            .InMemoryTransport("Example.Bus", transportOptions =>
             {
-                busOptions.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
-            })
-            .AddChildBus("Example.Bus", childBusOptions =>
-            {
-                childBusOptions.Capacity = 100;
+                transportOptions.ExecutionTimeLimit = TimeSpan.FromMinutes(1);
+                transportOptions.Capacity = 100;
             })
             .AddAsyncConsumer<ExampleConsumer, ExampleMessage>()
-            .AddChildBus("Error.Bus", childBusOptions =>
+            .InMemoryTransport("Error.Bus", transportOptions =>
             {
-                childBusOptions.Capacity = 200;
+                transportOptions.ExecutionTimeLimit = TimeSpan.FromMinutes(2);
+                transportOptions.Capacity = 200;
             })
             .AddAsyncConsumer<ErrorConsumer, ErrorMessage>();
 
