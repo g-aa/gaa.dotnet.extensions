@@ -11,9 +11,9 @@ internal sealed class DefaultTransportSelector : ITransportSelector
 {
     private readonly Lock _lock;
 
-    private readonly Dictionary<string, ITransport> _transports;
+    private readonly List<TransportOptions> _transportOptions;
 
-    private readonly List<TransportOptions> _options;
+    private readonly Dictionary<string, ITransport> _transports;
 
     private readonly ITransportFactory _factory;
 
@@ -25,8 +25,8 @@ internal sealed class DefaultTransportSelector : ITransportSelector
     public DefaultTransportSelector(IOptions<BusOptions> options, ITransportFactory factory)
     {
         _lock = new Lock();
-        _transports = new Dictionary<string, ITransport>();
-        _options = options.Value.Transports.ToList();
+        _transportOptions = [.. options.Value.Transports];
+        _transports = [];
         _factory = factory;
     }
 
@@ -38,6 +38,22 @@ internal sealed class DefaultTransportSelector : ITransportSelector
            : Create(transportName);
     }
 
+    /// <inheritdoc />
+    public T GetTransport<T>(string transportName)
+        where T : ITransport
+    {
+        return GetTransport(transportName) is T transport
+            ? transport
+            : Throw<T>(transportName);
+    }
+
+    private static T Throw<T>(string transportName)
+        where T : ITransport
+    {
+        var message = $"Не удается получить экземпляр транспортной шины '{typeof(T).FullName}' по наименованию '{transportName}'!";
+        throw new InvalidOperationException(message);
+    }
+
     private ITransport Create(string transportName)
     {
         lock (_lock)
@@ -47,7 +63,7 @@ internal sealed class DefaultTransportSelector : ITransportSelector
                 return transport;
             }
 
-            var options = _options.FirstOrDefault(o => o.Name == transportName);
+            var options = _transportOptions.FirstOrDefault(o => o.Name == transportName);
             transport = _factory.CreateTransport(options);
             _transports.TryAdd(transportName, transport);
             return transport;

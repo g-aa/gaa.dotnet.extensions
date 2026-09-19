@@ -1,10 +1,12 @@
+using System.Diagnostics;
+
 using Gaa.Extensions.Observer;
 using Microsoft.Extensions.Options;
 
 namespace Gaa.Worker.Example;
 
 /// <summary>
-/// Пример фонового задания публикующего сообщения.
+/// Пример фонового задания публикующего сообщение.
 /// </summary>
 public sealed partial class ExampleWorker : BackgroundService
 {
@@ -15,16 +17,16 @@ public sealed partial class ExampleWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="ExampleWorker"/>.
+    /// Инициализирует новый экземпляр класса <see cref="ExampleWorker"/>.
     /// </summary>
-    /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
+    /// <param name="loggerFactory">Фабрика для журналов протоколирования событий.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
     /// <param name="options">Настройки.</param>
-    public ExampleWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeDelayOptions> options)
+    public ExampleWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeOptions> options)
     {
         _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Publisher");
         _publisher = publisher;
-        _delay = options.Value.ExampleWorker;
+        _delay = options.Value.PeriodForExampleWorker;
     }
 
     /// <inheritdoc />
@@ -43,7 +45,7 @@ public sealed partial class ExampleWorker : BackgroundService
                     {
                         Id = Guid.NewGuid(),
                         Text = $"Сообщение #{number}",
-                        CreationTime = DateTimeOffset.UtcNow,
+                        CreationTime = Stopwatch.GetTimestamp(),
                     };
 
                     await _publisher.PublishAsync(message, stoppingToken);
@@ -58,7 +60,7 @@ public sealed partial class ExampleWorker : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            /* Можно не регичстрировать */
+            /* Можно не обрабатывать */
         }
     }
 

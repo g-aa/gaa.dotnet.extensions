@@ -10,5 +10,5 @@ internal static class CategoryName
     /// <summary>
     /// Категория логирования для шин по умолчанию.
     /// </summary>
-    internal const string DefaultBus = "Gaa.Extensions.Observer.Default.Bus";
+    internal const string InMemory = "Gaa.Extensions.Observer.Transport.InMemory";
 }

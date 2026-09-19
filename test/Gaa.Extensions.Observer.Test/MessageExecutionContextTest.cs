@@ -7,7 +7,7 @@ namespace Gaa.Extensions.Observer.Test;
 /// Набор тестов для <see cref="MessageExecutionContext{TMessage}"/>.
 /// </summary>
 [TestFixture]
-internal sealed class DefaultBackgroundTaskTest
+internal sealed class MessageExecutionContextTest
 {
     private static readonly Dictionary<string, string> Headers = [];
 
@@ -43,7 +43,7 @@ internal sealed class DefaultBackgroundTaskTest
         var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
 
         // act
-        var func = () => executionContext.ExecuteAsync(provider, CancellationToken.None);
+        var func = () => executionContext.ExecuteAsync(provider.GetRequiredService<IServiceScopeFactory>(), CancellationToken.None);
 
         // assert
         await func.Should().NotThrowAsync();
@@ -71,7 +71,7 @@ internal sealed class DefaultBackgroundTaskTest
         var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
 
         // act
-        var func = () => executionContext.ExecuteAsync(provider, CancellationToken.None);
+        var func = () => executionContext.ExecuteAsync(provider.GetRequiredService<IServiceScopeFactory>(), CancellationToken.None);
 
         // assert
         await func.Should().NotThrowAsync();

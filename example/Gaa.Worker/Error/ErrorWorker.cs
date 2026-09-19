@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 namespace Gaa.Worker.Error;
 
 /// <summary>
-/// Пример фонового задания публикующего сообщения.
+/// Пример фонового задания публикующего сообщение.
 /// </summary>
 public sealed partial class ErrorWorker : BackgroundService
 {
@@ -15,16 +15,16 @@ public sealed partial class ErrorWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новывый экземпляр класса <see cref="ErrorWorker"/>.
+    /// Инициализирует новый экземпляр класса <see cref="ErrorWorker"/>.
     /// </summary>
-    /// <param name="loggerFactory">Фабрика для журналов протоколирования собцытий.</param>
+    /// <param name="loggerFactory">Фабрика для журналов протоколирования событий.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
     /// <param name="options">Настройки.</param>
-    public ErrorWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeDelayOptions> options)
+    public ErrorWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeOptions> options)
     {
         _log = loggerFactory.CreateLogger("Gaa.Worker.Error.Publisher");
         _publisher = publisher;
-        _delay = options.Value.ErrorWorker;
+        _delay = options.Value.PeriodForErrorWorker;
     }
 
     /// <inheritdoc />
@@ -52,7 +52,7 @@ public sealed partial class ErrorWorker : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            /* Можно не регичстрировать */
+            /* Можно не обрабатывать */
         }
     }
 

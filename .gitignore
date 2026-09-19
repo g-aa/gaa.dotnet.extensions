@@ -26,6 +26,7 @@ _TeamCity.*
 !.editorconfig
 !.gitattributes
 !.gitignore
+!.run.sh
 !.tag.sh
 !.template.config
 !.test.sh

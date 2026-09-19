@@ -52,9 +52,9 @@ public sealed class TransportConfigurationBuilder
     /// <param name="transportName">Наименование транспортной шины.</param>
     /// <param name="configureOptions">Настройки транспортной шины.</param>
     /// <returns>Контекст конфигурирования.</returns>
-    public TransportConfigurationBuilder InMemoryTransport(
+    public TransportConfigurationBuilder AddInMemoryTransport(
         string transportName,
-        Action<InMemoryTransportOptions> configureOptions) => Services.InMemoryTransport(transportName, configureOptions);
+        Action<InMemoryTransportOptions> configureOptions) => Services.AddInMemoryTransport(transportName, configureOptions);
 
     private TransportConfigurationBuilder Add<TMessage, TInterface, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConsumer>(
         ServiceLifetime lifetime)

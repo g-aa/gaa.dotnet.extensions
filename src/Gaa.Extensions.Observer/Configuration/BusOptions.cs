@@ -10,10 +10,10 @@ public sealed class BusOptions
     /// <summary>
     /// Коллекция настроек транспортных шин.
     /// </summary>
-    public ICollection<TransportOptions> Transports { get; private set; } = new HashSet<TransportOptions>();
+    internal ICollection<TransportOptions> Transports { get; private set; } = new HashSet<TransportOptions>();
 
     /// <summary>
     /// Подписка транспортных шин на сообщения.
     /// </summary>
-    public IDictionary<string, ICollection<Type>> Subscriptions { get; private set; } = new Dictionary<string, ICollection<Type>>();
+    internal IDictionary<string, ICollection<Type>> Subscriptions { get; private set; } = new Dictionary<string, ICollection<Type>>();
 }

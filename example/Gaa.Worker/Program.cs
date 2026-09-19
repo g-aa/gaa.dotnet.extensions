@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Extensions.Logging;
 
@@ -27,7 +28,10 @@ internal static class Program
             Startup.ConfigureServices(builder.Services, builder.Configuration);
 
             var host = builder.Build();
-            await host.RunAsync();
+            var options = host.Services.GetRequiredService<IOptions<TimeOptions>>();
+            using var cts = new CancellationTokenSource(options.Value.HostExecutionTimeLimit);
+
+            await host.RunAsync(cts.Token);
         }
         catch (Exception ex)
         {

@@ -58,7 +58,7 @@ public class ProcessingBenchmark
             .BuildServiceProvider();
 
         _scopeFactory = _provider.GetRequiredService<IServiceScopeFactory>();
-        _transport = (InMemoryTransport)_provider.GetRequiredService<ITransportSelector>().GetTransport(TransportName);
+        _transport = _provider.GetRequiredService<ITransportSelector>().GetTransport<InMemoryTransport>(TransportName);
         _publisher = _provider.GetRequiredService<DefaultPublisher>();
     }
 
@@ -80,20 +80,10 @@ public class ProcessingBenchmark
     {
         // arrange & act
         await _publisher.PublishAsync(Message, CancellationToken.None);
-        await BusExecuteAsync(_transport, ExecutionTimeLimit, CancellationToken.None);
+        await TransportRunAsync(_transport, ExecutionTimeLimit, CancellationToken.None);
     }
 
-    private static TimeSpan GetTimeLimit(TimeSpan? taskTimeLimit, TimeSpan defaultTimeLimit)
-    {
-        if (taskTimeLimit == null)
-        {
-            return defaultTimeLimit;
-        }
-
-        return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
-    }
-
-    private async Task BusExecuteAsync(InMemoryTransport transport, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
+    private async Task TransportRunAsync(InMemoryTransport transport, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
     {
         try
         {

@@ -3,7 +3,7 @@ using Gaa.Extensions.Observer;
 namespace Gaa.Worker.Error;
 
 /// <summary>
-/// Потребитель сообщение вызывающих ошибку.
+/// Потребитель сообщения вызывающего ошибку.
 /// </summary>
 internal sealed class ErrorConsumer : IAsyncConsumer<ErrorMessage>
 {

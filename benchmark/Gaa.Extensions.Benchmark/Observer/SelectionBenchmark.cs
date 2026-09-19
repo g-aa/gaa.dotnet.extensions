@@ -52,7 +52,7 @@ public class SelectionBenchmark
     /// Публикует и потребляет сообщение.
     /// </summary>
     [Benchmark]
-    public void GetBusName()
+    public void GetTransportName()
     {
         // arrange & act
         _ = _selector.GetTransportName<long>();

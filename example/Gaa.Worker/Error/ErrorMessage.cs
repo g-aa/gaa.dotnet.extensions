@@ -1,6 +1,6 @@
 namespace Gaa.Worker.Error;
 
 /// <summary>
-/// Сообщение для потребителя вызывающего исключение.
+/// Сообщение вызывающее ошибку.
 /// </summary>
 public sealed class ErrorMessage;

@@ -16,7 +16,7 @@ internal sealed class DefaultTransportNameSelector : ITransportNameSelector
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultTransportNameSelector"/>.
     /// </summary>
-    /// <param name="options">Настройки шины сообщений.</param>
+    /// <param name="options">Общие настройки шины.</param>
     public DefaultTransportNameSelector(IOptions<BusOptions> options)
     {
         var subscriptions = options.Value.Subscriptions;

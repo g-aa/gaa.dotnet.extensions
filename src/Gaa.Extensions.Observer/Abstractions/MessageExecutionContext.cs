@@ -37,10 +37,10 @@ internal sealed class MessageExecutionContext<TMessage> : IMessageExecutionConte
     }
 
     /// <inheritdoc />
-    public Task ExecuteAsync(IServiceProvider provider, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(IServiceScopeFactory scopeFactory, CancellationToken cancellationToken)
     {
-        var consumer = provider.GetService<IAsyncConsumer<TMessage>>();
-        return consumer != null ? ConsumeAsync(consumer, cancellationToken) : Task.CompletedTask;
+        await using var scope = scopeFactory.CreateAsyncScope();
+        await ExecuteAsync(scope.ServiceProvider, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -48,6 +48,12 @@ internal sealed class MessageExecutionContext<TMessage> : IMessageExecutionConte
     {
         var messageType = typeof(TMessage);
         return $"Gaa.Extensions.Observer.MessageExecutionContext<{messageType.Namespace}.{messageType.Name}>";
+    }
+
+    private Task ExecuteAsync(IServiceProvider provider, CancellationToken cancellationToken)
+    {
+        var consumer = provider.GetService<IAsyncConsumer<TMessage>>();
+        return consumer != null ? ConsumeAsync(consumer, cancellationToken) : Task.CompletedTask;
     }
 
     private Task ConsumeAsync(IAsyncConsumer<TMessage> consumer, CancellationToken cancellationToken)

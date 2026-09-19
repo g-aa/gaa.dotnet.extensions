@@ -18,5 +18,5 @@ public sealed record ExampleMessage
     /// <summary>
     /// Дата и время создания.
     /// </summary>
-    public required DateTimeOffset CreationTime { get; init; }
+    public required long CreationTime { get; init; }
 }

@@ -34,7 +34,7 @@ internal sealed partial class InMemoryTransportExecutor : BackgroundService
         ITransportSelector transportSelector,
         IOptions<BusOptions> options)
     {
-        _log = loggerFactory.CreateLogger(CategoryName.DefaultBus);
+        _log = loggerFactory.CreateLogger(CategoryName.InMemory);
         _scopeFactory = scopeFactory;
         _transportSelector = transportSelector;
         _options = options.Value;
@@ -51,62 +51,23 @@ internal sealed partial class InMemoryTransportExecutor : BackgroundService
     private Task InternalExecuteAsync(CancellationToken stoppingToken)
     {
         var transportOptions = _options.Transports.Where(o => o is InMemoryTransportOptions).Cast<InMemoryTransportOptions>().ToList();
-        var busTasks = new List<Task>(transportOptions.Count);
+        var transportTasks = new List<Task>(transportOptions.Count);
         foreach (var options in transportOptions)
         {
-            var transport = (InMemoryTransport)_transportSelector.GetTransport(options.Name);
-            var busTask = Task.Run(
-                () => BusExecuteAsync(transport, options.ExecutionTimeLimit, stoppingToken),
-                stoppingToken);
-
-            busTasks.Add(busTask);
+            var transport = _transportSelector.GetTransport<InMemoryTransport>(options.Name);
+            var transportTask = Task.Run(() => transport.RunAsync(_scopeFactory, stoppingToken), stoppingToken);
+            transportTasks.Add(transportTask);
         }
 
-        return Task.WhenAll(busTasks);
-    }
-
-    private async Task BusExecuteAsync(InMemoryTransport transport, TimeSpan defaultTimeLimit, CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            try
-            {
-                var executionContext = await transport.ReadAsync(stoppingToken);
-                await using var scope = _scopeFactory.CreateAsyncScope();
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
-                cts.CancelAfter(defaultTimeLimit);
-                await executionContext.ExecuteAsync(scope.ServiceProvider, cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                /* Можно не обрабатывать */
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorMessage(_log, ex);
-            }
-        }
-    }
-
-    private static TimeSpan GetTimeLimit(TimeSpan? taskTimeLimit, TimeSpan defaultTimeLimit)
-    {
-        if (taskTimeLimit == null)
-        {
-            return defaultTimeLimit;
-        }
-
-        return taskTimeLimit < defaultTimeLimit ? taskTimeLimit.Value : defaultTimeLimit;
+        return Task.WhenAll(transportTasks);
     }
 
     private static partial class Log
     {
-        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортной шины в памяти запущен на выполнение...")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортных шин в памяти запущен на выполнение...")]
         public static partial void StartMessage(ILogger log);
 
-        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортной шины в памяти остановлен.")]
+        [LoggerMessage(Level = LogLevel.Debug, Message = "Исполняющий сервис транспортных шин в памяти остановлен.")]
         public static partial void StopMessage(ILogger log);
-
-        [LoggerMessage(Level = LogLevel.Error, Message = "Сработала необработанное исключение в процессе обработки сообщения!")]
-        public static partial void ErrorMessage(ILogger log, Exception ex);
     }
 }

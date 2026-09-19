@@ -3,15 +3,20 @@ namespace Gaa.Worker;
 /// <summary>
 /// Настройки фоновых задач.
 /// </summary>
-public sealed class TimeDelayOptions
+public sealed class TimeOptions
 {
+    /// <summary>
+    /// Время до полной остановки <see cref="IHost.StartAsync(CancellationToken)"/>.
+    /// </summary>
+    public TimeSpan HostExecutionTimeLimit { get; set; }
+
     /// <summary>
     /// Задержка между вызовами для <see cref="Example.ExampleWorker"/>.
     /// </summary>
-    public TimeSpan ExampleWorker { get; set; }
+    public TimeSpan PeriodForExampleWorker { get; set; }
 
     /// <summary>
     /// Задержка между вызовами для <see cref="Error.ErrorWorker"/>.
     /// </summary>
-    public TimeSpan ErrorWorker { get; set; }
+    public TimeSpan PeriodForErrorWorker { get; set; }
 }

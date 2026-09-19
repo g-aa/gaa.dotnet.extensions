@@ -12,7 +12,7 @@ internal static class TestHelper
     /// Регистрирует <see cref="IMessageLogger"/> в коллекции сервисов.
     /// </summary>
     /// <param name="services">Исходная коллекция сервисов.</param>
-    /// <returns>Модифицированная колекция сервисов.</returns>
+    /// <returns>Модифицированная коллекция сервисов.</returns>
     internal static IServiceCollection AddMessageLogger(this IServiceCollection services)
     {
         return services
