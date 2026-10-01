@@ -20,7 +20,7 @@ public sealed class TransportConfigurationBuilder
     /// </summary>
     /// <param name="transportName">Наименование транспортной шины.</param>
     /// <param name="services">Коллекция сервисов.</param>
-    internal TransportConfigurationBuilder(string transportName, IServiceCollection services)
+    public TransportConfigurationBuilder(string transportName, IServiceCollection services)
     {
         _transportName = transportName;
         _services = services;
@@ -55,6 +55,16 @@ public sealed class TransportConfigurationBuilder
     public TransportConfigurationBuilder AddInMemoryTransport(
         string transportName,
         Action<InMemoryTransportOptions> configureOptions) => Services.AddInMemoryTransport(transportName, configureOptions);
+
+    /// <summary>
+    /// Регистрирует компоненты конкурентной транспортной шины в памяти в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="configureOptions">Настройки транспортной шины.</param>
+    /// <returns>Контекст конфигурирования.</returns>
+    public TransportConfigurationBuilder AddConcurrentTransport(
+        string transportName,
+        Action<ConcurrentTransportOptions> configureOptions) => Services.AddConcurrentTransport(transportName, configureOptions);
 
     private TransportConfigurationBuilder Add<TMessage, TInterface, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TConsumer>(
         ServiceLifetime lifetime)

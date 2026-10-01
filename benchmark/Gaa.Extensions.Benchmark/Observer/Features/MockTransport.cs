@@ -1,4 +1,5 @@
 using Gaa.Extensions.Observer;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Gaa.Extensions.Benchmark.Observer.Features;
 
@@ -15,5 +16,16 @@ internal sealed class MockTransport : ITransport
         where TMessage : notnull
     {
         return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task RunAsync(IServiceScopeFactory scopeFactory, CancellationToken stoppingToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public void Close(CancellationToken cancellationToken)
+    {
     }
 }

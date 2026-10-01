@@ -8,7 +8,10 @@ namespace Gaa.Extensions.Benchmark.Observer.Features;
 internal sealed class MockTransportFactory : ITransportFactory
 {
     /// <inheritdoc />
-    public ITransport CreateTransport(TransportOptions? options)
+    public Type Type => typeof(MockTransport);
+
+    /// <inheritdoc />
+    public ITransport CreateTransport(TransportOptions options)
     {
         return new MockTransport();
     }

@@ -11,12 +11,22 @@ public sealed class TimeOptions
     public TimeSpan HostExecutionTimeLimit { get; set; }
 
     /// <summary>
-    /// Задержка между вызовами для <see cref="Example.ExampleWorker"/>.
+    /// Задержка между вызовами для <see cref="Error.ErrorWorker"/>.
+    /// </summary>
+    public TimeSpan PeriodForErrorWorker { get; set; }
+
+    /// <summary>
+    /// Задержка между вызовами для <see cref="Single.SingleExampleWorker"/>.
     /// </summary>
     public TimeSpan PeriodForExampleWorker { get; set; }
 
     /// <summary>
-    /// Задержка между вызовами для <see cref="Error.ErrorWorker"/>.
+    /// Задержка между вызовами для <see cref="Multiple.MultipleExampleWorker"/>.
     /// </summary>
-    public TimeSpan PeriodForErrorWorker { get; set; }
+    public TimeSpan PeriodForMultipleWorker { get; set; }
+
+    /// <summary>
+    /// Количество сообщений отправляемых за один период работы для <see cref="Multiple.MultipleExampleWorker"/>.
+    /// </summary>
+    public int MessagePerPeriodForMultipleWorker { get; set; }
 }

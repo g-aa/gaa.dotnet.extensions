@@ -13,21 +13,21 @@ internal sealed class DefaultTransportSelector : ITransportSelector
 
     private readonly List<TransportOptions> _transportOptions;
 
-    private readonly Dictionary<string, ITransport> _transports;
+    private readonly List<ITransportFactory> _factories;
 
-    private readonly ITransportFactory _factory;
+    private readonly Dictionary<string, ITransport> _transports;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="DefaultTransportSelector"/>.
     /// </summary>
     /// <param name="options">Общие настройки шины.</param>
-    /// <param name="factory">Фабрика транспортных шин.</param>
-    public DefaultTransportSelector(IOptions<BusOptions> options, ITransportFactory factory)
+    /// <param name="factories">Фабрики транспортных шин.</param>
+    public DefaultTransportSelector(IOptions<BusOptions> options, IEnumerable<ITransportFactory> factories)
     {
         _lock = new Lock();
         _transportOptions = [.. options.Value.Transports];
+        _factories = [.. factories];
         _transports = [];
-        _factory = factory;
     }
 
     /// <inheritdoc />
@@ -63,8 +63,9 @@ internal sealed class DefaultTransportSelector : ITransportSelector
                 return transport;
             }
 
-            var options = _transportOptions.FirstOrDefault(o => o.Name == transportName);
-            transport = _factory.CreateTransport(options);
+            var options = _transportOptions.Single(o => o.Name == transportName);
+            var factory = _factories.Single(f => f.Type == options.Type);
+            transport = factory.CreateTransport(options);
             _transports.TryAdd(transportName, transport);
             return transport;
         }

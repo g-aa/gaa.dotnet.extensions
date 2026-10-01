@@ -1,5 +1,7 @@
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Gaa.Extensions.Observer;
 
 /// <summary>
@@ -21,4 +23,18 @@ public interface ITransport
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     Task PublishAsync<TMessage>(MessageContext<TMessage> message, CancellationToken cancellationToken)
         where TMessage : notnull;
+
+    /// <summary>
+    /// Запускает транспортную шину на выполнение.
+    /// </summary>
+    /// <param name="scopeFactory">Фабрика сервисов.</param>
+    /// <param name="stoppingToken">Токен останавливающий выполнение операции.</param>
+    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    Task RunAsync(IServiceScopeFactory scopeFactory, CancellationToken stoppingToken);
+
+    /// <summary>
+    /// Закрывает транспортную шину.
+    /// </summary>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    void Close(CancellationToken cancellationToken);
 }

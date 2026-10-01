@@ -64,12 +64,7 @@ internal sealed partial class InMemoryTransport : ITransport
         return WriteAsync(context, cancellationToken);
     }
 
-    /// <summary>
-    /// Запускает транспортную шину на выполнение.
-    /// </summary>
-    /// <param name="scopeFactory">Фабрика сервисов.</param>
-    /// <param name="stoppingToken">Токен останавливающий выполнение операции.</param>
-    /// <returns>Результат выполнения асинхронной задачи.</returns>
+    /// <inheritdoc />
     public async Task RunAsync(IServiceScopeFactory scopeFactory, CancellationToken stoppingToken)
     {
         try
@@ -103,6 +98,15 @@ internal sealed partial class InMemoryTransport : ITransport
     }
 
     /// <inheritdoc />
+    public void Close(CancellationToken cancellationToken)
+    {
+        if (_writer.TryComplete())
+        {
+            Log.CompleteMessage(_log);
+        }
+    }
+
+    /// <inheritdoc />
     public override string ToString()
     {
         return $"Transport name: {_name}.";
@@ -132,6 +136,9 @@ internal sealed partial class InMemoryTransport : ITransport
 
         [LoggerMessage(Level = LogLevel.Trace, Message = "Контекст с сообщением '{Context}' излечен из шины для обработки.")]
         public static partial void ExtractedMessage(ILogger log, IMessageExecutionContext context);
+
+        [LoggerMessage(Level = LogLevel.Trace, Message = "Шина закрыта для записи сообщений.")]
+        public static partial void CompleteMessage(ILogger log);
 
         [LoggerMessage(Level = LogLevel.Warning, Message = "Превышено время обработки сообщения '{TimeLimit}'!")]
         public static partial void TimeLimitMessage(ILogger log, Exception ex, TimeSpan timeLimit);

@@ -1,9 +1,9 @@
-namespace Gaa.Worker.Example;
+namespace Gaa.Worker.Multiple;
 
 /// <summary>
 /// Пример сообщения.
 /// </summary>
-public sealed record ExampleMessage
+public sealed record MultipleExampleMessage
 {
     /// <summary>
     /// Идентификатор.

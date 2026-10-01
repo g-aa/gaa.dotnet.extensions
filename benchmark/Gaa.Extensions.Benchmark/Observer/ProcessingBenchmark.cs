@@ -88,10 +88,9 @@ public class ProcessingBenchmark
         try
         {
             var executionContext = await transport.ReadAsync(stoppingToken);
-            await using var scope = _scopeFactory.CreateAsyncScope();
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             cts.CancelAfter(defaultTimeLimit);
-            await executionContext.ExecuteAsync(scope.ServiceProvider, cts.Token);
+            await executionContext.ExecuteAsync(_scopeFactory, cts.Token);
         }
         catch
         {

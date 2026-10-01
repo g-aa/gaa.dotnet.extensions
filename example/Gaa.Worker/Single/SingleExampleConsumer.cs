@@ -2,33 +2,33 @@ using System.Diagnostics;
 
 using Gaa.Extensions.Observer;
 
-namespace Gaa.Worker.Example;
+namespace Gaa.Worker.Single;
 
 /// <summary>
 /// Пример потребителя сообщений.
 /// </summary>
-public sealed partial class ExampleConsumer : IAsyncConsumer<ExampleMessage>
+public sealed partial class SingleExampleConsumer : IAsyncConsumer<SingleExampleMessage>
 {
     private readonly ILogger _log;
 
-    private readonly ExampleMetrics _metrics;
+    private readonly SingleExampleMetrics _metrics;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="ExampleConsumer"/>.
+    /// Инициализирует новый экземпляр класса <see cref="SingleExampleConsumer"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования событий.</param>
     /// <param name="metrics">Пример метрик приложения.</param>
-    public ExampleConsumer(ILoggerFactory loggerFactory, ExampleMetrics metrics)
+    public SingleExampleConsumer(ILoggerFactory loggerFactory, SingleExampleMetrics metrics)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Consumer");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Single.Consumer");
         _metrics = metrics;
     }
 
     /// <inheritdoc />
-    public Task ConsumeAsync(MessageContext<ExampleMessage> context, CancellationToken cancellationToken)
+    public Task ConsumeAsync(MessageContext<SingleExampleMessage> context, CancellationToken cancellationToken)
     {
         var message = context.Message;
-        var processingTime = (double)(Stopwatch.GetTimestamp() - message.CreationTime) / TimeSpan.TicksPerMicrosecond;
+        var processingTime = Stopwatch.GetElapsedTime(message.CreationTime).TotalMicroseconds;
         Log.Message(_log,  message.Text, processingTime);
         _metrics.Record(processingTime);
         return Task.CompletedTask;

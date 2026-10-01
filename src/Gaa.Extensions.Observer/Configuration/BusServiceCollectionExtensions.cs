@@ -1,6 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 
 namespace Gaa.Extensions.Observer;
 
@@ -25,16 +28,11 @@ public static class BusServiceCollectionExtensions
         }
 
         services
-            .AddHostedService<InMemoryTransportExecutor>()
-            .AddSingleton<ITransportFactory, InMemoryTransportFactory>()
             .AddSingleton<ITransportSelector, DefaultTransportSelector>()
             .AddSingleton<ITransportNameSelector, DefaultTransportNameSelector>()
             .AddSingleton<IPublisher, DefaultPublisher>();
 
-        return new()
-        {
-            Services = services,
-        };
+        return new(services);
     }
 
     /// <summary>
@@ -51,15 +49,50 @@ public static class BusServiceCollectionExtensions
     {
         var transportOptions = new InMemoryTransportOptions
         {
+            Type = typeof(InMemoryTransport),
             Name = transportName,
         };
 
         configureOptions.Invoke(transportOptions);
-        services.Configure<BusOptions>(options =>
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITransportFactory, InMemoryTransportFactory>());
+        services
+            .AddHostedService<InMemoryTransportExecutor>()
+            .Configure<BusOptions>(options =>
+            {
+                options.Transports.Add(transportOptions);
+                options.Subscriptions.Add(transportName, new HashSet<Type>());
+            });
+
+        return new(transportName, services);
+    }
+
+    /// <summary>
+    /// Регистрирует компоненты конкурентной транспортной шины в памяти в коллекции сервисов <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="transportName">Наименование транспортной шины.</param>
+    /// <param name="configureOptions">Настройки транспортной шины.</param>
+    /// <returns>Контекст конфигурирования.</returns>
+    internal static TransportConfigurationBuilder AddConcurrentTransport(
+        this IServiceCollection services,
+        string transportName,
+        Action<ConcurrentTransportOptions> configureOptions)
+    {
+        var transportOptions = new ConcurrentTransportOptions
         {
-            options.Transports.Add(transportOptions);
-            options.Subscriptions.Add(transportName, new HashSet<Type>());
-        });
+            Type = typeof(ConcurrentTransport),
+            Name = transportName,
+        };
+
+        configureOptions.Invoke(transportOptions);
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ITransportFactory, ConcurrentTransportFactory>());
+        services
+            .AddHostedService<ConcurrentTransportExecutor>()
+            .Configure<BusOptions>(options =>
+            {
+                options.Transports.Add(transportOptions);
+                options.Subscriptions.Add(transportName, new HashSet<Type>());
+            });
 
         return new(transportName, services);
     }

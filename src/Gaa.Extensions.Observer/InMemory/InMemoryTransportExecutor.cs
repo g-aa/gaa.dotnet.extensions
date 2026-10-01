@@ -19,7 +19,7 @@ internal sealed partial class InMemoryTransportExecutor : BackgroundService
 
     private readonly ITransportSelector _transportSelector;
 
-    private readonly BusOptions _options;
+    private readonly List<string> _transportNames;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="InMemoryTransportExecutor"/>.
@@ -37,7 +37,18 @@ internal sealed partial class InMemoryTransportExecutor : BackgroundService
         _log = loggerFactory.CreateLogger(CategoryName.InMemory);
         _scopeFactory = scopeFactory;
         _transportSelector = transportSelector;
-        _options = options.Value;
+        _transportNames = [.. options.Value.Transports.Where(o => o is InMemoryTransportOptions).Select(o => o.Name)];
+    }
+
+    /// <inheritdoc />
+    public override Task StopAsync(CancellationToken cancellationToken)
+    {
+        foreach (var transportName in _transportNames)
+        {
+            _transportSelector.GetTransport<InMemoryTransport>(transportName).Close(CancellationToken.None);
+        }
+
+        return base.StopAsync(cancellationToken);
     }
 
     /// <inheritdoc />
@@ -50,11 +61,10 @@ internal sealed partial class InMemoryTransportExecutor : BackgroundService
 
     private Task InternalExecuteAsync(CancellationToken stoppingToken)
     {
-        var transportOptions = _options.Transports.Where(o => o is InMemoryTransportOptions).Cast<InMemoryTransportOptions>().ToList();
-        var transportTasks = new List<Task>(transportOptions.Count);
-        foreach (var options in transportOptions)
+        var transportTasks = new List<Task>(_transportNames.Count);
+        foreach (var transportName in _transportNames)
         {
-            var transport = _transportSelector.GetTransport<InMemoryTransport>(options.Name);
+            var transport = _transportSelector.GetTransport<InMemoryTransport>(transportName);
             var transportTask = Task.Run(() => transport.RunAsync(_scopeFactory, stoppingToken), stoppingToken);
             transportTasks.Add(transportTask);
         }

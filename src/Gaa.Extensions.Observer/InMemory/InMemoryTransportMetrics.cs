@@ -18,7 +18,7 @@ public sealed class InMemoryTransportMetrics
 
     private readonly List<InMemoryTransportOptions> _transportOptions;
 
-    private readonly List<InMemoryTransport> _transports;
+    private readonly Lazy<List<InMemoryTransport>> _lazyTransports;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="InMemoryTransportMetrics"/>.
@@ -32,18 +32,14 @@ public sealed class InMemoryTransportMetrics
         ITransportSelector transportSelector)
     {
         _transportOptions = [.. busOptions.Value.Transports.Where(o => o is InMemoryTransportOptions).Cast<InMemoryTransportOptions>()];
-        _transports = new(_transportOptions.Count);
-        foreach (var options in _transportOptions)
-        {
-            _transports.Add(transportSelector.GetTransport<InMemoryTransport>(options.Name));
-        }
+        _lazyTransports = new(() => GetTransports(transportSelector, _transportOptions), isThreadSafe: true);
 
         var meter = meterFactory.Create(MeterName);
 
         meter.CreateObservableGauge(
             "gaa.extensions.observer.transport.execution.time.limit",
             () => CreateExecutionTimeLimitList(_transportOptions),
-            unit: "s",
+            unit: "s.",
             description: "Maximum message processing time.");
 
         meter.CreateObservableGauge(
@@ -54,9 +50,20 @@ public sealed class InMemoryTransportMetrics
 
         meter.CreateObservableUpDownCounter(
             "gaa.extensions.observer.transport.message.count",
-            () => CreateCountMeasurementList(_transports),
+            () => CreateCountMeasurementList(_lazyTransports.Value),
             unit: "{messages}",
             description: "Number of messages in the queue.");
+    }
+
+    private static List<InMemoryTransport> GetTransports(ITransportSelector transportSelector, List<InMemoryTransportOptions> options)
+    {
+        var transports = new List<InMemoryTransport>(options.Count);
+        foreach (var transportOptions in options)
+        {
+            transports.Add(transportSelector.GetTransport<InMemoryTransport>(transportOptions.Name));
+        }
+
+        return transports;
     }
 
     private static List<Measurement<double>> CreateExecutionTimeLimitList(List<InMemoryTransportOptions> options)

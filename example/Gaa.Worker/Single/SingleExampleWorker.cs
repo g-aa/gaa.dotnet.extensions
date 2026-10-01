@@ -3,12 +3,12 @@ using System.Diagnostics;
 using Gaa.Extensions.Observer;
 using Microsoft.Extensions.Options;
 
-namespace Gaa.Worker.Example;
+namespace Gaa.Worker.Single;
 
 /// <summary>
 /// Пример фонового задания публикующего сообщение.
 /// </summary>
-public sealed partial class ExampleWorker : BackgroundService
+public sealed partial class SingleExampleWorker : BackgroundService
 {
     private readonly ILogger _log;
 
@@ -17,14 +17,14 @@ public sealed partial class ExampleWorker : BackgroundService
     private readonly TimeSpan _delay;
 
     /// <summary>
-    /// Инициализирует новый экземпляр класса <see cref="ExampleWorker"/>.
+    /// Инициализирует новый экземпляр класса <see cref="SingleExampleWorker"/>.
     /// </summary>
     /// <param name="loggerFactory">Фабрика для журналов протоколирования событий.</param>
     /// <param name="publisher">Шина для публикации сообщений.</param>
     /// <param name="options">Настройки.</param>
-    public ExampleWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeOptions> options)
+    public SingleExampleWorker(ILoggerFactory loggerFactory, IPublisher publisher, IOptions<TimeOptions> options)
     {
-        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Publisher");
+        _log = loggerFactory.CreateLogger("Gaa.Worker.Example.Single.Publisher");
         _publisher = publisher;
         _delay = options.Value.PeriodForExampleWorker;
     }
@@ -41,7 +41,7 @@ public sealed partial class ExampleWorker : BackgroundService
             {
                 try
                 {
-                    var message = new ExampleMessage
+                    var message = new SingleExampleMessage
                     {
                         Id = Guid.NewGuid(),
                         Text = $"Сообщение #{number}",

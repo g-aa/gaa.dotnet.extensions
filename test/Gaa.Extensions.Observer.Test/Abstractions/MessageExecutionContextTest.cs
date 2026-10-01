@@ -1,7 +1,7 @@
 using Gaa.Extensions.Observer.Test.Features;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Gaa.Extensions.Observer.Test;
+namespace Gaa.Extensions.Observer.Test.Abstractions;
 
 /// <summary>
 /// Набор тестов для <see cref="MessageExecutionContext{TMessage}"/>.
@@ -28,7 +28,7 @@ internal sealed class MessageExecutionContextTest
     }
 
     /// <summary>
-    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceScopeFactory, CancellationToken)"/>.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     [Test]
@@ -50,13 +50,11 @@ internal sealed class MessageExecutionContextTest
 
         provider
             .GetRequiredService<Mock<IMessageLogger>>()
-            .Verify(
-                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")),
-                Times.Exactly(1));
+            .Verify(l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")), Times.Exactly(1));
     }
 
     /// <summary>
-    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceProvider, CancellationToken)"/>.
+    /// Успешное выполнение <see cref="MessageExecutionContext{TMessage}.ExecuteAsync(IServiceScopeFactory, CancellationToken)"/>.
     /// </summary>
     /// <returns>Результат выполнения асинхронной задачи.</returns>
     /// <remarks>Без вызов потребителя сообщения.</remarks>
@@ -68,7 +66,7 @@ internal sealed class MessageExecutionContextTest
             .AddMessageLogger()
             .BuildServiceProvider();
 
-        var executionContext = new MessageExecutionContext<string>(Headers, "Test message");
+        var executionContext = new MessageExecutionContext<string>(new(Headers, "Test message"));
 
         // act
         var func = () => executionContext.ExecuteAsync(provider.GetRequiredService<IServiceScopeFactory>(), CancellationToken.None);
@@ -78,8 +76,6 @@ internal sealed class MessageExecutionContextTest
 
         provider
             .GetRequiredService<Mock<IMessageLogger>>()
-            .Verify(
-                l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")),
-                Times.Never());
+            .Verify(l => l.Log(It.Is<string>(m => m == $"Получено сообщение: Test message.")), Times.Never());
     }
 }

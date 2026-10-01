@@ -22,13 +22,11 @@ internal sealed class InMemoryTransportFactory : ITransportFactory
     }
 
     /// <inheritdoc />
-    public ITransport CreateTransport(TransportOptions? options)
-    {
-        if (options == null)
-        {
-            throw new InvalidOperationException("Для создание экземпляра транспортной шины в памяти требуются настройки!");
-        }
+    public Type Type => typeof(InMemoryTransport);
 
+    /// <inheritdoc />
+    public ITransport CreateTransport(TransportOptions options)
+    {
         if (options is not InMemoryTransportOptions transportOptions)
         {
             throw new InvalidOperationException($"Не удалось получить настройки вида '{typeof(InMemoryTransportOptions)}' для транспортной шины '{options.Name}'!");

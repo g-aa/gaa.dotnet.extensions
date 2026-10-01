@@ -8,9 +8,14 @@ namespace Gaa.Extensions.Observer;
 public interface ITransportFactory
 {
     /// <summary>
+    /// Тип.
+    /// </summary>
+    Type Type { get; }
+
+    /// <summary>
     /// Создает экземпляр транспортной шины.
     /// </summary>
     /// <param name="options">Настройки транспортной шины.</param>
     /// <returns>Транспортная шина.</returns>
-    ITransport CreateTransport(TransportOptions? options);
+    ITransport CreateTransport(TransportOptions options);
 }

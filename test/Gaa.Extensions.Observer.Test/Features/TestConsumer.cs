@@ -3,7 +3,7 @@ namespace Gaa.Extensions.Observer.Test.Features;
 /// <summary>
 /// Тестовый потребитель.
 /// </summary>
-internal sealed class TestConsumer : IAsyncConsumer<string>
+public sealed class TestConsumer : IAsyncConsumer<string>
 {
     private readonly IMessageLogger _log;
 

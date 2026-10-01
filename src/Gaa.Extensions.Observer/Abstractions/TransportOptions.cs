@@ -8,6 +8,11 @@ namespace Gaa.Extensions.Observer;
 public abstract class TransportOptions
 {
     /// <summary>
+    /// Тип.
+    /// </summary>
+    public Type Type { get; init; } = null!;
+
+    /// <summary>
     /// Наименование.
     /// </summary>
     public string Name { get; init; } = "Default";
